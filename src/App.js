@@ -21,9 +21,7 @@ function App() {
         <Route path="/student" element={<Student />}>
           <Route path=":selectedDrawer" element={<Student />} />
         </Route>
-        <Route path="/professor" element={<Professor />}>
-          <Route path=":selectedDrawer" element={<Professor />} />
-        </Route>
+        <Route path="/professor/:selectedDrawer" element={<Professor />} />
         <Route path="/admin/:selectedDrawer" element={<Admin />} />
       </Routes>
     </AppWrapper>

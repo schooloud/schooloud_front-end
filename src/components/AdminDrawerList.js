@@ -7,6 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import logoImage from "../assets/Logo.png";
 
 export default function StudentDrawerList() {
   const navigate = useNavigate();
@@ -29,7 +30,9 @@ export default function StudentDrawerList() {
 
   return (
     <DrawerWrapper>
-      <Logo>Schooloud</Logo>
+      <Logo>
+        <LogoImage src={logoImage} alt="" />
+      </Logo>
       <ListButton
         id="dashboard"
         className={selectedDrawer === "dashboard" && "selected"}
@@ -94,7 +97,11 @@ const Logo = styled.div`
   width: 100%;
   height: 14%;
   background-color: #ffffff;
-  font-size: 2rem;
+  color: #000000;
+`;
+
+const LogoImage = styled.img`
+  height: 35%;
 `;
 
 const ListButton = styled.div`

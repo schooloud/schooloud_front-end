@@ -6,6 +6,7 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import logoImage from "../assets/Logo.png";
 
 export default function StudentDrawerList() {
   const navigate = useNavigate();
@@ -31,7 +32,9 @@ export default function StudentDrawerList() {
 
   return (
     <DrawerWrapper>
-      <Logo>Schooloud</Logo>
+      <Logo>
+        <LogoImage src={logoImage} alt="" />
+      </Logo>
       <ListButton
         id="dashboard"
         className={selectedDrawer === "dashboard" && "selected"}
@@ -91,7 +94,10 @@ const Logo = styled.div`
   height: 14%;
   background-color: #ffffff;
   color: #000000;
-  font-size: 2rem;
+`;
+
+const LogoImage = styled.img`
+  height: 35%;
 `;
 
 const ListButton = styled.div`
