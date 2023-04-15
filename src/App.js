@@ -10,7 +10,7 @@ function App() {
   return (
     <AppWrapper>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/student/project" element={<Student />}>
           <Route path=":projectId" element={<Student />}>
             <Route path=":selectedDrawer" element={<Student />} />
@@ -19,9 +19,7 @@ function App() {
         <Route path="/student" element={<Student />}>
           <Route path=":selectedDrawer" element={<Student />} />
         </Route>
-        <Route path="/professor" element={<Professor />}>
-          <Route path=":selectedDrawer" element={<Professor />} />
-        </Route>
+        <Route path="/professor/:selectedDrawer" element={<Professor />} />
         <Route path="/admin/:selectedDrawer" element={<Admin />} />
       </Routes>
     </AppWrapper>

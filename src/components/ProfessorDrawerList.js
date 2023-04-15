@@ -2,6 +2,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import logoImage from "../assets/Logo.png";
 
 export default function ProfessorDrawerList() {
   const navigate = useNavigate();
@@ -24,7 +25,9 @@ export default function ProfessorDrawerList() {
 
   return (
     <DrawerWrapper>
-      <Logo>Schooloud</Logo>
+      <Logo>
+        <LogoImage src={logoImage} alt="" />
+      </Logo>
       <ListCategory>Proposal</ListCategory>
       <ListButton
         id="proposal"
@@ -50,7 +53,11 @@ const Logo = styled.div`
   width: 100%;
   height: 14%;
   background-color: #ffffff;
-  font-size: 2rem;
+  color: #000000;
+`;
+
+const LogoImage = styled.img`
+  height: 35%;
 `;
 
 const ListButton = styled.div`
