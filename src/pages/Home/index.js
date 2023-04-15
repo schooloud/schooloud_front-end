@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import ExpiredCheck from "../ExpiredCheck";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function Home() {
       </button>
       <button onClick={() => navigate("/professor/proposal")}>Professor</button>
       <button onClick={() => navigate("/admin/dashboard")}>Admin</button>
+      <ExpiredCheck />
     </div>
   );
 }
