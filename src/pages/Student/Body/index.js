@@ -45,6 +45,6 @@ const BodyWrapper = styled.div`
     ["proposal", "writeproposal"].includes(params.selectedDrawer)
       ? "100%"
       : "93%"};
-  padding: 2%;
+  padding: 1.5rem;
   background-color: #ffffff;
 `;

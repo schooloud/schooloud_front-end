@@ -102,7 +102,7 @@ const TabBox = styled.div`
   }
 
   &.selected {
-    border-top: 2px solid var(--dark);
+    border-top: 2px solid var(--semi-dark);
     background-color: #ffffff;
     &:hover {
       background-color: #ffffff;
