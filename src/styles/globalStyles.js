@@ -59,6 +59,7 @@ export default createGlobalStyle`
     --semi-light: #AAD8A1;
     --regular: #8EC083;
     --medium: #76B06A;
+    --main: #3cc23f;
     --semi-dark: #509741;
     --dark: #2D791E;
     --extra-dark: #18610A;
