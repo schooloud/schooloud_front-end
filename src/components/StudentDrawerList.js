@@ -129,7 +129,6 @@ const ListCategory = styled.div`
 const ListText = styled.div`
   display: flex;
   align-items: center;
-  padding-top: 1.2%;
   margin-left: 5%;
   font-size: 1.1rem;
 `;

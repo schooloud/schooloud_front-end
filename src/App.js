@@ -3,7 +3,7 @@ import Professor from "./pages/Professor";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
-import { globalStyles } from "./styles/globalStyles";
+import { basicStyles } from "./styles/globalStyles";
 import styled from "styled-components";
 
 function App() {
@@ -29,7 +29,9 @@ function App() {
 export default App;
 
 const AppWrapper = styled.div`
-  width: ${globalStyles.maxWidth}px;
-  height: ${globalStyles.maxHeight}px;
-  font-size: ${globalStyles.basicFont}px;
+  width: ${basicStyles.maxWidth}px;
+  height: ${basicStyles.maxHeight}px;
+  font-size: ${basicStyles.basicFont}px;
+  font-family: "Pretendard";
+  font-weight: 300;
 `;
