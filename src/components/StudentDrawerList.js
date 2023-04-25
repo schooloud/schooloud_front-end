@@ -97,21 +97,21 @@ const Logo = styled.div`
 `;
 
 const LogoImage = styled.img`
-  height: 35%;
+  height: 30%;
 `;
 
 const ListButton = styled.div`
   width: 100%;
-  height: 8%;
+  height: 6%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   padding-left: 8%;
   &.selected {
-    background-color: #dfeedc;
+    background-color: var(--light);
   }
   &:hover {
-    opacity: 80%;
+    background-color: var(--light);
     cursor: pointer;
   }
 `;

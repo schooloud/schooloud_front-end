@@ -54,9 +54,14 @@ export default createGlobalStyle`
   }
 
   :root {
-  --main: #64BE66;
-  --light: #DFEEDC;
-  --dark: #4F9F51;
+    --extra-light: #E9F3E7;
+    --light: #DFEEDC;
+    --semi-light: #AAD8A1;
+    --regular: #8EC083;
+    --medium: #76B06A;
+    --semi-dark: #509741;
+    --dark: #2D791E;
+    --extra-dark: #18610A;
   }
 `;
 
