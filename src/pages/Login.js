@@ -157,7 +157,7 @@ const LoginButton = styled.button`
   font-size: large;
   border-radius: 4px;
   background-color: var(--main);
-  border: 1px solid var(--dark);
+  border: 1px solid var(--medium);
   cursor: pointer;
   letter-spacing: 1px;
 `;

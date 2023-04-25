@@ -8,23 +8,25 @@ import { darken, lighten } from "polished";
 
 const colorStyles = css`
   ${({ color }) => {
-    const selected = `${color}` || "#3CC23F";
+    const selected = color || "#3CC23F";
     return css`
-      background: ${selected};
+      background-color: var(${`--${color}`});
       &:hover {
-        background: ${lighten(0.1, selected)};
+        background-color: var(${`--${color}`});
+        opacity: 0.8; // lighten이 되어 있던 자리
       }
       &:active {
-        background: ${darken(0.1, selected)};
+        background-color: var(${`--${color}`});
+        //darken이 되어 있던 자리
       }
       ${(props) =>
         props.outline &&
         css`
           color: ${selected};
-          background: none;
-          border: 1px solid ${selected};
+          background-color: none;
+          border: 1px solid var(${`--${color}`});
           &:hover {
-            background: ${selected};
+            background-color: var(${`--${color}`});
             color: white;
           }
         `}
