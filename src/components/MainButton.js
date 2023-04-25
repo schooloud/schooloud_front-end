@@ -91,7 +91,7 @@ const StyledButton = styled.button`
 function MainButton({ children, color, size, outline, fullWidth, ...rest }) {
   return (
     <StyledButton
-      color={`var(--${color})`}
+      color={color}
       size={size}
       outline={outline}
       fullWidth={fullWidth}
