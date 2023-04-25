@@ -1,6 +1,19 @@
 import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
+import { Navigate } from "react-router-dom";
+import Modal from "../components/Modal";
+import MainButton from "../components/MainButton";
+
+/*--extra-light: #E9F3E7;
+    --light: #DFEEDC;
+    --semi-light: #AAD8A1;
+    --regular: #8EC083;
+    --medium: #76B06A;
+    --semi-dark: #509741;
+    --dark: #2D791E;
+    --extra-dark: #18610A;
+    */
 
 const SignUp = () => {
   //이메일 유효성 검사
@@ -19,31 +32,37 @@ const SignUp = () => {
     role: "STUDENT",
   });
 
-  const onChangeEmail = useCallback((e) => {
-    const emailRegex =
-      /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    const emailCurrent = e.target.value;
-    const { name } = e.target;
-    setForm({
-      ...form,
-      [name]: emailCurrent,
-    });
+  const onChangeEmail = useCallback(
+    (e) => {
+      const emailRegex =
+        /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+      const emailCurrent = e.target.value;
+      const { name } = e.target;
+      setForm({
+        ...form,
+        [name]: emailCurrent,
+      });
 
-    if (!emailRegex.test(emailCurrent)) {
-      setIsEmailValid(false);
-    } else {
-      setIsEmailValid(true);
-    }
-  }, []);
+      if (!emailRegex.test(emailCurrent)) {
+        setIsEmailValid(false);
+      } else {
+        setIsEmailValid(true);
+      }
+    },
+    [form]
+  );
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: value,
-    });
-  };
-  const handleSubmit = (e) => {
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setForm({
+        ...form,
+        [name]: value,
+      });
+    },
+    [form]
+  );
+  const handleSubmit = useCallback((e) => {
     // e.preventDefault();
     // axios
     //   .post("/users/signup", {
@@ -57,9 +76,10 @@ const SignUp = () => {
     //   .then((res) => {
     //     console.log(res);
     //   });
-  };
+    Navigate("/login");
+  }, []);
 
-  const handleDuplicateCheck = () => {
+  const handleDuplicateCheck = useCallback(() => {
     // axios
     //   .post("/users/duplicateCheck", {
     //     email: form.email,
@@ -67,7 +87,8 @@ const SignUp = () => {
     //   .then((res) => {
     //     console.log(res);
     //   });
-  };
+    setIsEmailDuplicateChecked(true);
+  }, []);
 
   const handlePasswordCheck = (e) => {
     const { value } = e.target;
@@ -97,12 +118,12 @@ const SignUp = () => {
                 onChange={onChangeEmail}
                 required
               />
-              <DuplicateCheckButton onClick={handleDuplicateCheck}>
-                중복체크
-              </DuplicateCheckButton>
+              <MainButton color="blue" onClick={handleDuplicateCheck}>
+                중복확인
+              </MainButton>
             </EmailDiv>
             {isEmailValid ? (
-              <EmailCheckMessage color="green">
+              <EmailCheckMessage color="#2D791E">
                 이메일 형식이 맞습니다.
               </EmailCheckMessage>
             ) : (
@@ -125,7 +146,7 @@ const SignUp = () => {
               required
             />
             {isPasswordSame ? (
-              <PasswordCheckMessage color="green">
+              <PasswordCheckMessage color="#2D791E">
                 비밀번호가 일치합니다.
               </PasswordCheckMessage>
             ) : (
@@ -164,6 +185,7 @@ const SignUp = () => {
           </SubmmitButton>
         </Box>
       </Container>
+      <Modal></Modal>
     </SignUpWrapper>
   );
 };
@@ -184,6 +206,13 @@ const Container = styled.div`
   align-items: center;
   height: 100%;
   width: 30rem;
+`;
+const EmailCheckWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const Logo = styled.div`
@@ -253,9 +282,9 @@ const DuplicateCheckButton = styled.button`
   border: none;
   color: white;
   font-size: normal;
-  border-radius: 5px;
+  border-radius: 4px;
   background-color: var(--dark);
-  border: 1px solid var(--dark);
+  border: 1px solid var(--extra-dark);
   cursor: pointer;
   letter-spacing: 1px;
 `;
@@ -285,7 +314,7 @@ const SubmmitButton = styled.button`
   border: none;
   color: white;
   font-size: large;
-  border-radius: 5px;
+  border-radius: 4px;
   background-color: var(--main);
   border: 1px solid var(--dark);
   cursor: pointer;

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
 
 const serverDummy = {
-  id: "test",
+  id: "test@naver.com",
   password: "1234",
 };
 
@@ -155,7 +155,7 @@ const LoginButton = styled.button`
   border: none;
   color: white;
   font-size: large;
-  border-radius: 5px;
+  border-radius: 4px;
   background-color: var(--main);
   border: 1px solid var(--dark);
   cursor: pointer;
