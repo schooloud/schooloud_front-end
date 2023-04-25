@@ -5,11 +5,13 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import { basicStyles } from "./styles/globalStyles";
 import styled from "styled-components";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <AppWrapper>
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/student/project" element={<Student />}>
           <Route path=":projectId" element={<Student />}>

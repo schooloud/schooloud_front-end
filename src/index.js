@@ -4,15 +4,18 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import GlobalStyles from "./styles/globalStyles";
+import { CookiesProvider } from "react-cookie";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RecoilRoot>
-      <BrowserRouter>
-        <GlobalStyles />
-        <App />
-      </BrowserRouter>
-    </RecoilRoot>
+    <CookiesProvider>
+      <RecoilRoot>
+        <BrowserRouter>
+          <GlobalStyles />
+          <App />
+        </BrowserRouter>
+      </RecoilRoot>
+    </CookiesProvider>
   </React.StrictMode>
 );
