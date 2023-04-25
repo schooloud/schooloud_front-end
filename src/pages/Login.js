@@ -52,8 +52,12 @@ const Login = (props) => {
     }
   };
 
+  const handleClick = () => {
+    navigate("/signup");
+  };
+
   return (
-    <LoginWapper>
+    <LoginWrapper>
       <Container>
         <Logo>
           <LogoImage src={logoImage} alt="" />
@@ -68,15 +72,16 @@ const Login = (props) => {
               placeholder="비밀번호"
               required
             />
-            <Button onClick={login}>로그인</Button>
+            <LoginButton onClick={login}>로그인</LoginButton>
           </Form>
         </Box>
+        <SignUpButton onClick={handleClick}>회원가입</SignUpButton>
       </Container>
-    </LoginWapper>
+    </LoginWrapper>
   );
 };
 
-const LoginWapper = styled.div`
+const LoginWrapper = styled.div`
   display: flex;
   justify-content: center; /* 수직 중앙 정렬 */
   align-items: center; /* 수평 중앙 정렬 */
@@ -85,47 +90,45 @@ const LoginWapper = styled.div`
 `;
 
 const Container = styled.div`
+  position: relative;
+  bottom: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 40rem;
-  width: 35rem;
+  height: 30rem;
+  width: 30rem;
 `;
 
-//make header left side
 const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 15%;
+  width: 5rem;
+  height: 3rem;
   background-color: #ffffff;
   color: #000000;
+  margin-bottom: 20px;
 `;
 
 const LogoImage = styled.img`
-  height: 35%;
+  height: 100%;
 `;
+
 const Box = styled.div`
-  height: 85%;
+  height: 60%;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  border: 1px solid black;
   border-radius: 10px;
-
-  /* padding-left: 10px; */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 `;
 
 const Title = styled.h1`
-  margin: 50px 0 30px 0;
+  margin: 50px 0 20px 0;
   width: 80%;
-
-  /* font-size: 30px;
-  font-weight: 600;
-  margin-bottom: 20px; */
+  font-size: 1rem;
 `;
 
 const Form = styled.form`
@@ -140,19 +143,34 @@ const Input = styled.input`
   width: 80%;
   height: 40px;
   margin-bottom: 10px;
-  border: 1px solid black;
+  border: 0.5px solid grey;
   border-radius: 5px;
   padding: 0 10px;
 `;
 
-const Button = styled.button`
+const LoginButton = styled.button`
   width: 80%;
   height: 40px;
   margin-top: 10px;
   border: none;
   color: white;
+  font-size: large;
   border-radius: 5px;
-  background-color: green;
+  background-color: var(--main);
+  border: 1px solid var(--dark);
+  cursor: pointer;
+  letter-spacing: 1px;
+`;
+
+const SignUpButton = styled.div`
+  margin-top: 10px;
+  color: grey;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 1rem;
+  width: 5rem;
+  font-size: 1rem;
   cursor: pointer;
 `;
 

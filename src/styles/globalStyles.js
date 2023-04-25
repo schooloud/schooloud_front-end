@@ -54,7 +54,7 @@ export default createGlobalStyle`
   }
 
   :root {
-  --main: #64BE66;
+  --main: #3cc23f;
   --light: #DFEEDC;
   --dark: #4F9F51;
   }
