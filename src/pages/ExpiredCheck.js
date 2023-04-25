@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const ExpiredCheck = (props) => {
-  const [isLogined, setisLogined] = useState(null);
+  const [isLogined, setIsLogined] = useState(null);
   const [cookies, removeCookie] = useCookies(null);
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ const ExpiredCheck = (props) => {
     }
     //만료 안됐으면 로그인 상태 유지
     else {
-      setisLogined(cookies.name);
+      setIsLogined(cookies.name);
     }
   };
 
@@ -50,9 +51,14 @@ const ExpiredCheck = (props) => {
   return (
     <>
       {/* isLogined에 props를 넣어서 컴포넌트를 띄우면 될 듯 */}
-      {isLogined && <h1>{isLogined}님 환영합니다!</h1>}
+      {isLogined && <Div>{isLogined}님 환영합니다!</Div>}
       <button onClick={logOut}>로그아웃</button>
     </>
   );
 };
+
+const Div = styled.div`
+  font-weight: 700;
+  font-size: 1.3rem;
+`;
 export default ExpiredCheck;

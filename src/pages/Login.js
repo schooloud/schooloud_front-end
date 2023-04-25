@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
+import logoImage from "../assets/Logo.png";
 
 const serverDummy = {
   id: "test",
@@ -38,7 +39,7 @@ const Login = (props) => {
     e.preventDefault();
     if (
       formRef.current.id.value === serverDummy.id &&
-      formRef.current.passWord.value === serverDummy.password
+      formRef.current.password.value === serverDummy.password
     ) {
       //토큰 저장
       for (let key in tokenDummy) {
@@ -53,15 +54,17 @@ const Login = (props) => {
 
   return (
     <LoginWapper>
-      <Header>schooloud</Header>
       <Container>
+        <Logo>
+          <LogoImage src={logoImage} alt="" />
+        </Logo>
         <Box>
           <Title>로그인</Title>
           <Form ref={formRef}>
             <Input type="text" name="id" placeholder="이메일" required />
             <Input
               type="password"
-              name="passWord"
+              name="password"
               placeholder="비밀번호"
               required
             />
@@ -75,46 +78,54 @@ const Login = (props) => {
 
 const LoginWapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-//make header left side
-const Header = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 50px;
-  background-color: #f5f5f5;
-  font-size: 30px;
-  font-weight: 600;
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
+  height: 100%; //고정
+  width: 100vw; //바뀜
 `;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 40rem;
+  width: 35rem;
 `;
 
+//make header left side
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 15%;
+  background-color: #ffffff;
+  color: #000000;
+`;
+
+const LogoImage = styled.img`
+  height: 35%;
+`;
 const Box = styled.div`
+  height: 85%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  width: 400px;
-  height: 400px;
+
   border: 1px solid black;
   border-radius: 10px;
+
+  /* padding-left: 10px; */
 `;
 
 const Title = styled.h1`
-  font-size: 30px;
+  margin: 50px 0 30px 0;
+  width: 80%;
+
+  /* font-size: 30px;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 20px; */
 `;
 
 const Form = styled.form`
@@ -138,9 +149,10 @@ const Button = styled.button`
   width: 80%;
   height: 40px;
   margin-top: 10px;
-  border: 1px solid black;
+  border: none;
+  color: white;
   border-radius: 5px;
-  background-color: #fff;
+  background-color: green;
   cursor: pointer;
 `;
 
