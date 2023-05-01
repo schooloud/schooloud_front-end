@@ -8,7 +8,9 @@ import { darken, lighten } from "polished";
 
 const colorStyles = css`
   ${({ color }) => {
-    const selected = color || "3CC23F";
+    const computedStyles = window.getComputedStyle(document.documentElement);
+    const selected = computedStyles.getPropertyValue(`—-${color}`);
+
     return css`
       background: ${selected};
       &:hover {
@@ -107,7 +109,7 @@ function MainButton({ children, color, size, outline, fullWidth, ...rest }) {
 }
 
 MainButton.defaultProps = {
-  color: "3CC23F",
+  color: "#3CC23F",
   size: "medium",
 };
 
