@@ -118,7 +118,7 @@ const SignUp = () => {
                 onChange={onChangeEmail}
                 required
               />
-              <MainButton color="blue" onClick={handleDuplicateCheck}>
+              <MainButton color="main" onClick={handleDuplicateCheck}>
                 중복확인
               </MainButton>
             </EmailDiv>

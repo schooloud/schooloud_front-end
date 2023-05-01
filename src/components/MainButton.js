@@ -12,21 +12,23 @@ const colorStyles = css`
     const selected = computedStyles.getPropertyValue(`—-${color}`);
 
     return css`
-      background: ${selected};
+      background-color: var(${`--${color}`});
       &:hover {
-        background: ${lighten(0.1, selected)};
+        background-color: var(${`--${color}`});
+        opacity: 0.8; // lighten이 되어 있던 자리
       }
       &:active {
-        background: ${darken(0.1, selected)};
+        background-color: var(${`--${color}`});
+        //darken이 되어 있던 자리
       }
       ${(props) =>
         props.outline &&
         css`
           color: ${selected};
-          background: none;
-          border: 1px solid ${selected};
+          background-color: none;
+          border: 1px solid var(${`--${color}`});
           &:hover {
-            background: ${selected};
+            background-color: var(${`--${color}`});
             color: white;
           }
         `}
@@ -79,18 +81,14 @@ const StyledButton = styled.button`
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-
   /* 크기 */
   ${sizeStyles}
-
   /* 색상 */
   ${colorStyles}
-
   /* 기타 */
   & + & {
     margin-left: 1rem;
   }
-
   ${fullWidthStyle}
 `;
 

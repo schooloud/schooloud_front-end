@@ -41,8 +41,8 @@ function Modal({ title, children, confirmText, cancelText }) {
         <h3>{title}</h3>
         <p>{children}</p>
         <ButtonGroup>
-          <MainButton color="blue">{cancelText}</MainButton>
-          <MainButton color="pink">{confirmText}</MainButton>
+          <MainButton color="main">{cancelText}</MainButton>
+          <MainButton color="main">{confirmText}</MainButton>
         </ButtonGroup>
       </DialogBlock>
     </DarkBackground>

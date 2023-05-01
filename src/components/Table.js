@@ -99,8 +99,8 @@ export default function Table({
           {rows.map((row) => (
             <tr
               key={row.name}
-              onClick={onClick}
               value={row.name}
+              onClick={onClick}
               className={
                 selectedCol.includes(row.name) ? "selected" : "notSelected"
               }

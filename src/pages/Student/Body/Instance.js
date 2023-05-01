@@ -4,9 +4,10 @@ import { useState } from "react";
 
 export default function Instance() {
   const [selecetedCol, setSelectedCol] = useState([]);
+
   return (
-    <div>
-      <div
+    <Container>
+      <TitleText
         style={{
           fontWeight: 600,
           fontSize: "1.3rem",
@@ -14,11 +15,19 @@ export default function Instance() {
         }}
       >
         Instance
-      </div>
+      </TitleText>
       <Button></Button>
       <Table selectedCol={selecetedCol} setSelectedCol={setSelectedCol} />
-    </div>
+    </Container>
   );
 }
+
+const Container = styled.div``;
+
+const TitleText = styled.div`
+  font-weight: 600;
+  font-size: "1.3rem";
+  margin-bottom: "1.5rem";
+`;
 
 const Button = styled.div``;
