@@ -94,11 +94,11 @@ const Login = (props) => {
             />
             <MainButton
               color={"main"}
-              border={"dark"}
               fullWidth={true}
               marginTop={"1rem"}
               onClick={login}
               disabled={form.id === "" || form.password === "" ? true : false}
+              // marginTop={"1rem"}
             >
               로그인
             </MainButton>
