@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
 import { useNavigate } from "react-router-dom";
-import Modal from "../components/Modal";
+import PopUpModal from "../components/PopUpModal";
 import MainButton from "../components/MainButton";
 
 /*--extra-light: #E9F3E7;
@@ -211,14 +211,14 @@ const SignUp = () => {
           </MainButton>
         </Box>
       </Container>
-      <Modal
+      <PopUpModal
         title="사용가능한 이메일입니다."
         onConfirm={onConfirm}
         onCancel={onCancel}
         visible={isEmailDuplicateModalOpen}
       >
         이 이메일을 사용하시겠습니까?
-      </Modal>
+      </PopUpModal>
     </SignUpWrapper>
   );
 };

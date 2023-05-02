@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import MainButton from "./MainButton";
 
-function Modal({
+function PopUpModal({
   title,
   children,
   confirmText,
@@ -41,7 +41,7 @@ function Modal({
   );
 }
 
-Modal.defaultProps = {
+PopUpModal.defaultProps = {
   confirmText: "확인",
   cancelText: "취소",
 };
@@ -142,4 +142,4 @@ const ShortMarginButton = styled(MainButton)`
   }
 `;
 
-export default Modal;
+export default PopUpModal;
