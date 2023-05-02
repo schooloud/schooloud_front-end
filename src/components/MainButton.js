@@ -72,7 +72,7 @@ const StyledButton = styled.button`
   /* display: inline-flex; */
 
   outline: none;
-
+  border-style: none;
   border-radius: 4px;
   color: white;
   padding-left: 1rem;
