@@ -7,10 +7,9 @@ import styled, { css } from "styled-components";
 // ex> <MainButton color="blue" size="large">Button</MainButton>
 
 const colorStyles = css`
-  ${({ color, border }) => {
+  ${({ color }) => {
     return css`
       background-color: var(${`--${color}`});
-      border: 1px solid var(${`--${border}`});
       &:hover {
         background-color: var(${`--${color}`});
         opacity: 0.8; // lighten이 되어 있던 자리
@@ -24,7 +23,6 @@ const colorStyles = css`
         css`
           color: var(${`--${color}`});
           background: none;
-          border: 1px solid var(${`--${color}`});
           &:hover {
             background-color: var(${`--${color}`});
             color: white;
@@ -117,7 +115,6 @@ function MainButton({
       color={color}
       size={size}
       outline={outline}
-      border={border}
       fullWidth={fullWidth}
       margin={margin}
       className={{ ...rest }?.disabled ? "deactive" : "active"}
