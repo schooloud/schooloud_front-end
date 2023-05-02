@@ -82,9 +82,11 @@ const StyledButton = styled.button`
   ${sizeStyles}
 
   /* 기타 */
-  & + & {
-    margin-left: ${({ margin }) => `${margin}rem`};
-  }
+
+  margin-left: ${({ marginLeft }) => `${marginLeft}rem`};
+  margin-right: ${({ marginRight }) => `${marginRight}rem`};
+  margin-top: ${({ marginTop }) => `${marginTop}rem`};
+  margin-bottom: ${({ marginBottom }) => `${marginBottom}rem`};
 
   ${fullWidthStyle}
 
@@ -99,12 +101,6 @@ const StyledButton = styled.button`
     color: #909090;
     cursor: default;
   }
-
-  ${(props) =>
-    props.marginTop &&
-    css`
-      margin-top: ${props.marginTop};
-    `}
 `;
 
 function MainButton({
@@ -113,8 +109,11 @@ function MainButton({
   size,
   outline,
   fullWidth,
-  margin = 1,
+  marginBottom,
+  marginLeft,
+  marginRight,
   marginTop,
+  disabled = false,
   ...rest
 }) {
   return (
@@ -123,9 +122,12 @@ function MainButton({
       size={size}
       outline={outline}
       fullWidth={fullWidth}
-      margin={margin}
       marginTop={marginTop}
-      className={{ ...rest }?.disabled ? "deactive" : "active"}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      disabled={disabled}
+      className={disabled ? "deactive" : "active"}
       {...rest}
     >
       {children}

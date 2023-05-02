@@ -95,7 +95,7 @@ const Login = (props) => {
             <MainButton
               color={"main"}
               fullWidth={true}
-              marginTop={"1rem"}
+              marginTop={1}
               onClick={login}
               disabled={form.id === "" || form.password === "" ? true : false}
               // marginTop={"1rem"}

@@ -204,7 +204,7 @@ const SignUp = () => {
                 form.studentId
               )
             }
-            marginTop={"0.5rem"}
+            marginTop={0.5}
             onClick={handleSubmit}
           >
             가입하기
@@ -257,7 +257,7 @@ const LogoImage = styled.img`
 `;
 
 const Box = styled.div`
-  height: 70%;
+  height: 60%;
   width: 100%;
   display: flex;
   flex-direction: column;
