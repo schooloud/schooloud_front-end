@@ -7,25 +7,23 @@ import styled, { css } from "styled-components";
 // ex> <MainButton color="blue" size="large">Button</MainButton>
 
 const colorStyles = css`
-  ${({ color }) => {
-    const computedStyles = window.getComputedStyle(document.documentElement);
-    const selected = computedStyles.getPropertyValue(`—-${color}`);
-
+  ${({ color, border }) => {
     return css`
       background-color: var(${`--${color}`});
+      border: 1px solid var(${`--${border}`});
       &:hover {
         background-color: var(${`--${color}`});
         opacity: 0.8; // lighten이 되어 있던 자리
       }
       &:active {
         background-color: var(${`--${color}`});
-        //darken이 되어 있던 자리
+        opacity: 1;
       }
       ${(props) =>
         props.outline &&
         css`
-          color: ${selected};
-          background-color: none;
+          color: var(${`--${color}`});
+          background: none;
           border: 1px solid var(${`--${color}`});
           &:hover {
             background-color: var(${`--${color}`});
@@ -39,15 +37,15 @@ const colorStyles = css`
 const sizes = {
   large: {
     height: "3rem",
-    fontSize: "1.25rem",
+    fontSize: "large",
   },
   medium: {
-    height: "2.25rem",
-    fontSize: "1rem",
+    height: "2.5rem",
+    fontSize: "medium", //medium == 1rem
   },
   small: {
-    height: "1.75rem",
-    fontSize: "0.875rem",
+    height: "2rem",
+    fontSize: "small",
   },
 };
 
@@ -58,15 +56,15 @@ const sizeStyles = css`
   `}
 `;
 
+//fullWidth가 true일 때의 스타일 설정, 부모의 80%를 차지하고 가운데 정렬
 const fullWidthStyle = css`
   ${(props) =>
     props.fullWidth &&
     css`
-      width: 100%;
+      width: 80%;
       justify-content: center;
       & + & {
         margin-left: 0;
-        margin-top: 1rem;
       }
     `}
 `;
@@ -76,7 +74,7 @@ const StyledButton = styled.button`
   /* display: inline-flex; */
 
   outline: none;
-  border: none;
+
   border-radius: 4px;
   color: white;
   padding-left: 1rem;
@@ -119,6 +117,7 @@ function MainButton({
       color={color}
       size={size}
       outline={outline}
+      border={border}
       fullWidth={fullWidth}
       margin={margin}
       className={{ ...rest }?.disabled ? "deactive" : "active"}
