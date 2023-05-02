@@ -257,7 +257,7 @@ const LogoImage = styled.img`
 `;
 
 const Box = styled.div`
-  height: 60%;
+  height: 70%;
   width: 100%;
   display: flex;
   flex-direction: column;
