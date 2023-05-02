@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
+import MainButton from "../components/MainButton";
 
 const serverDummy = {
   id: "test@naver.com",
@@ -18,10 +19,26 @@ const tokenDummy = {
 };
 
 const Login = (props) => {
-  const formRef = useRef();
   const [cookies, setCookie] = useCookies({}); // 쿠키 훅
   const navigate = useNavigate();
 
+  const [form, setForm] = useState({
+    id: "",
+    password: "",
+  });
+
+  const handleChange = useCallback(
+    (e) => {
+      const { name } = e.target;
+      setForm({
+        ...form,
+        [name]: e.target.value,
+      });
+    },
+    [form]
+  );
+
+  console.log(form.id);
   // const login = (e) => {
   //   e.preventDefault();
   //   axios
@@ -37,14 +54,10 @@ const Login = (props) => {
 
   const login = (e) => {
     e.preventDefault();
-    if (
-      formRef.current.id.value === serverDummy.id &&
-      formRef.current.password.value === serverDummy.password
-    ) {
+    if (form.id === serverDummy.id && form.password === serverDummy.password) {
       //토큰 저장
       for (let key in tokenDummy) {
         setCookie(key, tokenDummy[key]);
-        console.log(key);
       }
       navigate("/home"); // 로그인 성공시 메인 페이지로 이동
     } else {
@@ -64,15 +77,31 @@ const Login = (props) => {
         </Logo>
         <Box>
           <Title>로그인</Title>
-          <Form ref={formRef}>
-            <Input type="text" name="id" placeholder="이메일" required />
+          <Form>
+            <Input
+              type="email"
+              name="id"
+              placeholder="이메일"
+              required
+              onChange={handleChange}
+            />
             <Input
               type="password"
               name="password"
               placeholder="비밀번호"
               required
+              onChange={handleChange}
             />
-            <LoginButton onClick={login}>로그인</LoginButton>
+            <MainButton
+              color={"main"}
+              border={"dark"}
+              fullWidth={true}
+              marginTop={"1rem"}
+              onClick={login}
+              disabled={form.id === "" || form.password === "" ? true : false}
+            >
+              로그인
+            </MainButton>
           </Form>
         </Box>
         <SignUpButton onClick={handleClick}>회원가입</SignUpButton>
@@ -148,19 +177,23 @@ const Input = styled.input`
   padding: 0 10px;
 `;
 
-const LoginButton = styled.button`
-  width: 80%;
-  height: 40px;
-  margin-top: 10px;
-  border: none;
-  color: white;
-  font-size: large;
-  border-radius: 4px;
-  background-color: var(--main);
-  border: 1px solid var(--medium);
-  cursor: pointer;
-  letter-spacing: 1px;
-`;
+// const LoginButton = styled.button`
+//   width: 80%;
+//   height: 40px;
+//   margin-top: 10px;
+//   border: none;
+//   color: white;
+//   font-size: large;
+//   border-radius: 4px;
+//   background-color: var(--main);
+//   border: 1px solid var(--medium);
+//   cursor: pointer;
+//   letter-spacing: 1px;
+//   &:disabled {
+//     background-color: var(--medium);
+//     cursor: not-allowed;
+//   }
+// `;
 
 const SignUpButton = styled.div`
   margin-top: 10px;

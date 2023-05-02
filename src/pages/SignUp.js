@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import MainButton from "../components/MainButton";
 
@@ -16,8 +16,12 @@ import MainButton from "../components/MainButton";
     */
 
 const SignUp = () => {
+  const navigate = useNavigate();
   //이메일 유효성 검사
   const [isEmailValid, setIsEmailValid] = useState(false);
+  //이메일 중복검사 클릭 시 모달
+  const [isEmailDuplicateModalOpen, setIsEmailDuplicateModalOpen] =
+    useState(false);
   //이메일 중복 검사
   const [isEmailDuplicateChecked, setIsEmailDuplicateChecked] = useState(false);
   //비밀번호 일치 검사
@@ -76,10 +80,11 @@ const SignUp = () => {
     //   .then((res) => {
     //     console.log(res);
     //   });
-    Navigate("/login");
+    e.preventDefault();
+    navigate("/");
   }, []);
 
-  const handleDuplicateCheck = useCallback(() => {
+  const handleDuplicateCheck = useCallback((e) => {
     // axios
     //   .post("/users/duplicateCheck", {
     //     email: form.email,
@@ -87,7 +92,20 @@ const SignUp = () => {
     //   .then((res) => {
     //     console.log(res);
     //   });
+    //
+    e.preventDefault();
+    setIsEmailDuplicateModalOpen(true);
     setIsEmailDuplicateChecked(true);
+  }, []);
+
+  const onConfirm = useCallback(() => {
+    console.log("확인");
+    setIsEmailDuplicateModalOpen(false);
+  }, []);
+
+  const onCancel = useCallback(() => {
+    console.log("취소");
+    setIsEmailDuplicateModalOpen(false);
   }, []);
 
   const handlePasswordCheck = (e) => {
@@ -118,7 +136,11 @@ const SignUp = () => {
                 onChange={onChangeEmail}
                 required
               />
-              <MainButton color="main" onClick={handleDuplicateCheck}>
+              <MainButton
+                color="main"
+                border={"dark"}
+                onClick={handleDuplicateCheck}
+              >
                 중복확인
               </MainButton>
             </EmailDiv>
@@ -166,7 +188,10 @@ const SignUp = () => {
             <Label>전공</Label>
             <Input type="text" name="major" onChange={handleChange} required />
           </Form>
-          <SubmmitButton
+          <MainButton
+            color="main"
+            border="dark"
+            fullWidth={true}
             disabled={
               !(
                 isEmailValid &&
@@ -179,13 +204,21 @@ const SignUp = () => {
                 form.studentId
               )
             }
+            marginTop="0.5rem"
             onClick={handleSubmit}
           >
             가입하기
-          </SubmmitButton>
+          </MainButton>
         </Box>
       </Container>
-      <Modal></Modal>
+      <Modal
+        title="사용가능한 이메일입니다."
+        onConfirm={onConfirm}
+        onCancel={onCancel}
+        visible={isEmailDuplicateModalOpen}
+      >
+        이 이메일을 사용하시겠습니까?
+      </Modal>
     </SignUpWrapper>
   );
 };
@@ -206,13 +239,6 @@ const Container = styled.div`
   align-items: center;
   height: 100%;
   width: 30rem;
-`;
-const EmailCheckWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  height: 1rem;
-  margin-bottom: 1rem;
 `;
 
 const Logo = styled.div`
@@ -275,20 +301,6 @@ const EmailCheckMessage = styled.div`
   font-size: 0.8rem;
 `;
 
-const DuplicateCheckButton = styled.button`
-  width: 20%;
-  height: 40px;
-  margin-bottom: 10px;
-  border: none;
-  color: white;
-  font-size: normal;
-  border-radius: 4px;
-  background-color: var(--dark);
-  border: 1px solid var(--extra-dark);
-  cursor: pointer;
-  letter-spacing: 1px;
-`;
-
 const Input = styled.input`
   width: 80%;
   height: 40px;
@@ -307,19 +319,26 @@ const InputEmail = styled.input`
   padding: 0 10px;
 `;
 
-const SubmmitButton = styled.button`
-  width: 80%;
-  height: 40px;
-  margin-top: 10px;
-  border: none;
-  color: white;
-  font-size: large;
-  border-radius: 4px;
-  background-color: var(--main);
-  border: 1px solid var(--dark);
-  cursor: pointer;
-  letter-spacing: 1px;
-`;
+// const SubmmitButton = styled.button`
+//   width: 80%;
+//   height: 40px;
+//   margin-top: 10px;
+//   border: none;
+//   color: white;
+//   font-size: large;
+//   border-radius: 4px;
+//   background-color: var(--main);
+//   border: 1px solid var(--dark);
+//   cursor: pointer;
+//   letter-spacing: 1px;
+//   &:disabled {
+//     background-color: var(--medium);
+//     border: 1px solid var(--dark);
+
+//     cursor: not-allowed;
+//   }
+// `;
+
 const Label = styled.div`
   text-align: left;
   width: 80%;
