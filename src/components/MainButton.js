@@ -1,8 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { darken, lighten } from "polished";
 
 //outline, fullWidth, color, size 설정해서 사용하면 됩니다.
+//margin은 버튼 두 개 이상 시 그 사이에 생기는 margin입니다. 두 값을 같은 값을 사용하시고, 혹여나 다른 값이라면 뒤에 오는 값이 적용됩니다.
 // ex) <MainButton outline fullWidth color="blue" size="large">Button</MainButton>
 // ex> <MainButton color="blue" size="large">Button</MainButton>
 
@@ -74,31 +74,54 @@ const fullWidthStyle = css`
 const StyledButton = styled.button`
   /* 공통 스타일 */
   /* display: inline-flex; */
+
   outline: none;
   border: none;
   border-radius: 4px;
   color: white;
-  cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
+
   /* 크기 */
   ${sizeStyles}
-  /* 색상 */
-  ${colorStyles}
+
   /* 기타 */
   & + & {
-    margin-left: 1rem;
+    margin-left: ${({ margin }) => `${margin}rem`};
   }
+
   ${fullWidthStyle}
+
+  &.active {
+    /* 색상 */
+    ${colorStyles}
+    cursor: pointer;
+  }
+
+  &.deactive {
+    background-color: #f0f0f0;
+    color: #909090;
+    cursor: default;
+  }
 `;
 
-function MainButton({ children, color, size, outline, fullWidth, ...rest }) {
+function MainButton({
+  children,
+  color,
+  size,
+  outline,
+  fullWidth,
+  margin = 1,
+  ...rest
+}) {
   return (
     <StyledButton
       color={color}
       size={size}
       outline={outline}
       fullWidth={fullWidth}
+      margin={margin}
+      className={{ ...rest }?.disabled ? "deactive" : "active"}
       {...rest}
     >
       {children}

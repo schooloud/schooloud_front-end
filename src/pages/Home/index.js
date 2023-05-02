@@ -7,14 +7,14 @@ export default function Home() {
 
   return (
     <div>
-      <ExpiredCheck />
+      {/* <ExpiredCheck /> */}
       <div>Login Page</div>
       <button onClick={() => navigate(`/student/project/project1/dashboard`)}>
         Student
       </button>
       <button onClick={() => navigate("/professor/proposal")}>Professor</button>
       <button onClick={() => navigate("/admin/dashboard")}>Admin</button>
-      <ExpiredCheck />
+      {/* <ExpiredCheck /> */}
     </div>
   );
 }

@@ -36,6 +36,4 @@ const AppWrapper = styled.div`
   width: ${basicStyles.maxWidth}px;
   height: ${basicStyles.maxHeight}px;
   font-size: ${basicStyles.basicFont}px;
-  font-family: "Pretendard";
-  font-weight: 300;
 `;
