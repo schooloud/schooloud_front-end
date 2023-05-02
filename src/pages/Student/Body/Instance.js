@@ -11,7 +11,7 @@ export default function Instance() {
       <TitleText>Instance</TitleText>
       <ButtonContainer>
         <MainButton
-          size="medium"
+          size="small"
           color="medium"
           onClick={() => console.log("hi")}
           margin={0.3}
@@ -19,7 +19,7 @@ export default function Instance() {
           인스턴스 생성
         </MainButton>
         <MainButton
-          size="medium"
+          size="small"
           color="medium"
           margin={0.3}
           disabled
@@ -28,7 +28,7 @@ export default function Instance() {
           인스턴스 중지
         </MainButton>
         <MainButton
-          size="medium"
+          size="small"
           color="medium"
           margin={0.3}
           disabled
@@ -37,7 +37,7 @@ export default function Instance() {
           인스턴스 시작
         </MainButton>
         <MainButton
-          size="medium"
+          size="small"
           color="medium"
           margin={0.3}
           disabled
@@ -45,8 +45,21 @@ export default function Instance() {
         >
           인스턴스 삭제
         </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          margin={0.3}
+          disabled
+          onClick={() => console.log("도메인 할당")}
+        >
+          도메인 할당
+        </MainButton>
       </ButtonContainer>
-      <Table selectedCol={selecetedCol} setSelectedCol={setSelectedCol} />
+      <Table
+        selectedCol={selecetedCol}
+        setSelectedCol={setSelectedCol}
+        onClick={console.log}
+      />
     </Container>
   );
 }
