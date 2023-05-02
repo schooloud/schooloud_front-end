@@ -2,12 +2,16 @@ import styled from "styled-components";
 import Table from "../../../components/Table";
 import { useState } from "react";
 import MainButton from "../../../components/MainButton";
+import BottomModal from "../../../components/BottomModal";
 
 export default function Instance() {
   const [selecetedCol, setSelectedCol] = useState([]);
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState();
   const handleRowClick = (id) => {
     console.log(id);
+    setSelectedId(id);
+    setModalOpen(true);
   };
 
   return (
@@ -18,14 +22,13 @@ export default function Instance() {
           size="small"
           color="medium"
           onClick={() => console.log("hi")}
-          margin={0.3}
         >
           인스턴스 생성
         </MainButton>
         <MainButton
           size="small"
           color="medium"
-          margin={0.3}
+          marginLeft={0.3}
           disabled
           onClick={() => console.log("인스턴스 중지")}
         >
@@ -34,7 +37,7 @@ export default function Instance() {
         <MainButton
           size="small"
           color="medium"
-          margin={0.3}
+          marginLeft={0.3}
           disabled
           onClick={() => console.log("인스턴스 시작")}
         >
@@ -43,20 +46,11 @@ export default function Instance() {
         <MainButton
           size="small"
           color="medium"
-          margin={0.3}
+          marginLeft={0.3}
           disabled
           onClick={() => console.log("인스턴스 삭제")}
         >
           인스턴스 삭제
-        </MainButton>
-        <MainButton
-          size="small"
-          color="medium"
-          margin={0.3}
-          disabled
-          onClick={() => console.log("도메인 할당")}
-        >
-          도메인 할당
         </MainButton>
       </ButtonContainer>
       <Table
@@ -64,6 +58,9 @@ export default function Instance() {
         setSelectedCol={setSelectedCol}
         onClick={handleRowClick}
       />
+      <BottomModal open={modalOpen} setOpen={setModalOpen}>
+        {selectedId}
+      </BottomModal>
     </Container>
   );
 }
