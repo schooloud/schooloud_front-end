@@ -88,17 +88,10 @@ const StyledButton = styled.button`
 
   ${fullWidthStyle}
 
-<<<<<<< HEAD
-  &:disabled {
-    background: var(--medium);
-    /* border: 1px solid var(--dark); */
-    cursor: not-allowed;
-=======
   &.active {
     /* 색상 */
     ${colorStyles}
     cursor: pointer;
->>>>>>> 425359402184413269352093df2aff9f6c9ce737
   }
 
   &.deactive {
