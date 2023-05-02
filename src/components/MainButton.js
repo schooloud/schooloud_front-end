@@ -91,7 +91,7 @@ const StyledButton = styled.button`
 
   &:disabled {
     background: var(--medium);
-    border: 1px solid var(--dark);
+    /* border: 1px solid var(--dark); */
     cursor: not-allowed;
   }
 

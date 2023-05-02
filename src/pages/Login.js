@@ -94,7 +94,7 @@ const Login = (props) => {
             />
             <MainButton
               color={"main"}
-              border={"dark"}
+              // border={"dark"}
               fullWidth={true}
               marginTop={"1rem"}
               onClick={login}

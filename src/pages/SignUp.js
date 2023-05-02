@@ -138,7 +138,7 @@ const SignUp = () => {
               />
               <MainButton
                 color="main"
-                border={"dark"}
+                // border={"dark"}
                 onClick={handleDuplicateCheck}
               >
                 중복확인
@@ -190,7 +190,7 @@ const SignUp = () => {
           </Form>
           <MainButton
             color="main"
-            border="dark"
+            // border="dark"
             fullWidth={true}
             disabled={
               !(
