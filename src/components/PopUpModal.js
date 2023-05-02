@@ -29,14 +29,10 @@ function Modal({
         <h3>{title}</h3>
         <p>{children}</p>
         <ButtonGroup>
-          <MainButton
-            marginRight={0.5}
-            color={"extra-light"}
-            onClick={onCancel}
-          >
+          <MainButton marginRight={0.5} color="light" onClick={onCancel}>
             {cancelText}
           </MainButton>
-          <MainButton color={"main"} onClick={onConfirm}>
+          <MainButton color="main" onClick={onConfirm}>
             {confirmText}
           </MainButton>
         </ButtonGroup>
@@ -137,6 +133,13 @@ const ButtonGroup = styled.div`
   margin-top: 3rem;
   display: flex;
   justify-content: flex-end;
+`;
+
+/* ShortMarginButton => MainButotn 컴포넌트의 margin-left 간격을 0.5로 줄여줍니다. */
+const ShortMarginButton = styled(MainButton)`
+  & + & {
+    margin-left: 0.5rem;
+  }
 `;
 
 export default Modal;
