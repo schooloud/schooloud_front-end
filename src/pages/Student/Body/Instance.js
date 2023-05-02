@@ -6,6 +6,10 @@ import MainButton from "../../../components/MainButton";
 export default function Instance() {
   const [selecetedCol, setSelectedCol] = useState([]);
 
+  const handleRowClick = (id) => {
+    console.log(id);
+  };
+
   return (
     <Container>
       <TitleText>Instance</TitleText>
@@ -58,7 +62,7 @@ export default function Instance() {
       <Table
         selectedCol={selecetedCol}
         setSelectedCol={setSelectedCol}
-        onClick={console.log}
+        onClick={handleRowClick}
       />
     </Container>
   );
