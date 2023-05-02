@@ -204,7 +204,7 @@ const SignUp = () => {
                 form.studentId
               )
             }
-            marginTop="0.5rem"
+            marginTop={"0.5rem"}
             onClick={handleSubmit}
           >
             가입하기

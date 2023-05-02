@@ -99,6 +99,12 @@ const StyledButton = styled.button`
     color: #909090;
     cursor: default;
   }
+
+  ${(props) =>
+    props.marginTop &&
+    css`
+      margin-top: ${props.marginTop};
+    `}
 `;
 
 function MainButton({
@@ -108,6 +114,7 @@ function MainButton({
   outline,
   fullWidth,
   margin = 1,
+  marginTop,
   ...rest
 }) {
   return (
@@ -117,6 +124,7 @@ function MainButton({
       outline={outline}
       fullWidth={fullWidth}
       margin={margin}
+      marginTop={marginTop}
       className={{ ...rest }?.disabled ? "deactive" : "active"}
       {...rest}
     >
