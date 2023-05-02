@@ -1,22 +1,51 @@
 import styled from "styled-components";
 import Table from "../../../components/Table";
 import { useState } from "react";
+import MainButton from "../../../components/MainButton";
 
 export default function Instance() {
   const [selecetedCol, setSelectedCol] = useState([]);
 
   return (
     <Container>
-      <TitleText
-        style={{
-          fontWeight: 600,
-          fontSize: "1.3rem",
-          marginBottom: "1.5rem",
-        }}
-      >
-        Instance
-      </TitleText>
-      <Button></Button>
+      <TitleText>Instance</TitleText>
+      <ButtonContainer>
+        <MainButton
+          size="medium"
+          color="medium"
+          onClick={() => console.log("hi")}
+          margin={0.3}
+        >
+          인스턴스 생성
+        </MainButton>
+        <MainButton
+          size="medium"
+          color="medium"
+          margin={0.3}
+          disabled
+          onClick={() => console.log("인스턴스 중지")}
+        >
+          인스턴스 중지
+        </MainButton>
+        <MainButton
+          size="medium"
+          color="medium"
+          margin={0.3}
+          disabled
+          onClick={() => console.log("인스턴스 시작")}
+        >
+          인스턴스 시작
+        </MainButton>
+        <MainButton
+          size="medium"
+          color="medium"
+          margin={0.3}
+          disabled
+          onClick={() => console.log("인스턴스 삭제")}
+        >
+          인스턴스 삭제
+        </MainButton>
+      </ButtonContainer>
       <Table selectedCol={selecetedCol} setSelectedCol={setSelectedCol} />
     </Container>
   );
@@ -26,8 +55,12 @@ const Container = styled.div``;
 
 const TitleText = styled.div`
   font-weight: 600;
-  font-size: "1.3rem";
-  margin-bottom: "1.5rem";
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
 `;
 
-const Button = styled.div``;
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;

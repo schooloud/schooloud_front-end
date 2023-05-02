@@ -64,6 +64,12 @@ export default createGlobalStyle`
     --dark: #2D791E;
     --extra-dark: #18610A;
   }
+
+  *{
+    box-sizing: border-box;
+    font-family: 'Pretendard';
+    font-weight: '300';
+  }
 `;
 
 export const basicStyles = {
