@@ -59,7 +59,7 @@ const fullWidthStyle = css`
   ${(props) =>
     props.fullWidth &&
     css`
-      width: 80%;
+      width: 100%;
       justify-content: center;
       & + & {
         margin-left: 0;
