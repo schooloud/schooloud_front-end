@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+//예시입니다. <Table selectedCol={selecetedCol} setSelectedCol={setSelectedCol} />
+//Table 컴포넌트를 return하는 상위 컴포넌트에서 selectCol(선택된 Column 배열 스테이트)와 Setter을 내려주어야합니다.
+//checkBox는 default 값이 true이며, 제일 왼쪽 열에 체크박스를 표시합니다. false일 시 표시 안함.
+//onClick은 각 Row를 클릭하면 실행할 함수입니다. 클릭 시 각 row의 id값을 props에 넣어서 함수를 실행시킵니다.
+
 function createData(name, os, ip, instance, keypair, status) {
   return { name, os, ip, instance, keypair, status };
 }
@@ -99,8 +104,10 @@ export default function Table({
           {rows.map((row) => (
             <tr
               key={row.name}
-              onClick={onClick}
               value={row.name}
+              onClick={() => {
+                onClick(row.name);
+              }}
               className={
                 selectedCol.includes(row.name) ? "selected" : "notSelected"
               }
@@ -162,6 +169,7 @@ const TableWrapper = styled.div`
 
   tbody {
     tr {
+      cursor: pointer;
       &:hover {
         background-color: var(--light);
       }

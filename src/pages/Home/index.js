@@ -7,6 +7,7 @@ export default function Home() {
 
   return (
     <div>
+      {/* <ExpiredCheck /> */}
       <div>Login Page</div>
       <button onClick={() => navigate(`/student/project/project1/dashboard`)}>
         Student
