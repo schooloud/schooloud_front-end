@@ -6,7 +6,7 @@ import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
 import { useNavigate, useParams } from "react-router-dom";
 
-const dummy = [
+const instanceData = [
   {
     id: "1",
     name: "jsb-instance",
@@ -67,7 +67,7 @@ export default function Instance() {
     setModalOpen(true);
   };
 
-  const selectedRow = dummy.find((row) => row.id === selectedId);
+  const selectedRow = instanceData.find((row) => row.id === selectedId);
 
   if (params.create === "create") {
     return <InstanceCreate params={params} navigate={navigate} />;
@@ -116,7 +116,7 @@ export default function Instance() {
         </MainButton>
       </ButtonContainer>
       <Table
-        data={dummy}
+        data={instanceData}
         header={[
           "Name",
           "OS",

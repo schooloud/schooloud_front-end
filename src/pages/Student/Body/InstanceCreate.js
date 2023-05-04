@@ -4,7 +4,7 @@ import { useState } from "react";
 import MainButton from "../../../components/MainButton";
 import PopUpModal from "../../../components/PopUpModal";
 
-const dummy = [
+const imageData = [
   {
     id: "1",
     name: "Ubuntu Server 20.04 LTS",
@@ -35,7 +35,7 @@ const dummy = [
   },
 ];
 
-const dummy2 = [
+const typeData = [
   {
     id: "1",
     type: "t2",
@@ -70,6 +70,8 @@ export default function InstanceCreate({ params, navigate }) {
   const [selectedImageCol, setSelectedImageCol] = useState([]);
   const [selectedTypeCol, setSelectedTypeCol] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState();
+  const [keypairCreate, setKeypairCreate] = useState(false);
 
   const handleImageRowClick = (id) => {
     if (selectedImageCol.includes(id)) {
@@ -95,7 +97,7 @@ export default function InstanceCreate({ params, navigate }) {
       <Line />
       <TableWrapper>
         <Table
-          data={dummy}
+          data={imageData}
           header={["Name", "Description", "Min Block Storage(GB)", "BIT"]}
           selectedCol={selectedImageCol}
           setSelectedCol={setSelectedImageCol}
@@ -112,7 +114,7 @@ export default function InstanceCreate({ params, navigate }) {
       </InputLine>
       <InputLine>
         <Text>인스턴스 타입</Text>
-        <Input type="text" name="type" readOnly />
+        <Input type="text" name="type" value={selectedType} readOnly />
         <MainButton
           size="small"
           color="medium"
@@ -125,10 +127,31 @@ export default function InstanceCreate({ params, navigate }) {
       <InputLine>
         <Text>키 페어</Text>
         <Select />
-        <MainButton size="small" color="medium" marginLeft={1}>
-          생성
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => setKeypairCreate((state) => !state)}
+        >
+          {keypairCreate ? "닫기" : "생성"}
         </MainButton>
       </InputLine>
+      {keypairCreate && (
+        <KeypairCreateBox>
+          <InputLine>
+            <Text>키페어 이름</Text>
+            <Input type="text" name="name" />
+            <MainButton
+              size="small"
+              color="medium"
+              marginLeft={1}
+              onClick={() => console.log("키페어 생성")}
+            >
+              생성
+            </MainButton>
+          </InputLine>
+        </KeypairCreateBox>
+      )}
       <Line />
       <ButtonContainer>
         <MainButton
@@ -154,19 +177,42 @@ export default function InstanceCreate({ params, navigate }) {
         </MainButton>
       </ButtonContainer>
       <PopUpModal
+        width={30}
+        darkBackground={false}
         visible={modalOpen}
-        onCancel={() => setModalOpen(false)}
-        onConfirm={() => setModalOpen(false)}
         title="인스턴스 타입 선택"
       >
         <Table
-          data={dummy2}
+          data={typeData}
           header={["Type", "Name", "vCPU", "RAM"]}
           selectedCol={selectedTypeCol}
           setSelectedCol={setSelectedTypeCol}
           onClick={handleTypeRowClick}
           multiSelect={false}
         />
+
+        <MainButton
+          size="small"
+          color="light"
+          marginTop="1"
+          onClick={() => setModalOpen(false)}
+        >
+          취소
+        </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => {
+            setModalOpen(false);
+            setSelectedType(
+              typeData.find((data) => data.id === selectedTypeCol[0]).name
+            );
+          }}
+          disabled={selectedTypeCol.length === 0}
+        >
+          확인
+        </MainButton>
       </PopUpModal>
     </Container>
   );
@@ -234,4 +280,9 @@ const InputLine = styled.div`
   height: 3rem;
   display: flex;
   align-items: center;
+`;
+
+const KeypairCreateBox = styled.div`
+  width: 40rem;
+  background-color: var(--light);
 `;
