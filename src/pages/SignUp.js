@@ -219,6 +219,9 @@ const SignUp = () => {
         </Box>
       </Container>
       <PopUpModal
+        width={30}
+        height={15}
+        darkBackground={true}
         title="사용가능한 이메일입니다."
         onConfirm={onConfirm}
         onCancel={onCancel}

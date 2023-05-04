@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import MainButton from "./MainButton";
 
+//darkBackground는 배경이 검은색인지 아닌지를 설정합니다.
 function Modal({
+  darkBackground,
   title,
   children,
   confirmText,
@@ -10,6 +12,8 @@ function Modal({
   onConfirm,
   onCancel,
   visible,
+  width,
+  height,
 }) {
   const [animate, setAnimate] = useState(false);
   const [localVisible, setLocalVisible] = useState(visible);
@@ -24,11 +28,16 @@ function Modal({
 
   if (!animate && !localVisible) return null;
   return (
-    <DarkBackground diappear={!visible}>
-      <ModalBlock diappear={!visible}>
+    <DarkBackground darkBackground={darkBackground} disappear={!visible}>
+      <ModalBlock
+        width={width}
+        height={height}
+        darkBackground={darkBackground}
+        diappear={!visible}
+      >
         <h3>{title}</h3>
         <p>{children}</p>
-        <ButtonGroup>
+        <ButtonGroup height={height}>
           <MainButton marginRight={0.5} color="light" onClick={onCancel}>
             {cancelText}
           </MainButton>
@@ -103,13 +112,20 @@ const DarkBackground = styled.div`
     css`
       animation-name: ${fadeOut};
     `}
+
+  ${(props) =>
+    props.darkBackground &&
+    css`
+      background: none;
+    `}
 `;
 
 const ModalBlock = styled.div`
-  width: 20rem;
+  width: ${(props) => `${props.width}rem` || "20rem"};
+  height: ${(props) => `${props.height}rem` || "auto"};
   padding: 1.5rem;
   background: white;
-  border-radius: 0.5rem;
+  border-radius: 5px;
   h3 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
@@ -127,10 +143,16 @@ const ModalBlock = styled.div`
     css`
       animation-name: ${slideDown};
     `}
+
+  ${(props) =>
+    props.darkBackground &&
+    css`
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    `}
 `;
 
 const ButtonGroup = styled.div`
-  margin-top: 3rem;
+  margin-top: ${(props) => `${props.height - 10}rem` || "3rem"};
   display: flex;
   justify-content: flex-end;
 `;
