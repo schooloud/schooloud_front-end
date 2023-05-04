@@ -76,33 +76,35 @@ const Login = (props) => {
           <LogoImage src={logoImage} alt="" />
         </Logo>
         <Box>
-          <Title>로그인</Title>
-          <Form>
-            <Input
-              type="email"
-              name="id"
-              placeholder="이메일"
-              required
-              onChange={handleChange}
-            />
-            <Input
-              type="password"
-              name="password"
-              placeholder="비밀번호"
-              required
-              onChange={handleChange}
-            />
-            <MainButton
-              color={"main"}
-              fullWidth={true}
-              marginTop={1}
-              onClick={login}
-              disabled={form.id === "" || form.password === "" ? true : false}
-              // marginTop={"1rem"}
-            >
-              로그인
-            </MainButton>
-          </Form>
+          <BoxContainer>
+            <Title>로그인</Title>
+            <Form>
+              <Input
+                type="email"
+                name="id"
+                placeholder="이메일"
+                required
+                onChange={handleChange}
+              />
+              <Input
+                type="password"
+                name="password"
+                placeholder="비밀번호"
+                required
+                onChange={handleChange}
+              />
+              <MainButton
+                color={"main"}
+                fullWidth={true}
+                marginTop={1}
+                onClick={login}
+                disabled={form.id === "" || form.password === "" ? true : false}
+                // marginTop={"1rem"}
+              >
+                로그인
+              </MainButton>
+            </Form>
+          </BoxContainer>
         </Box>
         <SignUpButton onClick={handleClick}>회원가입</SignUpButton>
       </Container>
@@ -128,6 +130,13 @@ const Container = styled.div`
   width: 30rem;
 `;
 
+const BoxContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+`;
+
 const Logo = styled.div`
   display: flex;
   align-items: center;
@@ -147,16 +156,16 @@ const Box = styled.div`
   height: 60%;
   width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 `;
 
 const Title = styled.h1`
-  margin: 50px 0 20px 0;
-  width: 80%;
+  margin: 0 0 20px 0;
+  width: 100%;
   font-size: 1rem;
 `;
 
@@ -169,7 +178,7 @@ const Form = styled.form`
 `;
 
 const Input = styled.input`
-  width: 80%;
+  width: 100%;
   height: 40px;
   margin-bottom: 10px;
   border: 0.5px solid grey;
