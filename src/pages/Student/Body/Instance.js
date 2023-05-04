@@ -5,6 +5,54 @@ import MainButton from "../../../components/MainButton";
 import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
 
+const dummy = [
+  {
+    id: "1",
+    name: "jsb-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "jsb-keypair",
+    status: "ON",
+  },
+  {
+    id: "2",
+    name: "yjh-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "yjh-keypair",
+    status: "ON",
+  },
+  {
+    id: "3",
+    name: "ksh-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "ksh-keypair",
+    status: "ON",
+  },
+  {
+    id: "4",
+    name: "lyr-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "lyr-keypair",
+    status: "ON",
+  },
+  {
+    id: "5",
+    name: "lsi-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "lsi-keypair",
+    status: "ON",
+  },
+];
+
 export default function Instance() {
   const [selecetedCol, setSelectedCol] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -13,10 +61,11 @@ export default function Instance() {
   const [create, setCreate] = useState(false);
 
   const handleRowClick = (id) => {
-    console.log(id);
     setSelectedId(id);
     setModalOpen(true);
   };
+
+  const selectedRow = dummy.find((row) => row.id === selectedId);
 
   if (create) {
     return <InstanceCreate setCreate={setCreate} />;
@@ -65,12 +114,21 @@ export default function Instance() {
         </MainButton>
       </ButtonContainer>
       <Table
+        data={dummy}
+        header={[
+          "Name",
+          "OS",
+          "IP Adress",
+          "Instance Type",
+          "KeyPair",
+          "Status",
+        ]}
         selectedCol={selecetedCol}
         setSelectedCol={setSelectedCol}
         onClick={handleRowClick}
       />
       <BottomModal open={modalOpen} setOpen={setModalOpen}>
-        <TitleText>{selectedId}</TitleText>
+        <TitleText>{selectedRow?.name}</TitleText>
         <ModalTab>
           <TabBox
             className={selectedModalTab === 1 ? "selected" : "unSelected"}
@@ -97,32 +155,32 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>Instance Name</BoldText>
-                <Text>: {selectedId}</Text>
+                <Text>: {selectedRow?.name}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>OS</BoldText>
-                <Text>: os</Text>
+                <Text>: {selectedRow?.os}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Instance Type</BoldText>
-                <Text>: instance type</Text>
+                <Text>: {selectedRow?.type}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Keypair Name</BoldText>
-                <Text>: keypair name</Text>
+                <Text>: {selectedRow?.keypair}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Status</BoldText>
-                <Text>: status</Text>
+                <Text>: {selectedRow?.status}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>IP Address</BoldText>
-                <Text>: ip address</Text>
+                <Text>: {selectedRow?.ip}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>

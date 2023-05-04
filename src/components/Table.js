@@ -1,65 +1,99 @@
 import styled from "styled-components";
 
-//예시입니다. <Table selectedCol={selecetedCol} setSelectedCol={setSelectedCol} />
-//Table 컴포넌트를 return하는 상위 컴포넌트에서 selectCol(선택된 Column 배열 스테이트)와 Setter을 내려주어야합니다.
-//checkBox는 default 값이 true이며, 제일 왼쪽 열에 체크박스를 표시합니다. false일 시 표시 안함.
-//onClick은 각 Row를 클릭하면 실행할 함수입니다. 클릭 시 각 row의 id값을 props에 넣어서 함수를 실행시킵니다.
+/*
+  아래는 Table 사용 예시입니다.
 
-function createData(name, os, ip, instance, keypair, status) {
-  return { name, os, ip, instance, keypair, status };
-}
+  <Table
+  data={dummy}
+  header={[
+    "Name",
+    "OS",
+    "IP Adress",
+    "Instance Type",
+    "KeyPair",
+    "Status",
+  ]}
+  selectedCol={selecetedCol}
+  setSelectedCol={setSelectedCol}
+  onClick={handleRowClick}
+  />
+
+  Table 컴포넌트를 사용하는 상위 컴포넌트에서 selectCol(선택된 Column 배열 스테이트)와 Setter을 내려주어야합니다.
+
+  checkBox는 default 값이 true이며, 제일 왼쪽 열에 체크박스를 표시합니다. false일 시 표시 안함.
+
+  header은 표의 제일 상단 줄에 들어갈 Field 명입니다. (변수 명과 달라도 상관 없음)
+
+  data에는 id 값이 필수적으로 들어가야하며, id 값을 제외하고 모두 표에 나타납니다.
+
+  onClick은 각 Row를 클릭하면 실행할 함수입니다. 클릭 시 각 row의 id값을 props에 넣어서 함수를 실행시킵니다.
+  아래는 onClick함수 예시입니다.
+
+    const handleRowClick = (id) => {
+    setSelectedId(id);
+    setModalOpen(true);
+    };
+
+*/
+const dummy = [
+  {
+    id: "1",
+    name: "jsb-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "jsb-keypair",
+    status: "ON",
+  },
+  {
+    id: "2",
+    name: "yjh-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "yjh-keypair",
+    status: "ON",
+  },
+  {
+    id: "3",
+    name: "ksh-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "ksh-keypair",
+    status: "ON",
+  },
+  {
+    id: "4",
+    name: "lyr-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "lyr-keypair",
+    status: "ON",
+  },
+  {
+    id: "5",
+    name: "lsi-instance",
+    os: "Ubuntu Server 20.04 LTS",
+    ip: "192.168.0.8",
+    type: "u2.c1m1 (1vCPU, 1GB)",
+    keypair: "lsi-keypair",
+    status: "ON",
+  },
+];
 
 export default function Table({
-  cols = ["Name", "OS", "IP Adress", "Instance Type", "KeyPair", "Status"],
-  rows = [
-    createData(
-      "jsb-instance",
-      "Ubuntu Server 20.04 LTS",
-      "192.168.0.8",
-      "u2.c1m1 (1vCPU, 1GB)",
-      "jsb-keypair",
-      "ON"
-    ),
-    createData(
-      "ksh-instance",
-      "Ubuntu Server 20.04 LTS",
-      "192.168.0.21",
-      "u2.c1m1 (1vCPU, 1GB)",
-      "ksh-keypair",
-      "ON"
-    ),
-    createData(
-      "lyr-instance",
-      "Ubuntu Server 20.04 LTS",
-      "192.168.0.34",
-      "u2.c1m1 (1vCPU, 1GB)",
-      "lyr-instance",
-      "ON"
-    ),
-    createData(
-      "yjh-instance",
-      "Ubuntu Server 20.04 LTS",
-      "192.168.0.68",
-      "u2.c1m1 (1vCPU, 1GB)",
-      "yjh-keypair",
-      "ON"
-    ),
-    createData(
-      "lsi-instance",
-      "Ubuntu Server 20.04 LTS",
-      "192.168.0.108",
-      "u2.c1m1 (1vCPU, 1GB)",
-      "lsi-keypair",
-      "ON"
-    ),
-  ],
+  header = ["Name", "OS", "IP Adress", "Instance Type", "KeyPair", "Status"],
+  data = dummy,
   checkBox = true,
   onClick,
   selectedCol,
   setSelectedCol,
 }) {
   const allSelectedCol = [];
-  rows.map((row) => allSelectedCol.push(row.name));
+
+  data.map((row) => allSelectedCol.push(row.id));
 
   const selectedHandler = (id) => {
     if (selectedCol.includes(id)) {
@@ -70,7 +104,7 @@ export default function Table({
   };
 
   const headSelectedHandler = () => {
-    if (selectedCol.length === rows.length) {
+    if (selectedCol.length === data.length) {
       setSelectedCol([]);
     } else {
       setSelectedCol([...allSelectedCol]);
@@ -87,53 +121,55 @@ export default function Table({
                 <CheckBoxWrapper onClick={headSelectedHandler}>
                   <input
                     type="checkbox"
-                    checked={selectedCol.length === rows.length}
+                    checked={selectedCol.length === data.length}
                     readOnly
                   />
                 </CheckBoxWrapper>
               </th>
             )}
-            {cols.map((col) => (
-              <th key={col} align="center">
-                {col}
+            {header.map((field) => (
+              <th key={field} align="center">
+                {field}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
+          {data.map((row) => (
             <tr
-              key={row.name}
-              value={row.name}
+              key={row.id}
+              value={row.id}
               onClick={() => {
-                onClick(row.name);
+                onClick(row.id);
               }}
               className={
-                selectedCol.includes(row.name) ? "selected" : "notSelected"
+                selectedCol.includes(row.id) ? "selected" : "notSelected"
               }
             >
               {checkBox && (
                 <td align="center">
                   <CheckBoxWrapper
                     onClick={(event) => {
-                      selectedHandler(row.name);
+                      selectedHandler(row.id);
                       event.stopPropagation();
                     }}
                   >
                     <input
                       type="checkbox"
-                      checked={selectedCol.includes(row.name)}
+                      checked={selectedCol.includes(row.id)}
                       readOnly
                     />
                   </CheckBoxWrapper>
                 </td>
               )}
-              <td align="center">{row.name}</td>
-              <td align="center">{row.os}</td>
-              <td align="center">{row.ip}</td>
-              <td align="center">{row.instance}</td>
-              <td align="center">{row.keypair}</td>
-              <td align="center">{row.status}</td>
+              {Object.keys(row).map(
+                (field) =>
+                  field === "id" || (
+                    <td key={row[field]} align="center">
+                      {row[field]}
+                    </td>
+                  )
+              )}
             </tr>
           ))}
         </tbody>
@@ -203,3 +239,49 @@ const CheckBoxWrapper = styled.div`
     }
   }
 `;
+
+// function createData(name, os, ip, instance, keypair, status) {
+//   return { name, os, ip, instance, keypair, status };
+// }
+// const rows = [
+//   createData(
+//     "jsb-instance",
+//     "Ubuntu Server 20.04 LTS",
+//     "192.168.0.8",
+//     "u2.c1m1 (1vCPU, 1GB)",
+//     "jsb-keypair",
+//     "ON"
+//   ),
+//   createData(
+//     "ksh-instance",
+//     "Ubuntu Server 20.04 LTS",
+//     "192.168.0.21",
+//     "u2.c1m1 (1vCPU, 1GB)",
+//     "ksh-keypair",
+//     "ON"
+//   ),
+//   createData(
+//     "lyr-instance",
+//     "Ubuntu Server 20.04 LTS",
+//     "192.168.0.34",
+//     "u2.c1m1 (1vCPU, 1GB)",
+//     "lyr-instance",
+//     "ON"
+//   ),
+//   createData(
+//     "yjh-instance",
+//     "Ubuntu Server 20.04 LTS",
+//     "192.168.0.68",
+//     "u2.c1m1 (1vCPU, 1GB)",
+//     "yjh-keypair",
+//     "ON"
+//   ),
+//   createData(
+//     "lsi-instance",
+//     "Ubuntu Server 20.04 LTS",
+//     "192.168.0.108",
+//     "u2.c1m1 (1vCPU, 1GB)",
+//     "lsi-keypair",
+//     "ON"
+//   ),
+// ];
