@@ -2,17 +2,91 @@ import styled from "styled-components";
 import Table from "../../../components/Table";
 import { useState } from "react";
 import MainButton from "../../../components/MainButton";
+import PopUpModal from "../../../components/PopUpModal";
 
-export default function InstanceCreate({ setCreate }) {
-  const [selecetedCol, setSelectedCol] = useState([]);
+const imageData = [
+  {
+    id: "1",
+    name: "Ubuntu Server 20.04 LTS",
+    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
+    minblock: "20 GB",
+    bit: "64 BIT",
+  },
+  {
+    id: "2",
+    name: "Ubuntu Server 20.04 LTS",
+    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
+    minblock: "20 GB",
+    bit: "64 BIT",
+  },
+  {
+    id: "3",
+    name: "Ubuntu Server 20.04 LTS",
+    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
+    minblock: "20 GB",
+    bit: "64 BIT",
+  },
+  {
+    id: "4",
+    name: "Ubuntu Server 20.04 LTS",
+    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
+    minblock: "20 GB",
+    bit: "64 BIT",
+  },
+];
+
+const typeData = [
+  {
+    id: "1",
+    type: "t2",
+    name: "t2.c1m1",
+    vCPU: "1",
+    RAM: "1GB",
+  },
+  {
+    id: "2",
+    type: "m2",
+    name: "m2.c1m2",
+    vCPU: "1",
+    RAM: "2GB",
+  },
+  {
+    id: "3",
+    type: "m2",
+    name: "m2.c2m4",
+    vCPU: "2",
+    RAM: "4GB",
+  },
+  {
+    id: "4",
+    type: "m2",
+    name: "m2.c4m8",
+    vCPU: "4",
+    RAM: "8GB",
+  },
+];
+
+export default function InstanceCreate({ params, navigate }) {
+  const [selectedImageCol, setSelectedImageCol] = useState([]);
+  const [selectedTypeCol, setSelectedTypeCol] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState();
-  const [selectedModalTab, setSelectedModalTab] = useState(1);
+  const [selectedType, setSelectedType] = useState();
+  const [keypairCreate, setKeypairCreate] = useState(false);
 
-  const handleRowClick = (id) => {
-    console.log(id);
-    setSelectedId(id);
-    setModalOpen(true);
+  const handleImageRowClick = (id) => {
+    if (selectedImageCol.includes(id)) {
+      setSelectedImageCol([]);
+    } else {
+      setSelectedImageCol([id]);
+    }
+  };
+
+  const handleTypeRowClick = (id) => {
+    if (selectedTypeCol.includes(id)) {
+      setSelectedTypeCol([]);
+    } else {
+      setSelectedTypeCol([id]);
+    }
   };
 
   return (
@@ -21,11 +95,16 @@ export default function InstanceCreate({ setCreate }) {
       <Line />
       <CreateTitleText>Image</CreateTitleText>
       <Line />
-      <Table
-        selectedCol={selecetedCol}
-        setSelectedCol={setSelectedCol}
-        onClick={handleRowClick}
-      />
+      <TableWrapper>
+        <Table
+          data={imageData}
+          header={["Name", "Description", "Min Block Storage(GB)", "BIT"]}
+          selectedCol={selectedImageCol}
+          setSelectedCol={setSelectedImageCol}
+          onClick={handleImageRowClick}
+          multiSelect={false}
+        />
+      </TableWrapper>
       <Line />
       <CreateTitleText>Information</CreateTitleText>
       <Line />
@@ -35,18 +114,44 @@ export default function InstanceCreate({ setCreate }) {
       </InputLine>
       <InputLine>
         <Text>인스턴스 타입</Text>
-        <Input type="text" name="type" />
-        <MainButton size="small" color="medium" marginLeft={1}>
+        <Input type="text" name="type" value={selectedType} readOnly />
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => setModalOpen(true)}
+        >
           인스턴스 타입 선택
         </MainButton>
       </InputLine>
       <InputLine>
         <Text>키 페어</Text>
         <Select />
-        <MainButton size="small" color="medium" marginLeft={1}>
-          생성
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => setKeypairCreate((state) => !state)}
+        >
+          {keypairCreate ? "닫기" : "생성"}
         </MainButton>
       </InputLine>
+      {keypairCreate && (
+        <KeypairCreateBox>
+          <InputLine>
+            <Text>키페어 이름</Text>
+            <Input type="text" name="name" />
+            <MainButton
+              size="small"
+              color="medium"
+              marginLeft={1}
+              onClick={() => console.log("키페어 생성")}
+            >
+              생성
+            </MainButton>
+          </InputLine>
+        </KeypairCreateBox>
+      )}
       <Line />
       <ButtonContainer>
         <MainButton
@@ -54,7 +159,7 @@ export default function InstanceCreate({ setCreate }) {
           color="light"
           onClick={() => {
             console.log("취소");
-            setCreate(false);
+            navigate(`/student/project/${params.projectId}/instance`);
           }}
         >
           취소
@@ -65,12 +170,50 @@ export default function InstanceCreate({ setCreate }) {
           marginLeft={1}
           onClick={() => {
             console.log("생성");
-            setCreate(false);
+            navigate(`/student/project/${params.projectId}/instance`);
           }}
         >
           생성
         </MainButton>
       </ButtonContainer>
+      <PopUpModal
+        width={30}
+        darkBackground={false}
+        visible={modalOpen}
+        title="인스턴스 타입 선택"
+      >
+        <Table
+          data={typeData}
+          header={["Type", "Name", "vCPU", "RAM"]}
+          selectedCol={selectedTypeCol}
+          setSelectedCol={setSelectedTypeCol}
+          onClick={handleTypeRowClick}
+          multiSelect={false}
+        />
+
+        <MainButton
+          size="small"
+          color="light"
+          marginTop="1"
+          onClick={() => setModalOpen(false)}
+        >
+          취소
+        </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => {
+            setModalOpen(false);
+            setSelectedType(
+              typeData.find((data) => data.id === selectedTypeCol[0]).name
+            );
+          }}
+          disabled={selectedTypeCol.length === 0}
+        >
+          확인
+        </MainButton>
+      </PopUpModal>
     </Container>
   );
 }
@@ -97,6 +240,10 @@ const Line = styled.div`
   height: 1px;
   background-color: #f0f0f0;
   width: 100%;
+`;
+
+const TableWrapper = styled.div`
+  margin: 0 2rem;
 `;
 
 const Text = styled.div`
@@ -133,4 +280,9 @@ const InputLine = styled.div`
   height: 3rem;
   display: flex;
   align-items: center;
+`;
+
+const KeypairCreateBox = styled.div`
+  width: 40rem;
+  background-color: var(--light);
 `;

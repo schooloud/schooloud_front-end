@@ -38,12 +38,16 @@ function Modal({
         <h3>{title}</h3>
         <p>{children}</p>
         <ButtonGroup height={height}>
-          <MainButton marginRight={0.5} color="light" onClick={onCancel}>
-            {cancelText}
-          </MainButton>
-          <MainButton color="main" onClick={onConfirm}>
-            {confirmText}
-          </MainButton>
+          {onCancel && (
+            <MainButton marginRight={0.5} color="light" onClick={onCancel}>
+              {cancelText}
+            </MainButton>
+          )}
+          {onConfirm && (
+            <MainButton color="main" onClick={onConfirm}>
+              {confirmText}
+            </MainButton>
+          )}
         </ButtonGroup>
       </ModalBlock>
     </DarkBackground>
@@ -75,18 +79,22 @@ const fadeOut = keyframes`
 
 const slidUp = keyframes`
   from {
+    opacity:0;
     transform: translateY(200px);
   }
   to {
+    opacity:1;
     transform: translateY(0px);
   }
 `;
 
 const slideDown = keyframes`
   from {
+    opacity:1;
     transform: translateY(0px);
   }
   to {
+    opacity:0;
     transform: translateY(200px);
   }
 `;
@@ -114,7 +122,7 @@ const DarkBackground = styled.div`
     `}
 
   ${(props) =>
-    props.darkBackground &&
+    props.darkBackground ||
     css`
       background: none;
     `}
@@ -145,7 +153,7 @@ const ModalBlock = styled.div`
     `}
 
   ${(props) =>
-    props.darkBackground &&
+    props.darkBackground ||
     css`
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     `}

@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useState } from "react";
 import Calendar from "react-calendar";
 import "./Calendar.css";
-import axios from "axios";
 
 /*
 name = [String] 
