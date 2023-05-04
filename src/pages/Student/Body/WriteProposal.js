@@ -3,12 +3,50 @@ import styled from "styled-components";
 import { useState } from "react";
 import Calendar from "react-calendar";
 import "./Calendar.css";
+import axios from "axios";
+
+/*
+name = [String] 
+purpose = [String]
+instanceNum = [Int]
+cpu = [Int]
+memory = [Int]
+storage = [Int]
+author = [String]
+*/
 
 export default function WriteProposal() {
   const [date, setDate] = useState(new Date());
-  const [value, setValue] = useState(null);
+
+  const [proposal, setProposal] = useState({
+    name: "",
+    purpose: "",
+    cpu: null,
+    memory: null,
+    storage: null,
+    author_email: "",
+  });
+
   const handleChange = (e) => {
-    console.log(e.target.value);
+    const { name, value } = e.target;
+    setProposal({
+      ...proposal,
+      [name]: value,
+    });
+  };
+
+  const handleSubmmit = (e) => {
+    e.preventDefault();
+    //proposal 객체에 date 추가
+    proposal.date = date.toLocaleDateString();
+    // axios.post("/api/proposal", proposal).then((res) => {
+    //   if (res.data.success) {
+    //     alert("제출되었습니다.");
+    //   } else {
+    //     alert("제출에 실패했습니다.");
+    //   }
+    // });
+    console.log(proposal);
   };
 
   return (
@@ -17,11 +55,11 @@ export default function WriteProposal() {
         <LeftContainer>
           <Form>
             <Div>
-              <Label className="projectName">Project Name</Label>
+              <Label>Project Name</Label>
               <InputProjectName
-                type="text"
-                name="projectName"
                 onChange={handleChange}
+                type="text"
+                name="name"
                 maxLength={30}
                 required
               />
@@ -33,9 +71,9 @@ export default function WriteProposal() {
               </Label2>
               <InputContainer>
                 <InputDescription
-                  type="text"
-                  name="projectPurpose"
                   onChange={handleChange}
+                  type="text"
+                  name="purpose"
                   maxLength={300}
                   required
                 />
@@ -68,7 +106,12 @@ export default function WriteProposal() {
             {/* show clicked date */}
             <p>selected Date: {date.toLocaleDateString()}</p>
           </CalendarDiv>
-          <MainButton color={"semi-dark"} fullWidth={true} marginTop={1}>
+          <MainButton
+            color={"semi-dark"}
+            fullWidth={true}
+            marginTop={1}
+            onClick={handleSubmmit}
+          >
             제출
           </MainButton>
         </RightContainer>
@@ -76,6 +119,7 @@ export default function WriteProposal() {
     </Wrapper>
   );
 }
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -153,13 +197,15 @@ const InputProjectName = styled.input`
   padding: 0.5rem;
 `;
 
-const InputDescription = styled.input`
+const InputDescription = styled.textarea`
   width: 90%;
   height: 7rem;
   border: 0.7px solid var(--dark);
   border-radius: 5px;
   padding: 0.5rem;
   vertical-align: top;
+  resize: none;
+  overflow: auto;
 `;
 
 const InputContainer = styled.div`
