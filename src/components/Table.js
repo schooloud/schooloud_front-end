@@ -4,7 +4,7 @@ import styled from "styled-components";
   아래는 Table 사용 예시입니다.
 
   <Table
-  data={dummy}
+  data={dummy}\[]
   header={[
     "Name",
     "OS",
@@ -26,6 +26,8 @@ import styled from "styled-components";
 
   data에는 id 값이 필수적으로 들어가야하며, id 값을 제외하고 모두 표에 나타납니다.
 
+  multiSelect는 다중 선택이 가능한 표인가? 입니다. default 값은 true입니다.
+
   onClick은 각 Row를 클릭하면 실행할 함수입니다. 클릭 시 각 row의 id값을 props에 넣어서 함수를 실행시킵니다.
   아래는 onClick함수 예시입니다.
 
@@ -35,6 +37,7 @@ import styled from "styled-components";
     };
 
 */
+
 const dummy = [
   {
     id: "1",
@@ -90,16 +93,25 @@ export default function Table({
   onClick,
   selectedCol,
   setSelectedCol,
+  multiSelect = true,
 }) {
   const allSelectedCol = [];
 
   data.map((row) => allSelectedCol.push(row.id));
 
   const selectedHandler = (id) => {
-    if (selectedCol.includes(id)) {
-      setSelectedCol(selectedCol.filter((element) => element !== id));
+    if (multiSelect) {
+      if (selectedCol.includes(id)) {
+        setSelectedCol(selectedCol.filter((element) => element !== id));
+      } else {
+        setSelectedCol((state) => [...state, id]);
+      }
     } else {
-      setSelectedCol((state) => [...state, id]);
+      if (selectedCol.includes(id)) {
+        setSelectedCol([]);
+      } else {
+        setSelectedCol([id]);
+      }
     }
   };
 
@@ -116,7 +128,7 @@ export default function Table({
       <table>
         <thead>
           <tr>
-            {checkBox && (
+            {checkBox && multiSelect ? (
               <th className="checkboxth" align="center">
                 <CheckBoxWrapper onClick={headSelectedHandler}>
                   <input
@@ -125,6 +137,10 @@ export default function Table({
                     readOnly
                   />
                 </CheckBoxWrapper>
+              </th>
+            ) : (
+              <th align="center">
+                <CheckBoxHeaderNone />
               </th>
             )}
             {header.map((field) => (
@@ -238,6 +254,11 @@ const CheckBoxWrapper = styled.div`
       cursor: pointer;
     }
   }
+`;
+
+const CheckBoxHeaderNone = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
 `;
 
 // function createData(name, os, ip, instance, keypair, status) {

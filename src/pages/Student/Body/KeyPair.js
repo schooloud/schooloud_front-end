@@ -3,6 +3,29 @@ import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
 
+const dummy = [
+  {
+    id: "1",
+    name: "jsb-keypair",
+    fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
+    publickey: (
+      <MainButton size="small" color="medium" onClick={() => {}}>
+        보기
+      </MainButton>
+    ),
+  },
+  {
+    id: "2",
+    name: "abc-keypair",
+    fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
+    publickey: (
+      <MainButton size="small" color="medium" onClick={() => {}}>
+        보기
+      </MainButton>
+    ),
+  },
+];
+
 export default function KeyPair() {
   const [selecetedCol, setSelectedCol] = useState([]);
   const [selectedId, setSelectedId] = useState();
@@ -34,6 +57,8 @@ export default function KeyPair() {
         </MainButton>
       </ButtonContainer>
       <Table
+        data={dummy}
+        header={["Name", "Fingerprint", "Public Key"]}
         selectedCol={selecetedCol}
         setSelectedCol={setSelectedCol}
         onClick={handleRowClick}

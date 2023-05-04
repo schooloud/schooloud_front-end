@@ -4,6 +4,7 @@ import { useState } from "react";
 import MainButton from "../../../components/MainButton";
 import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
+import { useNavigate, useParams } from "react-router-dom";
 
 const dummy = [
   {
@@ -54,11 +55,12 @@ const dummy = [
 ];
 
 export default function Instance() {
-  const [selecetedCol, setSelectedCol] = useState([]);
+  const navigate = useNavigate();
+  const params = useParams();
+  const [selectedCol, setSelectedCol] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [selectedModalTab, setSelectedModalTab] = useState(1);
-  const [create, setCreate] = useState(false);
 
   const handleRowClick = (id) => {
     setSelectedId(id);
@@ -67,8 +69,8 @@ export default function Instance() {
 
   const selectedRow = dummy.find((row) => row.id === selectedId);
 
-  if (create) {
-    return <InstanceCreate setCreate={setCreate} />;
+  if (params.create === "create") {
+    return <InstanceCreate params={params} navigate={navigate} />;
   }
 
   return (
@@ -80,7 +82,7 @@ export default function Instance() {
           color="medium"
           onClick={() => {
             console.log("인스턴스 생성");
-            setCreate(true);
+            navigate(`/student/project/${params.projectId}/instance/create`);
           }}
         >
           인스턴스 생성
@@ -123,7 +125,7 @@ export default function Instance() {
           "KeyPair",
           "Status",
         ]}
-        selectedCol={selecetedCol}
+        selectedCol={selectedCol}
         setSelectedCol={setSelectedCol}
         onClick={handleRowClick}
       />
@@ -315,19 +317,4 @@ const Text = styled.div`
 const FlexContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const CreateTitleText = styled.div`
-  font-weight: 600;
-  margin: 0 1rem;
-  font-size: 1.2rem;
-`;
-
-const Input = styled.input`
-  width: 80%;
-  height: 40px;
-  margin-bottom: 10px;
-  border: 0.5px solid grey;
-  border-radius: 5px;
-  padding: 0 10px;
 `;

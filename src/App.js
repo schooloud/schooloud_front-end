@@ -17,7 +17,9 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/student/project" element={<Student />}>
           <Route path=":projectId" element={<Student />}>
-            <Route path=":selectedDrawer" element={<Student />} />
+            <Route path=":selectedDrawer" element={<Student />}>
+              <Route path=":create" element={<Student />} />
+            </Route>
           </Route>
         </Route>
         <Route path="/student" element={<Student />}>

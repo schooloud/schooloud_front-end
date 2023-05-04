@@ -109,7 +109,7 @@ const ModalBlock = styled.div`
   width: 20rem;
   padding: 1.5rem;
   background: white;
-  border-radius: 2px;
+  border-radius: 0.5rem;
   h3 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
