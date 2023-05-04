@@ -36,4 +36,5 @@ const AppWrapper = styled.div`
   width: ${basicStyles.maxWidth}px;
   height: ${basicStyles.maxHeight}px;
   font-size: ${basicStyles.basicFont}px;
+  background-color: white;
 `;

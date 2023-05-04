@@ -41,7 +41,9 @@ export default function BottomModal({ open, setOpen, children }) {
 }
 
 const ModalContainer = styled.div`
-  width: 86.2%;
+  width: ${`${window.screen.width * 0.862}px`};
+  /* width: 86.2%; */
+  /* min-width: 1100px; */
   height: ${({ Height, open }) =>
     open
       ? Height === "large"
@@ -51,9 +53,8 @@ const ModalContainer = styled.div`
         : "30%"
       : "0"};
   position: fixed;
-  padding: 0 1.5rem;
   bottom: 0;
-  right: 0;
+  left: ${`${window.screen.width * 0.138}px`};
   display: flex;
   justify-content: center;
   transition: height 0.5s;
@@ -61,6 +62,8 @@ const ModalContainer = styled.div`
 
 const ModalWrapper = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   border-top-left-radius: 1rem;
@@ -68,8 +71,9 @@ const ModalWrapper = styled.div`
   /* border: 1px solid #000000; */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(0, 0, 0, 0.48);
   background-color: white;
+  margin: 0 1.5rem;
+  margin-top: 0.5rem;
   padding: 1.6rem 1.8rem;
-  overflow-y: auto;
 `;
 
 const ModalControlContainer = styled.div`

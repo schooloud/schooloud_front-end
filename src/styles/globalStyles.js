@@ -24,7 +24,7 @@ export default createGlobalStyle`
 
   @font-face {
     font-family: "Pretendard";
-    src: local("Pretendard-SemiBoldd"), url(${PretendardSemiBold}) format("woff2");
+    src: local("Pretendard-SemiBold"), url(${PretendardSemiBold}) format("woff2");
     font-weight: 600;
     font-style: normal;
   }
@@ -66,7 +66,6 @@ export default createGlobalStyle`
   }
 
   *{
-    box-sizing: border-box;
     font-family: 'Pretendard';
     font-weight: '300';
   }
