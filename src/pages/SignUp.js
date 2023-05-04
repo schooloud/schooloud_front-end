@@ -265,7 +265,8 @@ const LogoImage = styled.img`
 
 const Box = styled.div`
   height: 70%;
-  width: 80%;
+  width: 100%;
+
   display: flex;
   justify-content: center;
 

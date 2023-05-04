@@ -29,4 +29,5 @@ const Line = styled.div`
 
 const MainWrapper = styled.div`
   width: 100%;
+  overflow: auto;
 `;
