@@ -1,0 +1,21 @@
+name: deploy
+on:
+  pull_request:
+    branches: [develop]
+    types: [closed]
+
+jobs:
+  build:
+    if: ${{ github.event.pull_request.merged }}
+    name: synchronization between local and remote repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH-deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.IP }} # ssh 접속용 ip
+          username: ${{ secrets.USERNAME }} # root
+          password: ${{ secrets.KEY }} # ssh 접속용 password
+          port: ${{ secrets.PORT }} # ssh 접속용 port
+          script: |
+            sh deploy.sh
