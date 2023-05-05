@@ -29,10 +29,10 @@ jobs:
           key: ${{ secrets.KEY }} # ssh 접속용 password
           port: ${{ secrets.PORT }} # ssh 접속용 port
           script: |
-            cd /schooloud_front-end
+            cd /home/ubuntu/schooloud_front-end
             git checkout develop
             git pull origin develop
-            cd /schooloud_front-end
+            cd /home/ubuntu/schooloud_front-end
             npm install
             npm run build
             sudo systemctl restart nginx
