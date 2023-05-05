@@ -1,57 +1,29 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-# action 이름
-name: deploy
-
-# action 트리거 조건 (release 브랜치에 푸쉬될 때)
-
 on:
   pull_request:
     branches: [develop]
     types: [closed]
 
-# action 동작
 jobs:
-  # OS 환경
   build:
+    if: ${{ github.event.pull_request.merged }}
+    name: synchronization between local and remote repository
     runs-on: ubuntu-latest
-
-    # 경고 무시
-    env:
-      CI: false
-
-    # Nodejs 런타임 정보 설정
-    strategy:
-      matrix:
-        node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      # 모듈 설치
-      - name: Install modules
-        run: npm install
+      - name: checkout
+        uses: actions/checkout@v1
 
-      # 빌드
       - name: Build project
         run: npm run build
 
-      # 배포
-      - name: Deploy build outputs
-        uses: appleboy/scp-action@master
+      - name: executing remote ssh commands with ssh key
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd schooloud_front-end
+            cd /schooloud_front-end/
             sudo git checkout develop
             sudo git pull origin develop
             sudo systemctl restart uwsgi
