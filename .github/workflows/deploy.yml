@@ -12,7 +12,7 @@ jobs:
     # 경고 무시
     env:
       CI: false
-    # Nodejs 런타임 정보 설정
+    # Nodejs 런타임 정보 설정 test
     strategy:
       matrix:
         node-version: [18.x]
