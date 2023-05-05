@@ -12,7 +12,7 @@ jobs:
     # 경고 무시
     env:
       CI: false
-    # Nodejs 런타임 정보 설정 test
+    # Nodejs 런타임 정보 설정
     strategy:
       matrix:
         node-version: [18.x]
@@ -26,7 +26,7 @@ jobs:
         with:
           host: ${{ secrets.IP }} # ssh 접속용 ip
           username: ${{ secrets.USERNAME }} # root
-          key: ${{ secrets.KEY }} # ssh 접속용 password test
+          key: ${{ secrets.KEY }} # ssh 접속용 password
           port: ${{ secrets.PORT }} # ssh 접속용 port
           script: |
             cd /home/ubuntu/schooloud_front-end
