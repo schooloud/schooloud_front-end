@@ -26,7 +26,7 @@ jobs:
         with:
           host: ${{ secrets.IP }} # ssh 접속용 ip
           username: ${{ secrets.USERNAME }} # root
-          key: ${{ secrets.KEY }} # ssh 접속용 password
+          key: ${{ secrets.KEY }} # ssh 접속용 password test
           port: ${{ secrets.PORT }} # ssh 접속용 port
           script: |
             cd /home/ubuntu/schooloud_front-end
