@@ -35,4 +35,4 @@ jobs:
             cd /schooloud_front-end/
             sudo git checkout develop
             sudo git pull origin develop
-            sudo systemctl restart uwsgi
+            sudo systemctl restart nginx
