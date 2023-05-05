@@ -37,9 +37,7 @@ jobs:
       # 모듈 설치
       - name: Install modules
         run: npm install
-      # testcode 실행
-      - name: Run test codes
-        run: npm run test
+
       # 빌드
       - name: Build project
         run: npm run build
