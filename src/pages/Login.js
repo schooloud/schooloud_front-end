@@ -77,7 +77,7 @@ const Login = (props) => {
         </Logo>
         <Box>
           <BoxContainer>
-            <Title>로그인입니다.</Title>
+            <Title>로그인</Title>
             <Form>
               <Input
                 type="email"
