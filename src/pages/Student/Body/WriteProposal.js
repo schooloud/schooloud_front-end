@@ -178,8 +178,6 @@ export default function WriteProposal() {
                   checkBox={false}
                   data={flavorData}
                   header={["Name", "RAM", "DISK", "vCPU", "Num"]}
-                  selectedRow={selectedRow}
-                  setSelectedRow={setSelectedRow}
                   onClick={handleRowClick}
                 />
               </TableDiv>
