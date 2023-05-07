@@ -3,7 +3,6 @@ import Professor from "./pages/Professor";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
-import { basicStyles } from "./styles/globalStyles";
 import styled from "styled-components";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";

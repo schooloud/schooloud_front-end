@@ -120,134 +120,150 @@ const SignUp = () => {
   const formRef = useRef();
 
   return (
-    <SignUpWrapper>
-      <Container>
-        <Logo>
-          <LogoImage src={logoImage} alt="" />
-        </Logo>
-        <Box>
-          <BoxContainer>
-            <Title>회원가입</Title>
-            <Form ref={formRef}>
-              <Label>이메일</Label>
-              <EmailDiv>
-                <InputEmail
-                  type="text"
-                  name="email"
-                  onChange={onChangeEmail}
+    <SignupContainer>
+      <SignUpWrapper>
+        <Container>
+          <Logo>
+            <LogoImage src={logoImage} alt="" />
+          </Logo>
+          <Box>
+            <BoxContainer>
+              <Title>회원가입</Title>
+              <Form ref={formRef}>
+                <Label>이메일</Label>
+                <EmailDiv>
+                  <InputEmail
+                    type="text"
+                    name="email"
+                    onChange={onChangeEmail}
+                    required
+                  />
+                  <MainButton
+                    color="main"
+                    // border={"dark"}
+                    onClick={handleDuplicateCheck}
+                  >
+                    중복확인
+                  </MainButton>
+                </EmailDiv>
+                {isEmailValid ? (
+                  <EmailCheckMessage color="#2D791E">
+                    이메일 형식이 맞습니다.
+                  </EmailCheckMessage>
+                ) : (
+                  <EmailCheckMessage>
+                    올바른 이메일 형식이 아닙니다.
+                  </EmailCheckMessage>
+                )}
+                <Label>비밀번호</Label>
+                <Input
+                  type="password"
+                  name="password"
+                  onChange={handleChange}
                   required
                 />
-                <MainButton
-                  color="main"
-                  // border={"dark"}
-                  onClick={handleDuplicateCheck}
-                >
-                  중복확인
-                </MainButton>
-              </EmailDiv>
-              {isEmailValid ? (
-                <EmailCheckMessage color="#2D791E">
-                  이메일 형식이 맞습니다.
-                </EmailCheckMessage>
-              ) : (
-                <EmailCheckMessage>
-                  올바른 이메일 형식이 아닙니다.
-                </EmailCheckMessage>
-              )}
-              <Label>비밀번호</Label>
-              <Input
-                type="password"
-                name="password"
-                onChange={handleChange}
-                required
-              />
-              <Label>비밀번호 재확인</Label>
-              <Input
-                type="password"
-                name="password"
-                onChange={handlePasswordCheck}
-                required
-              />
-              {isPasswordSame ? (
-                <PasswordCheckMessage color="#2D791E">
-                  비밀번호가 일치합니다.
-                </PasswordCheckMessage>
-              ) : (
-                <PasswordCheckMessage>
-                  비밀번호가 일치하지 않습니다.
-                </PasswordCheckMessage>
-              )}
-              <Label>학번</Label>
-              <Input
-                type="text"
-                name="studentId"
-                onChange={handleChange}
-                required
-              />
-              <Label>이름</Label>
-              <Input type="text" name="name" onChange={handleChange} required />
-              <Label>전공</Label>
-              <Input
-                type="text"
-                name="major"
-                onChange={handleChange}
-                required
-              />
-            </Form>
-            <MainButton
-              color="main"
-              // border="dark"
-              fullWidth={true}
-              disabled={
-                !(
-                  isEmailValid &&
-                  isEmailDuplicateChecked &&
-                  isPasswordSame &&
-                  form.email &&
-                  form.major &&
-                  form.name &&
-                  form.password &&
-                  form.studentId
-                )
-              }
-              marginTop={0.5}
-              onClick={handleSubmit}
-            >
-              가입하기
-            </MainButton>
-          </BoxContainer>
-        </Box>
-      </Container>
-      <PopUpModal
-        width={30}
-        height={15}
-        darkBackground={true}
-        title="사용가능한 이메일입니다."
-        onConfirm={onConfirm}
-        onCancel={onCancel}
-        visible={isEmailDuplicateModalOpen}
-      >
-        이 이메일을 사용하시겠습니까?
-      </PopUpModal>
-    </SignUpWrapper>
+                <Label>비밀번호 재확인</Label>
+                <Input
+                  type="password"
+                  name="password"
+                  onChange={handlePasswordCheck}
+                  required
+                />
+                {isPasswordSame ? (
+                  <PasswordCheckMessage color="#2D791E">
+                    비밀번호가 일치합니다.
+                  </PasswordCheckMessage>
+                ) : (
+                  <PasswordCheckMessage>
+                    비밀번호가 일치하지 않습니다.
+                  </PasswordCheckMessage>
+                )}
+                <Label>학번</Label>
+                <Input
+                  type="text"
+                  name="studentId"
+                  onChange={handleChange}
+                  required
+                />
+                <Label>이름</Label>
+                <Input
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  required
+                />
+                <Label>전공</Label>
+                <Input
+                  type="text"
+                  name="major"
+                  onChange={handleChange}
+                  required
+                />
+              </Form>
+              <MainButton
+                color="main"
+                // border="dark"
+                fullWidth={true}
+                disabled={
+                  !(
+                    isEmailValid &&
+                    isEmailDuplicateChecked &&
+                    isPasswordSame &&
+                    form.email &&
+                    form.major &&
+                    form.name &&
+                    form.password &&
+                    form.studentId
+                  )
+                }
+                marginTop={1.2}
+                onClick={handleSubmit}
+              >
+                가입하기
+              </MainButton>
+            </BoxContainer>
+          </Box>
+        </Container>
+        <PopUpModal
+          width={30}
+          height={15}
+          darkBackground={true}
+          title="사용가능한 이메일입니다."
+          onConfirm={onConfirm}
+          onCancel={onCancel}
+          visible={isEmailDuplicateModalOpen}
+        >
+          이 이메일을 사용하시겠습니까?
+        </PopUpModal>
+      </SignUpWrapper>
+    </SignupContainer>
   );
 };
+
+const SignupContainer = styled.div`
+  height: 100vh;
+  width: 100%;
+  overflow: auto;
+`;
 
 const SignUpWrapper = styled.div`
   display: flex;
   justify-content: center; /* 수직 중앙 정렬 */
   align-items: center; /* 수평 중앙 정렬 */
-  width: 100vw;
-  height: 100%;
+  width: 100%;
+  min-width: 32rem;
+
+  margin: 5rem 0;
+
+  /* height: 100%; */
+  //height빼고 overflow auto
+  /* overflow: auto; */
 `;
 
 const Container = styled.div`
-  position: relative;
-  top: 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
   width: 30rem;
 `;
 
@@ -259,7 +275,7 @@ const Logo = styled.div`
   height: 3rem;
   background-color: #ffffff;
   color: #000000;
-  margin-bottom: 20px;
+  margin-bottom: 1.3rem;
 `;
 
 const LogoImage = styled.img`
@@ -267,7 +283,6 @@ const LogoImage = styled.img`
 `;
 
 const Box = styled.div`
-  height: 70%;
   width: 100%;
 
   display: flex;
@@ -322,7 +337,7 @@ const Input = styled.input`
 
 const InputEmail = styled.input`
   width: 70%;
-  height: 40px;
+  height: 2.5rem;
   margin-bottom: 10px;
   border: 0.5px solid grey;
   border-radius: 5px;
@@ -338,26 +353,6 @@ const BoxContainer = styled.div`
   align-items: center;
   justify-content: center;
 `;
-
-// const SubmmitButton = styled.button`
-//   width: 80%;
-//   height: 40px;
-//   margin-top: 10px;
-//   border: none;
-//   color: white;
-//   font-size: large;
-//   border-radius: 4px;
-//   background-color: var(--main);
-//   border: 1px solid var(--dark);
-//   cursor: pointer;
-//   letter-spacing: 1px;
-//   &:disabled {
-//     background-color: var(--medium);
-//     border: 1px solid var(--dark);
-
-//     cursor: not-allowed;
-//   }
-// `;
 
 const Label = styled.div`
   text-align: left;
