@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CiUser } from "react-icons/ci";
+import PersonIcon from "@mui/icons-material/Person";
 
 const ExpiredCheck = (props) => {
   const [isLogined, setIsLogined] = useState(null);
@@ -69,7 +69,7 @@ const ExpiredCheck = (props) => {
     <>
       {isLogined && (
         <UserIcon onClick={handleOver} onMouseLeave={handleLeave}>
-          <CiUser size="30" />
+          <PersonIcon />
           <UserName>{isLogined}</UserName>
         </UserIcon>
       )}
