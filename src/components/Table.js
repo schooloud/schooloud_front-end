@@ -13,12 +13,12 @@ import styled from "styled-components";
     "KeyPair",
     "Status",
   ]}
-  selectedCol={selecetedCol}
-  setSelectedCol={setSelectedCol}
+  selectedRow={selecetedRow}
+  setSelectedRow={setSelectedRow}
   onClick={handleRowClick}
   />
 
-  Table 컴포넌트를 사용하는 상위 컴포넌트에서 selectCol(선택된 Column 배열 스테이트)와 Setter을 내려주어야합니다.
+  Table 컴포넌트를 사용하는 상위 컴포넌트에서 selectRow(선택된 Row 배열 스테이트)와 Setter을 내려주어야합니다.
 
   checkBox는 default 값이 true이며, 제일 왼쪽 열에 체크박스를 표시합니다. false일 시 표시 안함.
 
@@ -91,35 +91,35 @@ export default function Table({
   data = dummy,
   checkBox = true,
   onClick,
-  selectedCol,
-  setSelectedCol,
+  selectedRow,
+  setSelectedRow,
   multiSelect = true,
 }) {
-  const allSelectedCol = [];
+  const allSelectedRow = [];
 
-  data.map((row) => allSelectedCol.push(row.id));
+  data?.map((row) => allSelectedRow.push(row.id));
 
   const selectedHandler = (id) => {
     if (multiSelect) {
-      if (selectedCol.includes(id)) {
-        setSelectedCol(selectedCol.filter((element) => element !== id));
+      if (selectedRow?.includes(id)) {
+        setSelectedRow(selectedRow?.filter((element) => element !== id));
       } else {
-        setSelectedCol((state) => [...state, id]);
+        setSelectedRow((state) => [...state, id]);
       }
     } else {
-      if (selectedCol.includes(id)) {
-        setSelectedCol([]);
+      if (selectedRow?.includes(id)) {
+        setSelectedRow([]);
       } else {
-        setSelectedCol([id]);
+        setSelectedRow([id]);
       }
     }
   };
 
   const headSelectedHandler = () => {
-    if (selectedCol.length === data.length) {
-      setSelectedCol([]);
+    if (selectedRow?.length === data?.length) {
+      setSelectedRow([]);
     } else {
-      setSelectedCol([...allSelectedCol]);
+      setSelectedRow([...allSelectedRow]);
     }
   };
 
@@ -134,7 +134,7 @@ export default function Table({
                   <CheckBoxWrapper onClick={headSelectedHandler}>
                     <input
                       type="checkbox"
-                      checked={selectedCol.length === data.length}
+                      checked={selectedRow?.length === data?.length}
                       readOnly
                     />
                   </CheckBoxWrapper>
@@ -161,7 +161,7 @@ export default function Table({
                 onClick(row.id);
               }}
               className={
-                selectedCol.includes(row.id) ? "selected" : "notSelected"
+                selectedRow?.includes(row.id) ? "selected" : "notSelected"
               }
             >
               {checkBox && (
@@ -174,7 +174,7 @@ export default function Table({
                   >
                     <input
                       type="checkbox"
-                      checked={selectedCol.includes(row.id)}
+                      checked={selectedRow?.includes(row.id)}
                       readOnly
                     />
                   </CheckBoxWrapper>

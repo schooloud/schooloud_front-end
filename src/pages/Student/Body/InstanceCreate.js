@@ -67,25 +67,25 @@ const typeData = [
 ];
 
 export default function InstanceCreate({ params, navigate }) {
-  const [selectedImageCol, setSelectedImageCol] = useState([]);
-  const [selectedTypeCol, setSelectedTypeCol] = useState([]);
+  const [selectedImageRow, setSelectedImageRow] = useState([]);
+  const [selectedTypeRow, setSelectedTypeRow] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedType, setSelectedType] = useState();
   const [keypairCreate, setKeypairCreate] = useState(false);
 
   const handleImageRowClick = (id) => {
-    if (selectedImageCol.includes(id)) {
-      setSelectedImageCol([]);
+    if (selectedImageRow.includes(id)) {
+      setSelectedImageRow([]);
     } else {
-      setSelectedImageCol([id]);
+      setSelectedImageRow([id]);
     }
   };
 
   const handleTypeRowClick = (id) => {
-    if (selectedTypeCol.includes(id)) {
-      setSelectedTypeCol([]);
+    if (selectedTypeRow.includes(id)) {
+      setSelectedTypeRow([]);
     } else {
-      setSelectedTypeCol([id]);
+      setSelectedTypeRow([id]);
     }
   };
 
@@ -99,8 +99,8 @@ export default function InstanceCreate({ params, navigate }) {
         <Table
           data={imageData}
           header={["Name", "Description", "Min Block Storage(GB)", "BIT"]}
-          selectedCol={selectedImageCol}
-          setSelectedCol={setSelectedImageCol}
+          selectedRow={selectedImageRow}
+          setSelectedRow={setSelectedImageRow}
           onClick={handleImageRowClick}
           multiSelect={false}
         />
@@ -185,12 +185,11 @@ export default function InstanceCreate({ params, navigate }) {
         <Table
           data={typeData}
           header={["Type", "Name", "vCPU", "RAM"]}
-          selectedCol={selectedTypeCol}
-          setSelectedCol={setSelectedTypeCol}
+          selectedRow={selectedTypeRow}
+          setSelectedRow={setSelectedTypeRow}
           onClick={handleTypeRowClick}
           multiSelect={false}
         />
-
         <MainButton
           size="small"
           color="light"
@@ -206,10 +205,10 @@ export default function InstanceCreate({ params, navigate }) {
           onClick={() => {
             setModalOpen(false);
             setSelectedType(
-              typeData.find((data) => data.id === selectedTypeCol[0]).name
+              typeData.find((data) => data.id === selectedTypeRow[0]).name
             );
           }}
-          disabled={selectedTypeCol.length === 0}
+          disabled={selectedTypeRow.length === 0}
         >
           확인
         </MainButton>

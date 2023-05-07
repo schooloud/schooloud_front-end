@@ -105,7 +105,7 @@ const TabBarWrapper = styled.div`
   top: 0;
   overflow: auto;
   z-index: 100;
-  background-color: red;
+  background-color: #f0f0f0;
 `;
 
 const BodyWrapper = styled.div`

@@ -4,36 +4,49 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 
-const dummy = [
-  {
-    id: "1",
-    name: "jsb-keypair",
-    fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
-    publickey: (
-      <MainButton size="small" color="medium" onClick={() => {}}>
-        보기
-      </MainButton>
-    ),
-  },
-  {
-    id: "2",
-    name: "abc-keypair",
-    fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
-    publickey: (
-      <MainButton size="small" color="medium" onClick={() => {}}>
-        보기
-      </MainButton>
-    ),
-  },
-];
-
 export default function KeyPair() {
-  const [selecetedCol, setSelectedCol] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [selecetedRow, setSelectedRow] = useState([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [publicModalOpen, setPublicModalOpen] = useState(false);
   const [keypairName, setKeypairName] = useState("");
+
   const handleRowClick = (id) => {
     console.log(id);
   };
+
+  const publicKey =
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAlX8IJ3JRMwpuNh+7e4H8hzR5pM8y02gA6NnnA13pPy3VIPmedBzESe2FcNJxTTNtaLPGgA41wIyRLz3ksCDtInWm+BW5x3BpG8yETuDXOKWSH8W8qGRPY0iOs0I40K7LEIVlMwSJBaFHC18SasXjP+9e97/Rf58Z3Zs9mT64FV7cYCXpmrsBSufjljCJF08XJQ8rthgGGb1mMtIzMJ37a3TVLoprEDHbWcDkumUb+QtUkIFS9MBMyAEpRGkRcCGZ+0yuLljJIAvBKEsjts77cIwp0TkVM0PGQfvA9PXzlMFi1tTJ0qnzvqZsFbnMe1hWQWROsF2ykB2hA0iEevhv Generated-by-Nova";
+
+  const dummy = [
+    {
+      id: "1",
+      name: "jsb-keypair",
+      fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
+      publickey: (
+        <MainButton
+          size="small"
+          color="medium"
+          onClick={() => setPublicModalOpen(true)}
+        >
+          보기
+        </MainButton>
+      ),
+    },
+    {
+      id: "2",
+      name: "abc-keypair",
+      fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
+      publickey: (
+        <MainButton
+          size="small"
+          color="medium"
+          onClick={() => setPublicModalOpen(true)}
+        >
+          보기
+        </MainButton>
+      ),
+    },
+  ];
 
   return (
     <Container>
@@ -42,7 +55,7 @@ export default function KeyPair() {
         <MainButton
           size="small"
           color="medium"
-          onClick={() => setModalOpen(true)}
+          onClick={() => setCreateModalOpen(true)}
         >
           키페어 생성
         </MainButton>
@@ -59,14 +72,14 @@ export default function KeyPair() {
       <Table
         data={dummy}
         header={["Name", "Fingerprint", "Public Key"]}
-        selectedCol={selecetedCol}
-        setSelectedCol={setSelectedCol}
+        selectedRow={selecetedRow}
+        setSelectedRow={setSelectedRow}
         onClick={handleRowClick}
       />
       <PopUpModal
         width={30}
         darkBackground={false}
-        visible={modalOpen}
+        visible={createModalOpen}
         title="키페어 생성"
       >
         <InputLine>
@@ -84,7 +97,7 @@ export default function KeyPair() {
           marginTop="1"
           onClick={() => {
             setKeypairName("");
-            setModalOpen(false);
+            setCreateModalOpen(false);
           }}
         >
           취소
@@ -94,11 +107,27 @@ export default function KeyPair() {
           color="medium"
           marginLeft={1}
           onClick={() => {
-            setModalOpen(false);
+            setCreateModalOpen(false);
           }}
           disabled={!keypairName}
         >
           생성
+        </MainButton>
+      </PopUpModal>
+      <PopUpModal
+        width={50}
+        darkBackground={false}
+        visible={publicModalOpen}
+        title="Public Key"
+      >
+        <PublicKeyText>{publicKey}</PublicKeyText>
+        <MainButton
+          size="small"
+          color="medium"
+          marginTop="1"
+          onClick={() => setPublicModalOpen(false)}
+        >
+          닫기
         </MainButton>
       </PopUpModal>
     </Container>
@@ -141,4 +170,16 @@ const Input = styled.input`
   border: 0.5px solid gray;
   border-radius: 5px;
   padding: 0 10px;
+`;
+
+const PublicKeyText = styled.div`
+  width: 100%;
+  font-weight: 100;
+  font-size: 0.9rem;
+  background-color: var(--light);
+  color: var(--medium);
+  border: 1px solid var(--medium);
+  border-radius: 0.3rem;
+  padding: 0.5rem 0.5rem;
+  word-break: break-all;
 `;
