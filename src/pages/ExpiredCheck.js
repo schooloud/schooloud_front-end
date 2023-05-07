@@ -68,7 +68,7 @@ const ExpiredCheck = (props) => {
   return (
     <>
       {isLogined && (
-        <UserIcon onClick={handleOver} onMouseLeave={handleLeave}>
+        <UserIcon onMouseOver={handleOver} onMouseLeave={handleLeave}>
           <CiUser size="30" />
           <UserName>{isLogined}</UserName>
         </UserIcon>
