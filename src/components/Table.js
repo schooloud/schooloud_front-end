@@ -128,21 +128,23 @@ export default function Table({
       <table>
         <thead>
           <tr>
-            {checkBox && multiSelect ? (
-              <th className="checkboxth" align="center">
-                <CheckBoxWrapper onClick={headSelectedHandler}>
-                  <input
-                    type="checkbox"
-                    checked={selectedCol.length === data.length}
-                    readOnly
-                  />
-                </CheckBoxWrapper>
-              </th>
-            ) : (
-              <th align="center">
-                <CheckBoxHeaderNone />
-              </th>
-            )}
+            {checkBox ? (
+              multiSelect ? (
+                <th className="checkboxth" align="center">
+                  <CheckBoxWrapper onClick={headSelectedHandler}>
+                    <input
+                      type="checkbox"
+                      checked={selectedCol.length === data.length}
+                      readOnly
+                    />
+                  </CheckBoxWrapper>
+                </th>
+              ) : (
+                <th align="center">
+                  <CheckBoxHeaderNone />
+                </th>
+              )
+            ) : null}
             {header.map((field) => (
               <th key={field} align="center">
                 {field}

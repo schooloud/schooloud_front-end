@@ -5,6 +5,37 @@ import styled, { css } from "styled-components";
 //margin은 버튼 두 개 이상 시 그 사이에 생기는 margin입니다. 두 값을 같은 값을 사용하시고, 혹여나 다른 값이라면 뒤에 오는 값이 적용됩니다.
 // ex) <MainButton outline fullWidth color="blue" size="large">Button</MainButton>
 // ex> <MainButton color="blue" size="large">Button</MainButton>
+function MainButton({
+  children,
+  color,
+  size = "medium",
+  outline,
+  fullWidth,
+  marginBottom,
+  marginLeft,
+  marginRight,
+  marginTop,
+  disabled = false,
+  ...rest
+}) {
+  return (
+    <StyledButton
+      color={color}
+      size={size}
+      outline={outline}
+      fullWidth={fullWidth}
+      marginTop={marginTop}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      disabled={disabled}
+      className={disabled ? "deactive" : "active"}
+      {...rest}
+    >
+      {children}
+    </StyledButton>
+  );
+}
 
 const colorStyles = css`
   ${({ color }) => {
@@ -61,9 +92,6 @@ const fullWidthStyle = css`
     css`
       width: 100%;
       justify-content: center;
-      & + & {
-        margin-left: 0;
-      }
     `}
 `;
 
@@ -81,8 +109,7 @@ const StyledButton = styled.button`
   /* 크기 */
   ${sizeStyles}
 
-  /* 기타 */
-
+  /* margin */
   margin-left: ${({ marginLeft }) => `${marginLeft}rem`};
   margin-right: ${({ marginRight }) => `${marginRight}rem`};
   margin-top: ${({ marginTop }) => `${marginTop}rem`};
@@ -102,42 +129,5 @@ const StyledButton = styled.button`
     cursor: default;
   }
 `;
-
-function MainButton({
-  children,
-  color,
-  size,
-  outline,
-  fullWidth,
-  marginBottom,
-  marginLeft,
-  marginRight,
-  marginTop,
-  disabled = false,
-  ...rest
-}) {
-  return (
-    <StyledButton
-      color={color}
-      size={size}
-      outline={outline}
-      fullWidth={fullWidth}
-      marginTop={marginTop}
-      marginBottom={marginBottom}
-      marginLeft={marginLeft}
-      marginRight={marginRight}
-      disabled={disabled}
-      className={disabled ? "deactive" : "active"}
-      {...rest}
-    >
-      {children}
-    </StyledButton>
-  );
-}
-
-MainButton.defaultProps = {
-  color: "#3CC23F",
-  size: "medium",
-};
 
 export default MainButton;

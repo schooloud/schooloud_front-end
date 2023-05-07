@@ -6,7 +6,6 @@ import Proposal from "./Proposal";
 import WriteProposal from "./WriteProposal";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import ProjectTabBar from "../../../components/ProjectTabBar";
 
 export default function Body() {
   const params = useParams();
@@ -27,25 +26,24 @@ export default function Body() {
   );
 
   return (
-    <BodyContainer>
-      <ProjectTabBar />
-      <BodyWrapper params={params}>{content}</BodyWrapper>
+    <BodyContainer params={params}>
+      <BodyWrapper>{content}</BodyWrapper>
     </BodyContainer>
   );
 }
 
 const BodyContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
-  overflow-x: auto;
-`;
-
-const BodyWrapper = styled.div`
+  width: calc(${window.screen.width}px - 15rem);
   height: ${({ params }) =>
     ["proposal", "writeproposal"].includes(params.selectedDrawer)
       ? "100%"
-      : "93%"};
+      : "calc(100% - 3.6rem)"};
+  margin-top: ${({ params }) =>
+    ["proposal", "writeproposal"].includes(params.selectedDrawer) || "3.6rem"};
+`;
+
+const BodyWrapper = styled.div`
+  height: 100%;
+  width: 100%;
   padding: 1.5rem;
-  background-color: #ffffff;
 `;

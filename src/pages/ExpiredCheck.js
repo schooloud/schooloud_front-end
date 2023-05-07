@@ -1,5 +1,5 @@
 //check and logout
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -10,13 +10,16 @@ const ExpiredCheck = (props) => {
   const navigate = useNavigate();
 
   const isExpired = (expiredAt) => {
-    let now = new Date();
-    // console.log("현재 시간은" + now);
-    let expiredAtDate = new Date(expiredAt);
-    // console.log("토큰 만료시간은" + expiredAtDate);
-    if (now > expiredAtDate) {
+    let now = new Date().getTime();
+    console.log("현재 시간은은은" + now);
+    //compare now and expiredAt
+
+    console.log("토큰 만료시간은" + expiredAt);
+    if (now > expiredAt) {
+      console.log("토큰 만료시간이 지났습니다.");
       return true;
     } else {
+      console.log("토큰 만료시간이 지나지 않았습니다.");
       return false;
     }
   };
@@ -51,14 +54,37 @@ const ExpiredCheck = (props) => {
   return (
     <>
       {/* isLogined에 props를 넣어서 컴포넌트를 띄우면 될 듯 */}
-      {isLogined && <Div>{isLogined}님 환영합니다!</Div>}
-      <button onClick={logOut}>로그아웃</button>
+      {isLogined && (
+        <UserInfo>
+          Welcome, {isLogined}!
+          {/* <Button onClick={logOut}>로그아웃</Button> */}
+        </UserInfo>
+      )}
     </>
   );
 };
 
-const Div = styled.div`
-  font-weight: 700;
-  font-size: 1.3rem;
+const UserInfo = styled.div`
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  height: 4.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 100;
+  font-size: 1.2rem;
+  background-color: var(--extra-light);
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+  z-index: 101;
+
+  &:hover {
+  }
+`;
+
+const Button = styled.button`
+  height: 1.2rem;
 `;
 export default ExpiredCheck;

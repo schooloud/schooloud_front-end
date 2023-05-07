@@ -2,7 +2,6 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import logoImage from "../assets/Logo.png";
 
 export default function ProfessorDrawerList() {
   const navigate = useNavigate();
@@ -25,9 +24,6 @@ export default function ProfessorDrawerList() {
 
   return (
     <DrawerWrapper>
-      <Logo>
-        <LogoImage src={logoImage} alt="" />
-      </Logo>
       <ListCategory>Proposal</ListCategory>
       <ListButton
         id="proposal"
@@ -41,55 +37,40 @@ export default function ProfessorDrawerList() {
   );
 }
 const DrawerWrapper = styled.div`
-  width: 16%;
+  width: 15rem;
   height: 100%;
-  background-color: #ffffff;
-`;
-
-const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 14%;
-  background-color: #ffffff;
-  color: #000000;
-`;
-
-const LogoImage = styled.img`
-  height: 35%;
-`;
-
-const ListButton = styled.div`
-  width: 100%;
-  height: 8%;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  padding-left: 8%;
-  &.selected {
-    background-color: #dfeedc;
-  }
-  &:hover {
-    opacity: 80%;
-    cursor: pointer;
-  }
+  overflow: auto;
 `;
 
 const ListCategory = styled.div`
   width: 100%;
-  height: 8%;
+  height: 3.6rem;
   background-color: #ffffff;
   display: flex;
   align-items: center;
-  padding-left: 8%;
+  padding-left: 1.3rem;
   color: #505050;
+`;
+
+const ListButton = styled.div`
+  width: 100%;
+  height: 3.6rem;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding-left: 1.3rem;
+  &.selected {
+    background-color: var(--light);
+  }
+  &:hover {
+    background-color: var(--light);
+    cursor: pointer;
+  }
 `;
 
 const ListText = styled.div`
   display: flex;
   align-items: center;
-  padding-top: 1.2%;
-  margin-left: 5%;
+  padding-left: 0.9rem;
   font-size: 1.1rem;
 `;

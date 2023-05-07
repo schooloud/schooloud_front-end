@@ -3,6 +3,31 @@ import styled from "styled-components";
 import { useState } from "react";
 import Calendar from "react-calendar";
 import "./Calendar.css";
+import Table from "../../../components/Table";
+
+const flavorData = [
+  {
+    id: "1",
+    flalvorName: "u2.c1m1",
+    flavorRam: "1GB",
+    flavorDisk: "20GB",
+    cpu: 1,
+  },
+  {
+    id: "2",
+    flalvorName: "u2.c2m2",
+    flavorRam: "2GB",
+    flavorDisk: "40GB",
+    cpu: 2,
+  },
+  {
+    id: "3",
+    flalvorName: "u2.c2m2",
+    flavorRam: "2GB",
+    flavorDisk: "40GB",
+    cpu: 2,
+  },
+];
 
 /*
 name = [String] 
@@ -16,17 +41,25 @@ author = [String]
 
 export default function WriteProposal() {
   const [date, setDate] = useState(new Date());
+  const [selectedCol, setSelectedCol] = useState([]);
+  const [selectedId, setSelectedId] = useState();
+  // const [totalCPU, setTotalCPU] = useState(0);
+  // const [totalRAM, setTotalRAM] = useState(0);
+  // const [totalStorage, setTotalStorage] = useState(0);
 
   const [proposal, setProposal] = useState({
     name: "",
     purpose: "",
+    instance_num: null,
     cpu: null,
     memory: null,
     storage: null,
     author_email: "",
+    end_at: "",
   });
 
-  const handleChange = (e) => {
+  // project name, project purpose
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProposal({
       ...proposal,
@@ -34,19 +67,74 @@ export default function WriteProposal() {
     });
   };
 
+  const handleRowClick = (id) => {
+    setSelectedId(id);
+  };
+
   const handleSubmmit = (e) => {
     e.preventDefault();
+
+    //proposal 객체에 instance_num 추가
+    proposal.instance_num = 0;
+    for (let i in num) {
+      proposal.instance_num += parseInt(num[i]);
+    }
+    //proposal 객체에 totalCPU, totalRAM, totalStorage 추가
+    proposal.cpu = totalCPU;
+    proposal.memory = totalRAM;
+    proposal.storage = totalStorage;
     //proposal 객체에 date 추가
-    proposal.date = date.toLocaleDateString();
-    // axios.post("/api/proposal", proposal).then((res) => {
-    //   if (res.data.success) {
-    //     alert("제출되었습니다.");
-    //   } else {
-    //     alert("제출에 실패했습니다.");
-    //   }
-    // });
+    proposal.end_at = date.toLocaleDateString();
+    //proposal 객체에 author_email 추가
+    proposal.author_email = "";
+
     console.log(proposal);
   };
+
+  let totalCPU = 0;
+  let totalRAM = 0;
+  let totalStorage = 0;
+
+  //array that stores the selectedId and the number of instances selected by the user
+  const [num, setNum] = useState([]);
+
+  const handleNumChange = (e) => {
+    //num 객체에 selectedId와 num을 추가
+    const { value } = e.target;
+    setNum({
+      ...num,
+      [selectedId]: value,
+    });
+  };
+
+  for (let i in num) {
+    console.log(i);
+    totalCPU += flavorData[i - 1].cpu * num[i];
+    totalRAM += parseInt(flavorData[i - 1].flavorRam) * num[i];
+    totalStorage += parseInt(flavorData[i - 1].flavorDisk) * num[i];
+  }
+
+  const numInput = (
+    //input should be positive integer
+    <input
+      type="number"
+      min="0"
+      onChange={handleNumChange}
+      style={{
+        width: "50px",
+        height: "20px",
+        border: `0.7px solid var(--dark)`,
+        borderRadius: "2px",
+        fontSize: "15px",
+        textAlign: "center",
+        paddingLeft: "15px",
+      }}
+    ></input>
+  );
+
+  flavorData.map((data) => {
+    data.numInput = numInput;
+  });
 
   return (
     <Wrapper>
@@ -56,7 +144,7 @@ export default function WriteProposal() {
             <Div>
               <Label>Project Name</Label>
               <InputProjectName
-                onChange={handleChange}
+                onChange={handleInputChange}
                 type="text"
                 name="name"
                 maxLength={30}
@@ -70,7 +158,7 @@ export default function WriteProposal() {
               </Label2>
               <InputContainer>
                 <InputDescription
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   type="text"
                   name="purpose"
                   maxLength={300}
@@ -80,15 +168,29 @@ export default function WriteProposal() {
             </Div>
             <Div>
               <Label>Quata</Label>
+              <Label2>Enter the number of instances you want to use</Label2>
+              <TableDiv>
+                <Table
+                  checkBox={false}
+                  data={flavorData}
+                  header={["Name", "RAM", "DISK", "vCPU", "Num"]}
+                  selectedCol={selectedCol}
+                  setSelectedCol={setSelectedCol}
+                  onClick={handleRowClick}
+                />
+              </TableDiv>
             </Div>
             <Div>
               <Label>total CPU</Label>
+              {totalCPU}
             </Div>
             <Div>
               <Label>total RAM</Label>
+              {totalRAM}
             </Div>
             <Div>
               <Label>total STORAGE</Label>
+              {totalStorage}
             </Div>
           </Form>
         </LeftContainer>
@@ -118,6 +220,10 @@ export default function WriteProposal() {
     </Wrapper>
   );
 }
+
+const TableDiv = styled.div`
+  width: 90%;
+`;
 
 const Wrapper = styled.div`
   display: flex;

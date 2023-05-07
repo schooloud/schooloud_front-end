@@ -7,6 +7,12 @@ import PretendardLight from "../assets/fonts/Pretendard-Light.woff2";
 import PretendardExtraLight from "../assets/fonts/Pretendard-ExtraLight.woff2";
 import PretendardThin from "../assets/fonts/Pretendard-Thin.woff2";
 
+export const basicStyles = {
+  maxWidth: 1440 * (window.screen.width / 1440),
+  maxHeight: window.screen.height,
+  basicFont: 16 * (window.screen.width / 1440),
+};
+
 export default createGlobalStyle`
   @font-face {
     font-family: "Pretendard";
@@ -63,16 +69,20 @@ export default createGlobalStyle`
     --semi-dark: #509741;
     --dark: #2D791E;
     --extra-dark: #18610A;
+    font-size: ${`${basicStyles.basicFont}px`};
   }
 
   *{
     font-family: 'Pretendard';
     font-weight: '300';
-  }
-`;
+    /* box-shadow : 0 0 0 1px purple inset; */
 
-export const basicStyles = {
-  maxWidth: 1440 * (window.screen.width / 1440),
-  maxHeight: window.screen.height,
-  basicFont: 16 * (window.screen.width / 1440),
-};
+    ::-webkit-scrollbar {
+     display: none;
+    }
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
+  }
+
+  
+`;

@@ -3,12 +3,29 @@ import CloseIcon from "@mui/icons-material/Close";
 import Crop169Icon from "@mui/icons-material/Crop169";
 import Crop32Icon from "@mui/icons-material/Crop32";
 import Crop75Icon from "@mui/icons-material/Crop75";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function BottomModal({ open, setOpen, children }) {
   const [modalHeight, setModalHeight] = useState("medium");
+  const [mount, setMount] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      if (!mount) {
+        setMount(true);
+      }
+    } else {
+      if (mount) {
+        setTimeout(() => setMount(false), 500);
+      }
+    }
+  }, [open]);
+
+  if (!mount && !open) {
+    return null;
+  }
 
   return (
-    <ModalContainer Height={modalHeight} open={open}>
+    <ModalContainer Height={modalHeight} open={open} mount={mount}>
       <ModalWrapper>
         {children}
         <ModalControlContainer>
@@ -45,12 +62,13 @@ export default function BottomModal({ open, setOpen, children }) {
 }
 
 const ModalContainer = styled.div`
-  width: ${`${window.screen.width * 0.862}px`};
-  /* width: 86.2%; */
-  /* min-width: 1100px; */
-  height: ${({ Height, open }) =>
+  width: calc(100% - 15rem);
+  min-width: 34rem;
+  height: ${({ Height, open, mount }) =>
     open
-      ? Height === "large"
+      ? !mount
+        ? "0"
+        : Height === "large"
         ? "70%"
         : Height === "medium"
         ? "50%"
@@ -58,7 +76,7 @@ const ModalContainer = styled.div`
       : "0"};
   position: fixed;
   bottom: 0;
-  left: ${`${window.screen.width * 0.138}px`};
+  left: 15rem;
   display: flex;
   justify-content: center;
   transition: height 0.5s;
@@ -78,6 +96,7 @@ const ModalWrapper = styled.div`
   margin: 0 1.5rem;
   margin-top: 0.5rem;
   padding: 1.6rem 1.8rem;
+  overflow: auto;
 `;
 
 const ModalControlContainer = styled.div`

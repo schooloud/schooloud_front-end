@@ -14,7 +14,6 @@ export default function Home() {
       </button>
       <button onClick={() => navigate("/professor/proposal")}>Professor</button>
       <button onClick={() => navigate("/admin/dashboard")}>Admin</button>
-      {/* <ExpiredCheck /> */}
     </div>
   );
 }
