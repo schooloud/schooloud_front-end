@@ -17,7 +17,7 @@ const serverDummy = {
 const tokenDummy = {
   sessionKey: "1",
   //get now time and add 10 minutes
-  expiredAt: new Date().getTime() + 1000 * 60 * 100,
+  expiredAt: new Date().getTime() + 1000 * 60 * 1000,
   email: "cat1181123@naver.com",
   name: "김석희",
 };

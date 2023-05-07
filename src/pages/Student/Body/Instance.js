@@ -57,7 +57,7 @@ const instanceData = [
 export default function Instance() {
   const navigate = useNavigate();
   const params = useParams();
-  const [selectedCol, setSelectedCol] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [selectedModalTab, setSelectedModalTab] = useState(1);
@@ -67,7 +67,7 @@ export default function Instance() {
     setModalOpen(true);
   };
 
-  const selectedRow = instanceData.find((row) => row.id === selectedId);
+  const selectedRowId = instanceData.find((row) => row.id === selectedId);
 
   if (params.create === "create") {
     return <InstanceCreate params={params} navigate={navigate} />;
@@ -126,13 +126,13 @@ export default function Instance() {
             "KeyPair",
             "Status",
           ]}
-          selectedCol={selectedCol}
-          setSelectedCol={setSelectedCol}
+          selectedRow={selectedRow}
+          setSelectedRow={setSelectedRow}
           onClick={handleRowClick}
         />
       </TableWrapper>
       <BottomModal open={modalOpen} setOpen={setModalOpen}>
-        <TitleText>{selectedRow?.name}</TitleText>
+        <TitleText>{selectedRowId?.name}</TitleText>
         <ModalTab>
           <TabBox
             className={selectedModalTab === 1 ? "selected" : "unSelected"}
@@ -159,32 +159,32 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>Instance Name</BoldText>
-                <Text>: {selectedRow?.name}</Text>
+                <Text>: {selectedRowId?.name}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>OS</BoldText>
-                <Text>: {selectedRow?.os}</Text>
+                <Text>: {selectedRowId?.os}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Instance Type</BoldText>
-                <Text>: {selectedRow?.type}</Text>
+                <Text>: {selectedRowId?.type}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Keypair Name</BoldText>
-                <Text>: {selectedRow?.keypair}</Text>
+                <Text>: {selectedRowId?.keypair}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Status</BoldText>
-                <Text>: {selectedRow?.status}</Text>
+                <Text>: {selectedRowId?.status}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>IP Address</BoldText>
-                <Text>: {selectedRow?.ip}</Text>
+                <Text>: {selectedRowId?.ip}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
@@ -238,7 +238,6 @@ export default function Instance() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  flex-wrap: nowrap;
 `;
 
 const TitleText = styled.div`
