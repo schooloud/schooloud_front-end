@@ -3,10 +3,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { CiUser } from "react-icons/ci";
 
 const ExpiredCheck = (props) => {
   const [isLogined, setIsLogined] = useState(null);
   const [cookies, removeCookie] = useCookies(null);
+  const [showLogoutButton, setShowLogoutButton] = useState(false);
+
   const navigate = useNavigate();
 
   const isExpired = (expiredAt) => {
@@ -51,40 +54,73 @@ const ExpiredCheck = (props) => {
     navigate("/"); // 메인 페이지로 이동
   };
 
+  const handleOver = () => {
+    //클릭하면 아래에 로그아웃 버튼이 생성되고, 로그아웃 버튼을 누르면 로그아웃
+    if (isLogined) {
+      setShowLogoutButton(true);
+    }
+  };
+
+  const handleLeave = () => {
+    setShowLogoutButton(false);
+  };
+
   return (
     <>
-      {/* isLogined에 props를 넣어서 컴포넌트를 띄우면 될 듯 */}
       {isLogined && (
-        <UserInfo>
-          Welcome, {isLogined}!
-          {/* <Button onClick={logOut}>로그아웃</Button> */}
-        </UserInfo>
+        <UserIcon onClick={handleOver} onMouseLeave={handleLeave}>
+          <CiUser size="30" />
+          <UserName>{isLogined}</UserName>
+        </UserIcon>
+      )}
+      {showLogoutButton && (
+        <LogOutButton
+          onClick={logOut}
+          onMouseOver={(e) => setShowLogoutButton(true)}
+          onMouseLeave={(e) => setShowLogoutButton(false)}
+        >
+          로그아웃
+        </LogOutButton>
       )}
     </>
   );
 };
 
-const UserInfo = styled.div`
+const UserIcon = styled.div`
   position: fixed;
-  right: 1rem;
   top: 1rem;
-  height: 4.6rem;
+  right: 2.7rem;
+
+  z-index: 200;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  cursor: pointer;
+`;
+
+const UserName = styled.div`
+  font-size: 20px;
   font-weight: 100;
-  font-size: 1.2rem;
-  background-color: var(--extra-light);
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
-  z-index: 101;
-
-  &:hover {
-  }
 `;
 
-const Button = styled.button`
-  height: 1.2rem;
+const LogOutButton = styled.button`
+  //same width with UserIcon
+  width: 4.8rem;
+
+  box-shadow: 1px 2px rgba(0, 0, 0, 0.12);
+  border: none;
+  position: fixed;
+  top: 2.9rem;
+  right: 2.7rem;
+  z-index: 201;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 100;
+  //글자 중간정렬
+  justify-content: center;
+
+  background-color: white;
 `;
+
 export default ExpiredCheck;

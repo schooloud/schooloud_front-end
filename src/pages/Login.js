@@ -75,63 +75,72 @@ const Login = (props) => {
   };
 
   return (
-    <LoginWrapper>
-      <Container>
-        <Logo>
-          <LogoImage src={logoImage} alt="" />
-        </Logo>
-        <Box>
-          <BoxContainer>
-            <Title>로그인</Title>
-            <Form>
-              <Input
-                type="email"
-                name="id"
-                placeholder="이메일"
-                required
-                onChange={handleChange}
-              />
-              <Input
-                type="password"
-                name="password"
-                placeholder="비밀번호"
-                required
-                onChange={handleChange}
-              />
-              <MainButton
-                color={"main"}
-                fullWidth={true}
-                marginTop={1}
-                onClick={login}
-                disabled={form.id === "" || form.password === "" ? true : false}
-                // marginTop={"1rem"}
-              >
-                로그인
-              </MainButton>
-            </Form>
-          </BoxContainer>
-        </Box>
-        <SignUpButton onClick={handleClick}>회원가입</SignUpButton>
-      </Container>
-    </LoginWrapper>
+    <LoginContainer>
+      <LoginWrapper>
+        <Container>
+          <Logo>
+            <LogoImage src={logoImage} alt="" />
+          </Logo>
+          <Box>
+            <BoxContainer>
+              <Title>로그인</Title>
+              <Form>
+                <Input
+                  type="email"
+                  name="id"
+                  placeholder="이메일"
+                  required
+                  onChange={handleChange}
+                />
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="비밀번호"
+                  required
+                  onChange={handleChange}
+                />
+                <MainButton
+                  color={"main"}
+                  fullWidth={true}
+                  marginTop={1}
+                  onClick={login}
+                  disabled={
+                    form.id === "" || form.password === "" ? true : false
+                  }
+                  // marginTop={"1rem"}
+                >
+                  로그인
+                </MainButton>
+              </Form>
+            </BoxContainer>
+          </Box>
+          <SignUpButton onClick={handleClick}>회원가입</SignUpButton>
+        </Container>
+      </LoginWrapper>
+    </LoginContainer>
   );
 };
+
+const LoginContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+`;
 
 const LoginWrapper = styled.div`
   display: flex;
   justify-content: center; /* 수직 중앙 정렬 */
   align-items: center; /* 수평 중앙 정렬 */
-  height: 100%; //고정
-  width: 100vw; //바뀜
+  width: 100%; //바뀜
+  min-width: 32rem;
 `;
 
 const Container = styled.div`
   position: relative;
-  bottom: 5rem;
+  top: 12rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 30rem;
   width: 30rem;
 `;
 
@@ -140,6 +149,7 @@ const BoxContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 80%;
+  height: 100%;
 `;
 
 const Logo = styled.div`
@@ -158,7 +168,7 @@ const LogoImage = styled.img`
 `;
 
 const Box = styled.div`
-  height: 60%;
+  padding: 3rem 0;
   width: 100%;
   display: flex;
   align-items: center;
