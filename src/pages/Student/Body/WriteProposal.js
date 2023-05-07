@@ -41,7 +41,7 @@ author = [String]
 
 export default function WriteProposal() {
   const [date, setDate] = useState(new Date());
-  const [selectedCol, setSelectedCol] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
   const [selectedId, setSelectedId] = useState();
   // const [totalCPU, setTotalCPU] = useState(0);
   // const [totalRAM, setTotalRAM] = useState(0);
@@ -178,8 +178,8 @@ export default function WriteProposal() {
                   checkBox={false}
                   data={flavorData}
                   header={["Name", "RAM", "DISK", "vCPU", "Num"]}
-                  selectedCol={selectedCol}
-                  setSelectedCol={setSelectedCol}
+                  selectedRow={selectedRow}
+                  setSelectedRow={setSelectedRow}
                   onClick={handleRowClick}
                 />
               </TableDiv>
