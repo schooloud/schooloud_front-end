@@ -13,9 +13,6 @@ sudo npm install -g n
 #4. nodejs 버전 업그레이드
 sudo n lts
 
-#5. git clone
-sudo git clone --branch develop https://github.com/schooloud/schooloud_front-end.git
-
 #nginx 설치
 sudo apt install -y nginx
 

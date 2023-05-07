@@ -6,8 +6,6 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import logoImage from "../assets/Logo.png";
-import ExpiredCheck from "../pages/ExpiredCheck";
 
 export default function StudentDrawerList() {
   const navigate = useNavigate();
@@ -33,10 +31,6 @@ export default function StudentDrawerList() {
 
   return (
     <DrawerWrapper>
-      <Logo>
-        <LogoImage src={logoImage} alt="" />
-        <ExpiredCheck />
-      </Logo>
       <ListButton
         id="dashboard"
         className={selectedDrawer === "dashboard" && "selected"}
@@ -83,33 +77,18 @@ export default function StudentDrawerList() {
   );
 }
 const DrawerWrapper = styled.div`
-  width: 16%;
+  width: 15rem;
   height: 100%;
-  background-color: #ffffff;
-`;
-
-const Logo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 14%;
-  background-color: #ffffff;
-  color: #000000;
-`;
-
-const LogoImage = styled.img`
-  height: 30%;
+  overflow: auto;
 `;
 
 const ListButton = styled.div`
   width: 100%;
-  height: 6%;
+  height: 3.6rem;
   background-color: #ffffff;
   display: flex;
   align-items: center;
-  padding-left: 8%;
+  padding-left: 1.3rem;
   &.selected {
     background-color: var(--light);
   }
@@ -121,17 +100,17 @@ const ListButton = styled.div`
 
 const ListCategory = styled.div`
   width: 100%;
-  height: 8%;
+  height: 3.6rem;
   background-color: #ffffff;
   display: flex;
   align-items: center;
-  padding-left: 8%;
+  padding-left: 1.3rem;
   color: #505050;
 `;
 
 const ListText = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 5%;
+  padding-left: 0.9rem;
   font-size: 1.1rem;
 `;

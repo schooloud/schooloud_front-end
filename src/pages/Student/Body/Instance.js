@@ -115,20 +115,22 @@ export default function Instance() {
           인스턴스 삭제
         </MainButton>
       </ButtonContainer>
-      <Table
-        data={instanceData}
-        header={[
-          "Name",
-          "OS",
-          "IP Adress",
-          "Instance Type",
-          "KeyPair",
-          "Status",
-        ]}
-        selectedCol={selectedCol}
-        setSelectedCol={setSelectedCol}
-        onClick={handleRowClick}
-      />
+      <TableWrapper>
+        <Table
+          data={instanceData}
+          header={[
+            "Name",
+            "OS",
+            "IP Adress",
+            "Instance Type",
+            "KeyPair",
+            "Status",
+          ]}
+          selectedCol={selectedCol}
+          setSelectedCol={setSelectedCol}
+          onClick={handleRowClick}
+        />
+      </TableWrapper>
       <BottomModal open={modalOpen} setOpen={setModalOpen}>
         <TitleText>{selectedRow?.name}</TitleText>
         <ModalTab>
@@ -248,6 +250,10 @@ const TitleText = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
+const TableWrapper = styled.div`
   margin-bottom: 1.5rem;
 `;
 

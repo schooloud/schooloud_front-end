@@ -10,33 +10,41 @@ import SignUp from "./pages/SignUp";
 
 function App() {
   return (
-    <AppWrapper>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signUp" element={<SignUp />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/student/project" element={<Student />}>
-          <Route path=":projectId" element={<Student />}>
-            <Route path=":selectedDrawer" element={<Student />}>
-              <Route path=":create" element={<Student />} />
+    <AppContainer>
+      <AppWrapper>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signUp" element={<SignUp />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/student/project" element={<Student />}>
+            <Route path=":projectId" element={<Student />}>
+              <Route path=":selectedDrawer" element={<Student />}>
+                <Route path=":create" element={<Student />} />
+              </Route>
             </Route>
           </Route>
-        </Route>
-        <Route path="/student" element={<Student />}>
-          <Route path=":selectedDrawer" element={<Student />} />
-        </Route>
-        <Route path="/professor/:selectedDrawer" element={<Professor />} />
-        <Route path="/admin/:selectedDrawer" element={<Admin />} />
-      </Routes>
-    </AppWrapper>
+          <Route path="/student" element={<Student />}>
+            <Route path=":selectedDrawer" element={<Student />} />
+          </Route>
+          <Route path="/professor/:selectedDrawer" element={<Professor />} />
+          <Route path="/admin/:selectedDrawer" element={<Admin />} />
+        </Routes>
+      </AppWrapper>
+    </AppContainer>
   );
 }
 
 export default App;
 
-const AppWrapper = styled.div`
-  width: ${basicStyles.maxWidth}px;
-  height: ${basicStyles.maxHeight}px;
-  font-size: ${basicStyles.basicFont}px;
+const AppContainer = styled.div`
+  width: 100%;
+  height: 100vh;
   background-color: white;
+`;
+
+const AppWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  overflow: hidden;
 `;

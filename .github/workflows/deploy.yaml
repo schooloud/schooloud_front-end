@@ -1,15 +1,16 @@
+##if(pr이 열렸다가 사라지면)
 on:
   pull_request:
     branches: [develop]
     types: [closed]
-
+##{
 jobs:
   build:
     if: ${{ github.event.pull_request.merged }}
     name: synchronization between local and remote repository
     runs-on: ubuntu-latest
 
-    # 경고 무시
+    # 경고를 에러로 판단하는 것을 무시
     env:
       CI: false
 
@@ -31,3 +32,5 @@ jobs:
             sudo npm install
             sudo npm run build
             sudo systemctl restart nginx
+
+##}

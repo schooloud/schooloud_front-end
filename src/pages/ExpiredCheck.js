@@ -54,14 +54,37 @@ const ExpiredCheck = (props) => {
   return (
     <>
       {/* isLogined에 props를 넣어서 컴포넌트를 띄우면 될 듯 */}
-      {isLogined && <UserInfo>{isLogined}님</UserInfo>}
-      <button onClick={logOut}>로그아웃</button>
+      {isLogined && (
+        <UserInfo>
+          Welcome, {isLogined}!
+          {/* <Button onClick={logOut}>로그아웃</Button> */}
+        </UserInfo>
+      )}
     </>
   );
 };
 
 const UserInfo = styled.div`
-  font-weight: 700;
-  font-size: 1.3rem;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  height: 4.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 100;
+  font-size: 1.2rem;
+  background-color: var(--extra-light);
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+  z-index: 101;
+
+  &:hover {
+  }
+`;
+
+const Button = styled.button`
+  height: 1.2rem;
 `;
 export default ExpiredCheck;

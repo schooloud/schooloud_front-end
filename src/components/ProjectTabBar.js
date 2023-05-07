@@ -76,12 +76,12 @@ export default function ProjectTabBar() {
 }
 
 const TabWrapper = styled.div`
-  width: 100%;
-  height: 7%;
+  width: calc(${window.screen.width}px - 15rem);
+  height: 3.6rem;
   background-color: #f0f0f0;
   display: flex;
   align-items: flex-end;
-  /* padding-left: 1%; */
+  overflow: auto;
 `;
 
 const TabBox = styled.div`

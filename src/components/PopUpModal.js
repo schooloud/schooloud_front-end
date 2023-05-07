@@ -162,7 +162,7 @@ const ModalBlock = styled.div`
 const ButtonGroup = styled.div`
   margin-top: ${(props) => `${props.height - 10}rem` || "3rem"};
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 /* ShortMarginButton => MainButotn 컴포넌트의 margin-left 간격을 0.5로 줄여줍니다. */
