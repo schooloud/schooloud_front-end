@@ -100,15 +100,24 @@ export default function WriteProposal() {
 
   const handleNumChange = (e) => {
     //num 객체에 selectedId와 num을 추가
-    const { value } = e.target;
+    let { value } = e.target;
+    if (value.length >= 3) {
+      e.preventDefault();
+    }
+    //value가 10을 초과하면 처음에 누른 값만 저장되고 그 이후에는 저장되지 않음
+    if (value > 10) {
+      e.target.value = value.slice(0, 1);
+      value = value.slice(0, 1);
+    }
+
     setNum({
       ...num,
       [selectedId]: value,
     });
   };
 
+  console.log(num);
   for (let i in num) {
-    console.log(i);
     totalCPU += flavorData[i - 1].cpu * num[i];
     totalRAM += parseInt(flavorData[i - 1].flavorRam) * num[i];
     totalStorage += parseInt(flavorData[i - 1].flavorDisk) * num[i];
@@ -116,20 +125,15 @@ export default function WriteProposal() {
 
   const numInput = (
     //input should be positive integer
-    <input
+    //updownkey unavailable
+    <Input
       type="number"
+      onKeyDown={(e) =>
+        ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+      }
       min="0"
       onChange={handleNumChange}
-      style={{
-        width: "50px",
-        height: "20px",
-        border: `0.7px solid var(--dark)`,
-        borderRadius: "2px",
-        fontSize: "15px",
-        textAlign: "center",
-        paddingLeft: "15px",
-      }}
-    ></input>
+    ></Input>
   );
 
   flavorData.map((data) => {
@@ -210,7 +214,7 @@ export default function WriteProposal() {
           <MainButton
             color={"semi-dark"}
             fullWidth={true}
-            marginTop={1}
+            marginTop={8}
             onClick={handleSubmmit}
           >
             제출
@@ -230,29 +234,26 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
 `;
 
 const WriteProposalWrapper = styled.div`
   margin-top: 1.4rem;
   display: flex;
   justify-content: space-around;
-  width: 95%;
-  height: 90%;
+  width: 100%;
+  padding: 0 1.2rem;
 `;
 
 const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
-  height: 100%;
 `;
 
 const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
-  height: 100%;
 `;
 
 const Form = styled.div`
@@ -266,7 +267,7 @@ const Div = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
 `;
 
 const CalendarDiv = styled.div`
@@ -316,4 +317,21 @@ const InputDescription = styled.textarea`
 const InputContainer = styled.div`
   display: flex;
   align-items: flex-start;
+`;
+
+const Input = styled.input`
+  width: 50px;
+  height: 20px;
+  border: 0.7px solid var(--dark);
+  border-radius: 2px;
+  font-size: 15px;
+  text-align: center;
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  ::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
