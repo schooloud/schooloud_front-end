@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
+import ExpiredCheck from "../pages/ExpiredCheck";
 
 export default function StudentDrawerList() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export default function StudentDrawerList() {
     <DrawerWrapper>
       <Logo>
         <LogoImage src={logoImage} alt="" />
+        <ExpiredCheck />
       </Logo>
       <ListButton
         id="dashboard"
@@ -88,6 +90,7 @@ const DrawerWrapper = styled.div`
 
 const Logo = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;

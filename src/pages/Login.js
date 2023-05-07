@@ -10,14 +10,19 @@ const serverDummy = {
   password: "1234",
 };
 
+//현재의 오류
+//tokenDummy의 expiredAt이 로그인할 때 마다 업데이트 되지 않음
+//로그인할 때 마다 새로운 토큰을 발급해야함
+
 const tokenDummy = {
   sessionKey: "1",
-  //get now time and add 1 minutes
-  expiredAt: new Date().getTime() + 1000 * 60 * 1,
+  //get now time and add 10 minutes
+  expiredAt: new Date().getTime() + 1000 * 60 * 10,
   email: "cat1181123@naver.com",
   name: "김석희",
 };
 
+console.log(tokenDummy.expiredAt);
 const Login = (props) => {
   const [cookies, setCookie] = useCookies({}); // 쿠키 훅
   const navigate = useNavigate();
@@ -38,7 +43,6 @@ const Login = (props) => {
     [form]
   );
 
-  console.log(form.id);
   // const login = (e) => {
   //   e.preventDefault();
   //   axios
@@ -59,6 +63,7 @@ const Login = (props) => {
       for (let key in tokenDummy) {
         setCookie(key, tokenDummy[key]);
       }
+      console.log("로그인 성공");
       navigate("/home"); // 로그인 성공시 메인 페이지로 이동
     } else {
       alert("아이디 또는 비밀번호가 틀렸습니다.");
@@ -185,24 +190,6 @@ const Input = styled.input`
   border-radius: 5px;
   padding: 0 10px;
 `;
-
-// const LoginButton = styled.button`
-//   width: 80%;
-//   height: 40px;
-//   margin-top: 10px;
-//   border: none;
-//   color: white;
-//   font-size: large;
-//   border-radius: 4px;
-//   background-color: var(--main);
-//   border: 1px solid var(--medium);
-//   cursor: pointer;
-//   letter-spacing: 1px;
-//   &:disabled {
-//     background-color: var(--medium);
-//     cursor: not-allowed;
-//   }
-// `;
 
 const SignUpButton = styled.div`
   margin-top: 10px;
