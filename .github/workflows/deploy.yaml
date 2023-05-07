@@ -1,0 +1,33 @@
+on:
+  pull_request:
+    branches: [develop]
+    types: [closed]
+
+jobs:
+  build:
+    if: ${{ github.event.pull_request.merged }}
+    name: synchronization between local and remote repository
+    runs-on: ubuntu-latest
+
+    # 경고 무시
+    env:
+      CI: false
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+
+      - name: executing remote ssh commands with ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /schooloud_front-end/
+            sudo git checkout develop
+            sudo git pull origin develop
+            sudo npm install
+            sudo npm run build
+            sudo systemctl restart nginx
