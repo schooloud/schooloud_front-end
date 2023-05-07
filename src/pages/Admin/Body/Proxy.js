@@ -1,14 +1,7 @@
 import styled from "styled-components";
-import { useState } from "react";
 import Table from "../../../components/Table";
 export default function Proxy() {
-  const [toggle, setToggle] = useState("Student");
-
   const handleRowClick = (id) => {};
-
-  const handleToggleClick = (to) => {
-    setToggle(to);
-  };
 
   const dummy = [
     {
@@ -55,7 +48,7 @@ export default function Proxy() {
 
   return (
     <Container>
-      <TitleText>Proxy</TitleText>
+      <TitleText>Proxy List</TitleText>
       <Table
         data={dummy}
         header={[

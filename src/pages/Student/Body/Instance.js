@@ -6,52 +6,196 @@ import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
 import { useNavigate, useParams } from "react-router-dom";
 
-const instanceData = [
-  {
-    id: "1",
-    name: "jsb-instance",
-    os: "Ubuntu Server 20.04 LTS",
-    ip: "192.168.0.8",
-    type: "u2.c1m1 (1vCPU, 1GB)",
-    keypair: "jsb-keypair",
-    status: "ON",
-  },
-  {
-    id: "2",
-    name: "yjh-instance",
-    os: "Ubuntu Server 20.04 LTS",
-    ip: "192.168.0.8",
-    type: "u2.c1m1 (1vCPU, 1GB)",
-    keypair: "yjh-keypair",
-    status: "ON",
-  },
-  {
-    id: "3",
-    name: "ksh-instance",
-    os: "Ubuntu Server 20.04 LTS",
-    ip: "192.168.0.8",
-    type: "u2.c1m1 (1vCPU, 1GB)",
-    keypair: "ksh-keypair",
-    status: "ON",
-  },
-  {
-    id: "4",
-    name: "lyr-instance",
-    os: "Ubuntu Server 20.04 LTS",
-    ip: "192.168.0.8",
-    type: "u2.c1m1 (1vCPU, 1GB)",
-    keypair: "lyr-keypair",
-    status: "ON",
-  },
-  {
-    id: "5",
-    name: "lsi-instance",
-    os: "Ubuntu Server 20.04 LTS",
-    ip: "192.168.0.8",
-    type: "u2.c1m1 (1vCPU, 1GB)",
-    keypair: "lsi-keypair",
-    status: "ON",
-  },
+// const instanceData = [
+//   {
+//     id: "1",
+//     name: "jsb-instance",
+//     os: "Ubuntu Server 20.04 LTS",
+//     ip: "192.168.0.8",
+//     type: "u2.c1m1 (1vCPU, 1GB)",
+//     keypair: "jsb-keypair",
+//     status: "ON",
+//   },
+//   {
+//     id: "2",
+//     name: "yjh-instance",
+//     os: "Ubuntu Server 20.04 LTS",
+//     ip: "192.168.0.8",
+//     type: "u2.c1m1 (1vCPU, 1GB)",
+//     keypair: "yjh-keypair",
+//     status: "ON",
+//   },
+//   {
+//     id: "3",
+//     name: "ksh-instance",
+//     os: "Ubuntu Server 20.04 LTS",
+//     ip: "192.168.0.8",
+//     type: "u2.c1m1 (1vCPU, 1GB)",
+//     keypair: "ksh-keypair",
+//     status: "ON",
+//   },
+//   {
+//     id: "4",
+//     name: "lyr-instance",
+//     os: "Ubuntu Server 20.04 LTS",
+//     ip: "192.168.0.8",
+//     type: "u2.c1m1 (1vCPU, 1GB)",
+//     keypair: "lyr-keypair",
+//     status: "ON",
+//   },
+//   {
+//     id: "5",
+//     name: "lsi-instance",
+//     os: "Ubuntu Server 20.04 LTS",
+//     ip: "192.168.0.8",
+//     type: "u2.c1m1 (1vCPU, 1GB)",
+//     keypair: "lsi-keypair",
+//     status: "ON",
+//   },
+// ];
+
+const pagnationDummy = [
+  [
+    {
+      id: "1",
+      name: "jsb-instance",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "jsb-keypair",
+      status: "ON",
+    },
+    {
+      id: "2",
+      name: "yjh-instance",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "yjh-keypair",
+      status: "ON",
+    },
+    {
+      id: "3",
+      name: "ksh-instance",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "ksh-keypair",
+      status: "ON",
+    },
+    {
+      id: "4",
+      name: "lyr-instance",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "lyr-keypair",
+      status: "ON",
+    },
+    {
+      id: "5",
+      name: "lsi-instance",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "lsi-keypair",
+      status: "ON",
+    },
+  ],
+  [
+    {
+      id: "6",
+      name: "jsb-instance2",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "jsb-keypair",
+      status: "ON",
+    },
+    {
+      id: "7",
+      name: "yjh-instance2",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "yjh-keypair",
+      status: "ON",
+    },
+    {
+      id: "8",
+      name: "ksh-instance2",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "ksh-keypair",
+      status: "ON",
+    },
+    {
+      id: "9",
+      name: "lyr-instance2",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "lyr-keypair",
+      status: "ON",
+    },
+    {
+      id: "10",
+      name: "lsi-instance2",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "lsi-keypair",
+      status: "ON",
+    },
+  ],
+  [
+    {
+      id: "11",
+      name: "jsb-instance3",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "jsb-keypair",
+      status: "ON",
+    },
+    {
+      id: "12",
+      name: "yjh-instance3",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "yjh-keypair",
+      status: "ON",
+    },
+    {
+      id: "13",
+      name: "ksh-instance3",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "ksh-keypair",
+      status: "ON",
+    },
+    {
+      id: "14",
+      name: "lyr-instance3",
+      os: "Ubuntu Server 20.04 LTS",
+      ip: "192.168.0.8",
+      type: "u2.c1m1 (1vCPU, 1GB)",
+      keypair: "lyr-keypair",
+      status: "ON",
+    },
+    // {
+    //   id: "15",
+    //   name: "lsi-instance3",
+    //   os: "Ubuntu Server 20.04 LTS",
+    //   ip: "192.168.0.8",
+    //   type: "u2.c1m1 (1vCPU, 1GB)",
+    //   keypair: "lsi-keypair",
+    //   status: "ON",
+    // },
+  ],
 ];
 
 export default function Instance() {
@@ -61,13 +205,17 @@ export default function Instance() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [selectedModalTab, setSelectedModalTab] = useState(1);
+  const [page, setPage] = useState(0);
 
   const handleRowClick = (id) => {
     setSelectedId(id);
     setModalOpen(true);
   };
 
-  const selectedRowId = instanceData.find((row) => row.id === selectedId);
+  // const selectedInstance = instanceData.find((row) => row.id === selectedId);
+  const selectedInstance = pagnationDummy[page].find(
+    (row) => row.id === selectedId
+  );
 
   if (params.create === "create") {
     return <InstanceCreate params={params} navigate={navigate} />;
@@ -117,7 +265,7 @@ export default function Instance() {
       </ButtonContainer>
       <TableWrapper>
         <Table
-          data={instanceData}
+          data={pagnationDummy}
           header={[
             "Name",
             "OS",
@@ -129,10 +277,13 @@ export default function Instance() {
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}
           onClick={handleRowClick}
+          pagination={true}
+          page={page}
+          setPage={setPage}
         />
       </TableWrapper>
       <BottomModal open={modalOpen} setOpen={setModalOpen}>
-        <TitleText>{selectedRowId?.name}</TitleText>
+        <TitleText>{selectedInstance?.name}</TitleText>
         <ModalTab>
           <TabBox
             className={selectedModalTab === 1 ? "selected" : "unSelected"}
@@ -159,32 +310,32 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>Instance Name</BoldText>
-                <Text>: {selectedRowId?.name}</Text>
+                <Text>: {selectedInstance?.name}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>OS</BoldText>
-                <Text>: {selectedRowId?.os}</Text>
+                <Text>: {selectedInstance?.os}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Instance Type</BoldText>
-                <Text>: {selectedRowId?.type}</Text>
+                <Text>: {selectedInstance?.type}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Keypair Name</BoldText>
-                <Text>: {selectedRowId?.keypair}</Text>
+                <Text>: {selectedInstance?.keypair}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Status</BoldText>
-                <Text>: {selectedRowId?.status}</Text>
+                <Text>: {selectedInstance?.status}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>IP Address</BoldText>
-                <Text>: {selectedRowId?.ip}</Text>
+                <Text>: {selectedInstance?.ip}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
