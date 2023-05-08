@@ -5,16 +5,6 @@ import { useNavigate } from "react-router-dom";
 import PopUpModal from "../components/PopUpModal";
 import MainButton from "../components/MainButton";
 
-/*--extra-light: #E9F3E7;
-    --light: #DFEEDC;
-    --semi-light: #AAD8A1;
-    --regular: #8EC083;
-    --medium: #76B06A;
-    --semi-dark: #509741;
-    --dark: #2D791E;
-    --extra-dark: #18610A;
-    */
-
 const SignUp = () => {
   const navigate = useNavigate();
   //이메일 유효성 검사
@@ -66,33 +56,13 @@ const SignUp = () => {
     },
     [form]
   );
+
   const handleSubmit = useCallback((e) => {
-    // e.preventDefault();
-    // axios
-    //   .post("/users/signup", {
-    //     email: form.email,
-    //     studentId: form.studentId,
-    //     name: form.name,
-    //     password: form.password,
-    //     major: form.major,
-    //     role: form.role,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   });
     e.preventDefault();
     navigate("/");
   }, []);
 
   const handleDuplicateCheck = useCallback((e) => {
-    // axios
-    //   .post("/users/duplicateCheck", {
-    //     email: form.email,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   });
-    //
     e.preventDefault();
     setIsEmailDuplicateModalOpen(true);
     setIsEmailDuplicateChecked(true);
