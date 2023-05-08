@@ -6,7 +6,6 @@ import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
 
 export default function Proposal() {
-  const [selecetedRow, setSelectedRow] = useState([]);
   const [selectedRowId, setSelectedRowId] = useState("");
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
   const [popUpModalOpen, setPopUpModalOpen] = useState(false);
@@ -22,7 +21,6 @@ export default function Proposal() {
   const handleToggleClick = (to) => {
     setBottomModalOpen(false);
     setToggle(to);
-    setSelectedRow([]);
     setSelectedRowId();
   };
 
@@ -98,23 +96,11 @@ export default function Proposal() {
         </MainButton>
       </ButtonContainer>
       <Line />
-      <ButtonContainer>
-        <MainButton
-          size="small"
-          color="medium"
-          disabled
-          marginBottom={1}
-          onClick={() => console.log("키페어 삭제")}
-        >
-          제안서 삭제
-        </MainButton>
-      </ButtonContainer>
       <Table
         data={toggle === "Waiting" ? waitingList : processedList}
         header={["Name", "Created At", "Status"]}
-        selectedRow={selecetedRow}
-        setSelectedRow={setSelectedRow}
         onClick={handleRowClick}
+        checkBox={false}
       />
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>

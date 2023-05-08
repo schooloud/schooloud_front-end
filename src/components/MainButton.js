@@ -10,7 +10,7 @@ function MainButton({
   color,
   size = "medium",
   outline,
-  fullWidth,
+  fullWidth = false,
   marginBottom,
   marginLeft,
   marginRight,
