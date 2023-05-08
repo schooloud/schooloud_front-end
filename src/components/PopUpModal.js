@@ -139,6 +139,7 @@ const ModalBlock = styled.div`
   width: ${(props) => `${props.width}rem` || "20rem"};
   height: ${(props) => `${props.height}rem` || "auto"};
   padding: 1.5rem;
+  overflow-y: auto;
   background: white;
   border-radius: 5px;
   h3 {
