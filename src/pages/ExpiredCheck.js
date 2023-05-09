@@ -104,7 +104,7 @@ const UserName = styled.div`
 
 const LogOutButton = styled.button`
   //same width with UserIcon
-  width: 4.8rem;
+  width: 6rem;
 
   box-shadow: 1px 2px rgba(0, 0, 0, 0.12);
   border: none;
@@ -120,7 +120,7 @@ const LogOutButton = styled.button`
   //글자 중간정렬
   justify-content: center;
 
-  background-color: white;
+  background-color: whi3te;
 `;
 
 export default ExpiredCheck;
