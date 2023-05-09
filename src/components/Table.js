@@ -238,6 +238,7 @@ const dummy = [
 
 export default function Table({
   header = ["Name", "OS", "IP Adress", "Instance Type", "KeyPair", "Status"],
+  id,
   data = dummy,
   checkBox = true,
   onClick,
@@ -296,7 +297,7 @@ export default function Table({
   };
 
   return (
-    <TableWrapper>
+    <TableWrapper id={id}>
       <table>
         <thead>
           <tr>

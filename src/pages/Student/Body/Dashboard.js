@@ -160,6 +160,14 @@ export default function Dashboard() {
     });
   };
 
+  // const table = document.querySelector("table");
+  // const tableWidth = table.offsetWidth;
+  // console.log(tableWidth + "px");
+
+  const chartWidth =
+    window.screen.width - 16 * (window.screen.width / 1440) * 18;
+  console.log(chartWidth + "px");
+
   console.log(num);
   for (let i in num) {
     totalCPU += flavorData[i - 1].cpu * num[i];
@@ -199,6 +207,7 @@ export default function Dashboard() {
         </MainButton>
       </MainButtonDiv>
       <Table
+        id="thisTable"
         checkBox={false}
         data={instanceData}
         header={["No", "Name", "e-mail"]}
@@ -215,27 +224,29 @@ export default function Dashboard() {
           쿼터 변경
         </MainButton>
       </MainButtonDiv>
-      <BarChart
-        barGap={15}
-        barSize={35}
-        width={1150}
-        height={500}
-        data={data}
-        margin={{
-          top: 20,
-          right: 0,
-          left: 0,
-          bottom: 20,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend align="left" />
-        <Bar dataKey="usage" fill="#AAD8A1" />
-        <Bar dataKey="total" fill="#2D791E" />
-      </BarChart>
+      <ChartDiv>
+        <BarChart
+          barGap={15}
+          barSize={35}
+          width={chartWidth}
+          height={500}
+          data={data}
+          margin={{
+            top: 20,
+            right: 0,
+            left: 0,
+            bottom: 20,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend align="left" />
+          <Bar dataKey="usage" fill="#AAD8A1" />
+          <Bar dataKey="total" fill="#2D791E" />
+        </BarChart>
+      </ChartDiv>
       <PopUpModal
         width={35}
         height={14}
@@ -420,4 +431,9 @@ const InputNum = styled.input`
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: flex-start;
+`;
+
+const ChartDiv = styled.div`
+  width: 100%;
+  height: 500px;
 `;
