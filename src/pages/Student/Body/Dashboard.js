@@ -334,7 +334,6 @@ export default function Dashboard() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
 `;
 
 const TitleText = styled.div`

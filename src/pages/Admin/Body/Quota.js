@@ -4,6 +4,20 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
+import Paper from "../../../components/Paper";
+
+const USAGE = {
+  cpu: 11,
+  ram: 24,
+  storage: 101,
+  user: 10,
+};
+
+const TOTAL = {
+  cpu: 100,
+  ram: 200,
+  storage: 1000,
+};
 
 export default function Quota() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -119,45 +133,48 @@ export default function Quota() {
           </MainButton>
         </ModalButtonContainer>
         <ModalBody>
-          <Line />
-          <TextWrapper>
-            <BoldText>Project Name</BoldText>
-            <Text>: {selectedRowName}</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Project Purpose</BoldText>
-            <DescText>
-              : 저는 이 프로젝트를 수행하기 위해서 꼭 이 인스턴스가 필요해요우
-              살려주세요우 한번만 바주셍요 젭라
-            </DescText>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Quota - vCPU</BoldText>
-            <Text>: 10</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Quota - DISK</BoldText>
-            <Text>: 200GB</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Quota - RAM</BoldText>
-            <Text>: 4GB</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Created At</BoldText>
-            <Text>: 2023-05-08</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Period of Use</BoldText>
-            <Text>: 2023-12-31</Text>
-          </TextWrapper>
-          <Line />
+          <BodyContainer>
+            <LeftBody>
+              <Paper
+                title={"current usage / total CPU"}
+                usage={USAGE.cpu}
+                total={TOTAL.cpu}
+                width={25}
+                height={10}
+                textSize="small"
+                unit={"core"}
+              ></Paper>
+              <Paper
+                title={"current usage / total CPU"}
+                usage={USAGE.cpu}
+                total={TOTAL.cpu}
+                width={25}
+                height={10}
+                textSize="small"
+                unit={"core"}
+              ></Paper>
+              <Paper
+                title={"current usage / total CPU"}
+                usage={USAGE.cpu}
+                total={TOTAL.cpu}
+                width={25}
+                height={10}
+                textSize="small"
+                unit={"core"}
+              ></Paper>
+              <Paper
+                title={"current usage / total CPU"}
+                usage={USAGE.cpu}
+                total={TOTAL.cpu}
+                width={25}
+                height={10}
+                textSize="small"
+                unit={"core"}
+              ></Paper>
+            </LeftBody>
+            <VerticalLine />
+            <RightBody></RightBody>
+          </BodyContainer>
         </ModalBody>
       </BottomModal>
       <PopUpModal
@@ -251,27 +268,6 @@ const Line = styled.div`
   width: 100%;
 `;
 
-const TextWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const BoldText = styled.div`
-  margin-left: 2rem;
-  font-weight: 600;
-  min-width: 8rem;
-`;
-
-const Text = styled.div`
-  margin-left: 2rem;
-  font-weight: 400;
-`;
-
-const DescText = styled.div`
-  margin-left: 2rem;
-  word-break: break-all;
-  font-weight: 400;
-`;
 const BodyWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -285,4 +281,27 @@ const Input = styled.textarea`
   border: 0.5px solid gray;
   border-radius: 5px;
   padding: 0.8rem 0.8rem;
+`;
+
+const BodyContainer = styled.div`
+  display: flex;
+  margin: 0.5rem 0;
+`;
+
+const LeftBody = styled.div`
+  display: flex;
+  width: 50%;
+  height: 100%;
+  border-right: 1px solid black;
+`;
+
+const RightBody = styled.div`
+  width: 50%;
+  height: 100%;
+`;
+
+const VerticalLine = styled.div`
+  width: 1px;
+  height: 100%;
+  background-color: black;
 `;

@@ -7,16 +7,17 @@ export default function Paper({
   total,
   width,
   height,
+  textSize = "medium",
   unit,
   children,
 }) {
   return (
     <Card width={width} height={height}>
-      <Title>{title}</Title>
+      <Title textSize={textSize}>{title}</Title>
       <Contents>
-        <Usage>{usage}</Usage>
+        <Usage textSize={textSize}>{usage}</Usage>
         {total && (
-          <Total>
+          <Total textSize={textSize}>
             &nbsp;/&nbsp;{total}
             &nbsp;{unit}
           </Total>
@@ -27,8 +28,23 @@ export default function Paper({
   );
 }
 
+const sizes = {
+  large: {
+    titleSize: "1.5rem",
+    usageSize: "2rem",
+  },
+  medium: {
+    titleSize: "1rem", //medium == 1rem
+    usageSize: "1.5rem",
+  },
+  small: {
+    titleSize: "0.8rem",
+    usageSize: "1rem",
+  },
+};
+
 const Card = styled.div`
-  width: ${(props) => props.width}%;
+  width: calc(${(props) => props.width}% - 1rem);
   height: ${(props) => props.height}rem;
   background-color: white;
   border-radius: 10px;
@@ -42,7 +58,7 @@ const Card = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 1rem;
+  font-size: ${(props) => sizes[props.textSize].titleSize};
   font-weight: 200;
   margin: 1rem;
   color: grey;
@@ -54,11 +70,11 @@ const Contents = styled.div`
 `;
 
 const Usage = styled.div`
-  font-size: 1.5rem;
+  font-size: ${(props) => sizes[props.textSize].usageSize};
   font-weight: bold;
 `;
 
 const Total = styled.div`
-  font-size: 1.5rem;
+  font-size: ${(props) => sizes[props.textSize].usageSize};
   font-weight: bold;
 `;

@@ -133,6 +133,7 @@ export default function Dashboard() {
           total={TOTAL.cpu}
           width={25}
           height={10}
+          textSize="medium"
           unit={"core"}
         ></Paper>
         <Paper
@@ -141,6 +142,7 @@ export default function Dashboard() {
           total={TOTAL.ram}
           width={25}
           height={10}
+          textSize="medium"
           unit={"GB"}
         ></Paper>
         <Paper
@@ -149,6 +151,7 @@ export default function Dashboard() {
           total={TOTAL.storage}
           width={25}
           height={10}
+          textSize="medium"
           unit={"GB"}
         ></Paper>
         <Paper
@@ -156,6 +159,7 @@ export default function Dashboard() {
           usage={USAGE.user}
           width={25}
           height={10}
+          textSize="medium"
         ></Paper>
       </PaperGroup>
       <TitleText2>Proposal Request</TitleText2>
