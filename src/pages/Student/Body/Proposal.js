@@ -2,14 +2,13 @@ import styled from "styled-components";
 import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
-import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
 
 export default function Proposal() {
   const [selecetedRow, setSelectedRow] = useState([]);
+  const [page,setPage] = useState(0);
   const [selectedRowId, setSelectedRowId] = useState("");
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
-  const [popUpModalOpen, setPopUpModalOpen] = useState(false);
   const [toggle, setToggle] = useState("Waiting");
 
   const handleRowClick = (id) => {
@@ -18,6 +17,7 @@ export default function Proposal() {
   };
 
   const handleToggleClick = (to) => {
+    setPage(0);
     setBottomModalOpen(false);
     setToggle(to);
     setSelectedRow([]);
@@ -84,11 +84,13 @@ export default function Proposal() {
         </MainButton>
       </ButtonContainer>
       <Table
-        data={toggle === "Waiting" ? waitingList : processedList}
+        data={toggle === "Waiting" ? [waitingList] : [processedList]}
         header={["Name", "Created At", "Status"]}
-        selectedRow={selecetedRow}
-        setSelectedRow={setSelectedRow}
         onClick={handleRowClick}
+        checkBox={false}
+        pagination={true}
+        page={page}
+        setPage={setPage}
       />
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>

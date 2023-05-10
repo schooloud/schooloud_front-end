@@ -5,6 +5,7 @@ import BottomModal from "../../../components/BottomModal";
 
 export default function Project() {
   const [selectedRowId, setSelectedRowId] = useState("");
+  const [page,setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
 
   const handleRowClick = (id) => {
@@ -36,10 +37,13 @@ export default function Project() {
     <Container>
       <TitleText>Project List</TitleText>
       <Table
-        data={dummy}
+        data={[dummy]}
         header={["Name", "Member Num"]}
         onClick={handleRowClick}
         checkBox={false}
+        pagination={true}
+        page={page}
+        setPage={setPage}
       />
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>
