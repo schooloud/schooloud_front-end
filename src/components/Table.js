@@ -427,6 +427,7 @@ const TableWrapper = styled.div`
 
   th {
     font-weight: 600;
+    font-size:0.9rem;
     padding: 0 0.4rem;
     &.checkboxth {
       padding: 0 0;
@@ -434,6 +435,7 @@ const TableWrapper = styled.div`
   }
 
   tr {
+    font-size:0.9rem;
     height: 3rem;
     border-top: 1px solid #e0e0e0;
   }
@@ -467,11 +469,11 @@ const CheckBoxWrapper = styled.div`
     cursor: pointer;
   }
   input[type="checkbox"] {
+    width:0.65rem;
+    height:0.65rem;
     transform: scale(1.3);
     accent-color: var(--dark);
-    &:hover {
-      cursor: pointer;
-    }
+    cursor: pointer;
   }
 `;
 
@@ -488,11 +490,11 @@ const PaginationWrapper = styled.div`
 `;
 
 const PaginationButton = styled.div`
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   margin: 0 0.15rem;
   background-color: var(--light);
-  color: white;
+  color: var(--dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -501,10 +503,12 @@ const PaginationButton = styled.div`
 
   &:hover {
     background-color: var(--medium);
+    color:white;
   }
 
   &.selected {
     background-color: var(--medium);
+    color:white;
     cursor: default;
   }
 `;

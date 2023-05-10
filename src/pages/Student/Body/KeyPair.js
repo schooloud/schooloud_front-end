@@ -6,6 +6,7 @@ import PopUpModal from "../../../components/PopUpModal";
 
 export default function KeyPair() {
   const [selecetedRow, setSelectedRow] = useState([]);
+  const [page, setPage] = useState(0);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [publicModalOpen, setPublicModalOpen] = useState(false);
   const [keypairName, setKeypairName] = useState("");
@@ -70,11 +71,14 @@ export default function KeyPair() {
         </MainButton>
       </ButtonContainer>
       <Table
-        data={dummy}
+        data={[dummy]}
         header={["Name", "Fingerprint", "Public Key"]}
         selectedRow={selecetedRow}
         setSelectedRow={setSelectedRow}
         onClick={handleRowClick}
+        pagination={true}
+        page={page}
+        setPage={setPage}
       />
       <PopUpModal
         width={30}

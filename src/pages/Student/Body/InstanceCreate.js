@@ -157,6 +157,7 @@ export default function InstanceCreate({ params, navigate }) {
         <MainButton
           size="small"
           color="light"
+          fontColor="var(--dark)"
           onClick={() => {
             console.log("취소");
             navigate(`/student/project/${params.projectId}/instance`);
@@ -193,6 +194,7 @@ export default function InstanceCreate({ params, navigate }) {
         <MainButton
           size="small"
           color="light"
+          fontColor="var(--dark)"
           marginTop="1"
           onClick={() => setModalOpen(false)}
         >
@@ -262,8 +264,9 @@ const Input = styled.input`
   height: 2rem;
   margin-left: 2rem;
   border: 0.5px solid gray;
-  border-radius: 5px;
-  padding: 0 10px;
+  border-radius: 0.25rem;
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
 `;
 
 const Select = styled.select`
@@ -271,8 +274,9 @@ const Select = styled.select`
   height: 2rem;
   margin-left: 2rem;
   border: 0.5px solid gray;
-  border-radius: 5px;
-  padding: 0 10px;
+  border-radius: 0.25rem;
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
 `;
 
 const InputLine = styled.div`

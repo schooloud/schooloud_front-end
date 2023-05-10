@@ -8,6 +8,7 @@ import styled, { css } from "styled-components";
 function MainButton({
   children,
   color,
+  fontColor = "#ffffff",
   size = "medium",
   outline,
   fullWidth = false,
@@ -21,6 +22,7 @@ function MainButton({
   return (
     <StyledButton
       color={color}
+      fontColor={fontColor}
       size={size}
       outline={outline}
       fullWidth={fullWidth}
@@ -66,15 +68,15 @@ const colorStyles = css`
 const sizes = {
   large: {
     height: "3rem",
-    fontSize: "large",
+    fontSize: "1.2rem",
   },
   medium: {
     height: "2.5rem",
-    fontSize: "medium", //medium == 1rem
+    fontSize: "1rem", //medium == 1rem
   },
   small: {
     height: "2rem",
-    fontSize: "small",
+    fontSize: "0.8rem",
   },
 };
 
@@ -102,7 +104,7 @@ const StyledButton = styled.button`
   outline: none;
   border-style: none;
   border-radius: 4px;
-  color: white;
+  color: ${({fontColor}) => fontColor};
   padding-left: 1rem;
   padding-right: 1rem;
 

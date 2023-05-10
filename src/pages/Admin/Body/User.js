@@ -5,10 +5,12 @@ import Table from "../../../components/Table";
 
 export default function User() {
   const [toggle, setToggle] = useState("Student");
+  const [page, setPage] = useState(0);
 
   const handleRowClick = (id) => {};
 
   const handleToggleClick = (to) => {
+    setPage(0);
     setToggle(to);
   };
 
@@ -82,10 +84,13 @@ export default function User() {
       </ButtonContainer>
       <Line />
       <Table
-        data={toggle === "Student" ? studentList : professorList}
+        data={toggle === "Student" ? [studentList] : [professorList]}
         header={["Name", "Email", "Major", "Num", "Role"]}
         onClick={handleRowClick}
         checkBox={false}
+        pagination={true}
+        page={page}
+        setPage={setPage}
       />
     </Container>
   );
