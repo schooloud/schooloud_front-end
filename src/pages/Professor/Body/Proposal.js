@@ -7,6 +7,7 @@ import BottomModal from "../../../components/BottomModal";
 
 export default function Proposal() {
   const [selectedRowId, setSelectedRowId] = useState("");
+  const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
   const [popUpModalOpen, setPopUpModalOpen] = useState(false);
   const [rejectPopUpModalOpen, setRejectPopUpModalOpen] = useState(false);
@@ -19,6 +20,7 @@ export default function Proposal() {
   };
 
   const handleToggleClick = (to) => {
+    setPage(0);
     setBottomModalOpen(false);
     setToggle(to);
     setSelectedRowId();
@@ -97,10 +99,13 @@ export default function Proposal() {
       </ButtonContainer>
       <Line />
       <Table
-        data={toggle === "Waiting" ? waitingList : processedList}
+        data={toggle === "Waiting" ? [waitingList] : [processedList]}
         header={["Name", "Created At", "Status"]}
         onClick={handleRowClick}
         checkBox={false}
+        pagination={true}
+        page={page}
+        setPage={setPage}
       />
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>
@@ -286,6 +291,6 @@ const Input = styled.textarea`
   width: 33rem;
   height: 10rem;
   border: 0.5px solid gray;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   padding: 0.8rem 0.8rem;
 `;

@@ -77,9 +77,9 @@ export default createGlobalStyle`
     font-weight: '300';
     /* box-shadow : 0 0 0 1px purple inset; */
 
-    /* ::-webkit-scrollbar {
+    ::-webkit-scrollbar {
      display: none;
-    } */
+    }
     -ms-overflow-style: none; /* 인터넷 익스플로러 */
     scrollbar-width: none; /* 파이어폭스 */
   }
