@@ -13,7 +13,7 @@ const USAGE = {
 const TOTAL = {
   cpu: 100,
   ram: 200,
-  storage: 1000,
+  storage: 100,
 };
 
 const quataDummy = [
@@ -173,7 +173,7 @@ export default function Dashboard() {
       <Table
         data={proposalData}
         header={["Name", "Status"]}
-        onClick={handleRowClick}
+        onClick={() => {}}
         checkBox={false}
       />
       <SpaceDiv></SpaceDiv>

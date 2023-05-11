@@ -75,6 +75,43 @@ export default function Proposal() {
   const waitingList = dummy.filter((row) => row.status === "waiting");
   const processedList = dummy.filter((row) => row.status !== "waiting");
 
+  const proposalDetailDummy = {
+    projectName: "이기자",
+    projectDescription:
+      "우리가 이기기 위해서는 이 프로젝트의 승인이 꼭 필요합니다. 무조건 승인해주세요.",
+    totalCPU: 2,
+    totalRAM: 4,
+    totalSTORAGE: 40,
+    selectedDate: "2021-05-07",
+  };
+
+  const flavorDataDummy = [
+    {
+      id: "1",
+      flalvorName: "u2.c1m1",
+      flavorRam: "1GB",
+      flavorDisk: "20GB",
+      cpu: 1,
+      num: 1,
+    },
+    {
+      id: "2",
+      flalvorName: "u2.c2m2",
+      flavorRam: "2GB",
+      flavorDisk: "40GB",
+      cpu: 2,
+      num: 2,
+    },
+    {
+      id: "3",
+      flalvorName: "u2.c2m2",
+      flavorRam: "2GB",
+      flavorDisk: "40GB",
+      cpu: 2,
+      num: 3,
+    },
+  ];
+
   return (
     <Container>
       <TitleText>Proposal - {toggle} List</TitleText>
@@ -127,45 +164,45 @@ export default function Proposal() {
           </MainButton>
         </ModalButtonContainer>
         <ModalBody>
+          <Div>
+            <Label>Project Name</Label>
+            <ProjectName>{proposalDetailDummy.projectName}</ProjectName>
+          </Div>
           <Line />
-          <TextWrapper>
-            <BoldText>Project Name</BoldText>
-            <Text>: {selectedRowName}</Text>
-          </TextWrapper>
+
+          <Div>
+            <Label>Project Purpose</Label>
+            <Description>{proposalDetailDummy.projectDescription}</Description>
+          </Div>
           <Line />
-          <TextWrapper>
-            <BoldText>Project Purpose</BoldText>
-            <DescText>
-              : 저는 이 프로젝트를 수행하기 위해서 꼭 이 인스턴스가 필요해요우
-              살려주세요우 한번만 바주셍요 젭라
-            </DescText>
-          </TextWrapper>
+
+          <Div>
+            <Label>Quata</Label>
+            <Table
+              data={flavorDataDummy}
+              header={["Name", "RAM", "Disk", "CPU", "Num"]}
+              onClick={() => {}}
+              checkBox={false}
+            />
+          </Div>
           <Line />
-          <TextWrapper>
-            <BoldText>Quota - vCPU</BoldText>
-            <Text>: 10</Text>
-          </TextWrapper>
+
+          <Div>
+            <Label>total CPU</Label>
+            {proposalDetailDummy.totalCPU}
+          </Div>
           <Line />
-          <TextWrapper>
-            <BoldText>Quota - DISK</BoldText>
-            <Text>: 200GB</Text>
-          </TextWrapper>
+
+          <Div>
+            <Label>total RAM</Label>
+            {proposalDetailDummy.totalRAM}
+          </Div>
           <Line />
-          <TextWrapper>
-            <BoldText>Quota - RAM</BoldText>
-            <Text>: 4GB</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Created At</BoldText>
-            <Text>: 2023-05-08</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Period of Use</BoldText>
-            <Text>: 2023-12-31</Text>
-          </TextWrapper>
-          <Line />
+
+          <Div>
+            <Label>total STORAGE</Label>
+            {proposalDetailDummy.totalSTORAGE}
+          </Div>
         </ModalBody>
       </BottomModal>
       <PopUpModal
@@ -259,27 +296,6 @@ const Line = styled.div`
   width: 100%;
 `;
 
-const TextWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const BoldText = styled.div`
-  margin-left: 2rem;
-  font-weight: 600;
-  min-width: 8rem;
-`;
-
-const Text = styled.div`
-  margin-left: 2rem;
-  font-weight: 400;
-`;
-
-const DescText = styled.div`
-  margin-left: 2rem;
-  word-break: break-all;
-  font-weight: 400;
-`;
 const BodyWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -293,4 +309,30 @@ const Input = styled.textarea`
   border: 0.5px solid gray;
   border-radius: 0.3rem;
   padding: 0.8rem 0.8rem;
+`;
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+`;
+
+const Label = styled.div`
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 80%;
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const Description = styled.div`
+  display: flex;
+  align-items: flex-start;
+`;
+
+const ProjectName = styled.div`
+  display: flex;
+  align-items: flex-start;
 `;

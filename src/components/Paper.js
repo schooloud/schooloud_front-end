@@ -58,6 +58,7 @@ const Card = styled.div`
 `;
 
 const Title = styled.div`
+  word-break: break-all;
   font-size: ${(props) => sizes[props.textSize].titleSize};
   font-weight: 200;
   margin: 1rem;

@@ -16,8 +16,35 @@ const USAGE = {
 const TOTAL = {
   cpu: 100,
   ram: 200,
-  storage: 1000,
+  storage: 100,
 };
+
+const flavorData = [
+  {
+    id: "1",
+    flalvorName: "u2.c1m1",
+    flavorRam: "1GB",
+    flavorDisk: "20GB",
+    cpu: 1,
+    num: 1,
+  },
+  {
+    id: "2",
+    flalvorName: "u2.c2m2",
+    flavorRam: "2GB",
+    flavorDisk: "40GB",
+    cpu: 2,
+    num: 2,
+  },
+  {
+    id: "3",
+    flalvorName: "u2.c2m2",
+    flavorRam: "2GB",
+    flavorDisk: "40GB",
+    cpu: 2,
+    num: 3,
+  },
+];
 
 export default function Quota() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -82,6 +109,13 @@ export default function Quota() {
     },
   ];
 
+  const description =
+    "요청합니다 내가 이게 필요해서 요청했으니까 승인 좀 해줘 교수님아 제발제발 진짜 필요해 나 이거 없으면 안돼 대학생이 돈이 어딨어";
+
+  const totalCPU = 7;
+  const totalRAM = 14;
+  const totalStorage = 70;
+
   const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
   const waitingList = dummy.filter((row) => row.status === "waiting");
   const processedList = dummy.filter((row) => row.status !== "waiting");
@@ -140,45 +174,87 @@ export default function Quota() {
         <ModalBody>
           <BodyContainer>
             <LeftBody>
-              <Paper
-                title={"current usage / total CPU"}
-                usage={USAGE.cpu}
-                total={TOTAL.cpu}
-                width={25}
-                height={10}
-                textSize="small"
-                unit={"core"}
-              ></Paper>
-              <Paper
-                title={"current usage / total CPU"}
-                usage={USAGE.cpu}
-                total={TOTAL.cpu}
-                width={25}
-                height={10}
-                textSize="small"
-                unit={"core"}
-              ></Paper>
-              <Paper
-                title={"current usage / total CPU"}
-                usage={USAGE.cpu}
-                total={TOTAL.cpu}
-                width={25}
-                height={10}
-                textSize="small"
-                unit={"core"}
-              ></Paper>
-              <Paper
-                title={"current usage / total CPU"}
-                usage={USAGE.cpu}
-                total={TOTAL.cpu}
-                width={25}
-                height={10}
-                textSize="small"
-                unit={"core"}
-              ></Paper>
+              <Title>current usage</Title>
+              <PaperContainer>
+                <Paper
+                  title={"current usage / total CPU"}
+                  usage={USAGE.cpu}
+                  total={TOTAL.cpu}
+                  width={25}
+                  height={10}
+                  textSize="small"
+                  unit={"core"}
+                ></Paper>
+                <Paper
+                  title={"current usage / total RAM"}
+                  usage={USAGE.ram}
+                  total={TOTAL.ram}
+                  width={25}
+                  height={10}
+                  textSize="small"
+                  unit={"GB"}
+                ></Paper>
+                <Paper
+                  title={"current usage / total STORAGE"}
+                  usage={USAGE.storage}
+                  total={TOTAL.storage}
+                  width={25}
+                  height={10}
+                  textSize="small"
+                  unit={"GB"}
+                ></Paper>
+                <Paper
+                  title={"total USER"}
+                  usage={USAGE.cpu}
+                  total={TOTAL.cpu}
+                  width={25}
+                  height={10}
+                  textSize="small"
+                  unit={""}
+                ></Paper>
+              </PaperContainer>
             </LeftBody>
-            <VerticalLine />
-            <RightBody></RightBody>
+            <RightBody>
+              <Title>request</Title>
+              <RightBodyContainer>
+                <Line />
+
+                <Div>
+                  <Label>Project Purpose</Label>
+
+                  <InputContainer>{description}</InputContainer>
+                </Div>
+                <Line />
+                <Div>
+                  <Label>Quota request</Label>
+
+                  <Table
+                    checkBox={false}
+                    data={flavorData}
+                    header={["Name", "RAM", "DISK", "vCPU", "Num"]}
+                    onClick={() => {}}
+                  />
+                </Div>
+                <Line />
+
+                <Div>
+                  <Label>total CPU</Label>
+                  {totalCPU}
+                </Div>
+                <Line />
+
+                <Div>
+                  <Label>total RAM</Label>
+                  {totalRAM}
+                </Div>
+                <Line />
+
+                <Div>
+                  <Label>total STORAGE</Label>
+                  {totalStorage}
+                </Div>
+              </RightBodyContainer>
+            </RightBody>
           </BodyContainer>
         </ModalBody>
       </BottomModal>
@@ -267,7 +343,7 @@ const ModalBody = styled.div`
 `;
 
 const Line = styled.div`
-  margin: 1rem 0;
+  margin: 0.5rem 0;
   height: 1px;
   background-color: #f0f0f0;
   width: 100%;
@@ -291,22 +367,55 @@ const Input = styled.textarea`
 const BodyContainer = styled.div`
   display: flex;
   margin: 0.5rem 0;
+  width: 100%;
 `;
 
 const LeftBody = styled.div`
   display: flex;
+  flex-direction: column;
   width: 50%;
   height: 100%;
-  border-right: 1px solid black;
 `;
 
 const RightBody = styled.div`
+  padding-left: 1rem;
   width: 50%;
   height: 100%;
+  border-left: 1px solid #f0f0f0;
 `;
 
-const VerticalLine = styled.div`
-  width: 1px;
-  height: 100%;
-  background-color: black;
+const Title = styled.div`
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const PaperContainer = styled.div`
+  display: flex;
+`;
+
+const RightBodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+`;
+
+const Label = styled.div`
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 80%;
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
 `;
