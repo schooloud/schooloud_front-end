@@ -102,8 +102,6 @@ export default function Dashboard() {
     .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
     .slice(0, 5);
 
-  console.log(quataData);
-
   //data 에서 createdAt 빼기
   quataData.forEach((element) => {
     delete element.createAt;
@@ -131,7 +129,7 @@ export default function Dashboard() {
           title={"current usage / total CPU"}
           usage={USAGE.cpu}
           total={TOTAL.cpu}
-          width={25}
+          width={17}
           height={10}
           textSize="medium"
           unit={"core"}
@@ -140,7 +138,7 @@ export default function Dashboard() {
           title={"current usage / total RAM"}
           usage={USAGE.ram}
           total={TOTAL.ram}
-          width={25}
+          width={17}
           height={10}
           textSize="medium"
           unit={"GB"}
@@ -149,7 +147,7 @@ export default function Dashboard() {
           title={"current usage / total STORAGE"}
           usage={USAGE.storage}
           total={TOTAL.storage}
-          width={25}
+          width={17}
           height={10}
           textSize="medium"
           unit={"GB"}
@@ -157,7 +155,7 @@ export default function Dashboard() {
         <Paper
           title={"total USER"}
           usage={USAGE.user}
-          width={25}
+          width={17}
           height={10}
           textSize="medium"
         ></Paper>

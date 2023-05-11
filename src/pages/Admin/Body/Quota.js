@@ -110,7 +110,7 @@ export default function Quota() {
   ];
 
   const description =
-    "요청합니다 내가 이게 필요해서 요청했으니까 승인 좀 해줘 교수님아 제발제발 진짜 필요해 나 이거 없으면 안돼 대학생이 돈이 어딨어";
+    "요청합니다 내가 이게 필요하니까 꼭 해달란 말이야 교수야 진짜 대학생이 돈이 어딨다고 aws를 결제하겠어";
 
   const totalCPU = 7;
   const totalRAM = 14;
@@ -119,6 +119,10 @@ export default function Quota() {
   const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
   const waitingList = dummy.filter((row) => row.status === "waiting");
   const processedList = dummy.filter((row) => row.status !== "waiting");
+
+  const handleOnClick = (id) => {
+    console.log(id);
+  };
 
   return (
     <Container>
@@ -180,7 +184,7 @@ export default function Quota() {
                   title={"current usage / total CPU"}
                   usage={USAGE.cpu}
                   total={TOTAL.cpu}
-                  width={25}
+                  width={7.5}
                   height={10}
                   textSize="small"
                   unit={"core"}
@@ -189,7 +193,7 @@ export default function Quota() {
                   title={"current usage / total RAM"}
                   usage={USAGE.ram}
                   total={TOTAL.ram}
-                  width={25}
+                  width={7.5}
                   height={10}
                   textSize="small"
                   unit={"GB"}
@@ -198,7 +202,7 @@ export default function Quota() {
                   title={"current usage / total STORAGE"}
                   usage={USAGE.storage}
                   total={TOTAL.storage}
-                  width={25}
+                  width={7.5}
                   height={10}
                   textSize="small"
                   unit={"GB"}
@@ -207,7 +211,7 @@ export default function Quota() {
                   title={"total USER"}
                   usage={USAGE.cpu}
                   total={TOTAL.cpu}
-                  width={25}
+                  width={7.5}
                   height={10}
                   textSize="small"
                   unit={""}
@@ -217,37 +221,36 @@ export default function Quota() {
             <RightBody>
               <Title>request</Title>
               <RightBodyContainer>
-                <Line />
+                <Line className="modal" />
 
                 <Div>
                   <Label>Project Purpose</Label>
-
                   <InputContainer>{description}</InputContainer>
                 </Div>
-                <Line />
+                <Line className="modal" />
+
                 <Div>
                   <Label>Quota request</Label>
-
                   <Table
                     checkBox={false}
                     data={flavorData}
                     header={["Name", "RAM", "DISK", "vCPU", "Num"]}
-                    onClick={() => {}}
+                    onClick={handleOnClick}
                   />
                 </Div>
-                <Line />
+                <Line className="modal" />
 
                 <Div>
                   <Label>total CPU</Label>
                   {totalCPU}
                 </Div>
-                <Line />
+                <Line className="modal" />
 
                 <Div>
                   <Label>total RAM</Label>
                   {totalRAM}
                 </Div>
-                <Line />
+                <Line className="modal" />
 
                 <Div>
                   <Label>total STORAGE</Label>
@@ -336,14 +339,20 @@ const ModalButtonContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+  padding-right: 0.2rem;
 `;
 
 const ModalBody = styled.div`
   overflow: auto;
+  /* 아래와 같이 수정필요 */
+  margin: 0.5rem 0;
 `;
 
 const Line = styled.div`
-  margin: 0.5rem 0;
+  &.modal {
+    margin: 0;
+  }
+  margin: 1rem 0;
   height: 1px;
   background-color: #f0f0f0;
   width: 100%;
@@ -365,22 +374,26 @@ const Input = styled.textarea`
 `;
 
 const BodyContainer = styled.div`
+  /* border: 1px solid blue; */
   display: flex;
-  margin: 0.5rem 0;
   width: 100%;
+  padding: 0 0.2rem;
 `;
 
 const LeftBody = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
   height: 100%;
+  overflow: visible;
+  padding-right: 1rem;
 `;
 
 const RightBody = styled.div`
+  display: flex;
+  flex-direction: column;
   padding-left: 1rem;
-  width: 50%;
   height: 100%;
+  width: 50%;
   border-left: 1px solid #f0f0f0;
 `;
 

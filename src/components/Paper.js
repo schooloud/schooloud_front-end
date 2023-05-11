@@ -44,7 +44,10 @@ const sizes = {
 };
 
 const Card = styled.div`
-  width: calc(${(props) => props.width}% - 1rem);
+  width: ${(props) => props.width}rem;
+  min-width: ${(props) => props.width}rem;
+
+  min-width: 100;
   height: ${(props) => props.height}rem;
   background-color: white;
   border-radius: 10px;

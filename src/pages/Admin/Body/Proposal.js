@@ -274,6 +274,8 @@ const TitleText = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  /* padding: 0 0.2rem; */
+
   display: flex;
   align-items: center;
 `;
@@ -287,6 +289,8 @@ const ModalButtonContainer = styled.div`
 
 const ModalBody = styled.div`
   overflow: auto;
+  padding: 0 0.2rem;
+  margin: 0.5rem 0;
 `;
 
 const Line = styled.div`
