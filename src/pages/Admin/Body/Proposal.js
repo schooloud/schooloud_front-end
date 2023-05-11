@@ -208,6 +208,8 @@ export default function Proposal() {
       <PopUpModal
         width={20}
         darkBackground={false}
+        onCancel={false}
+        onConfirm={false}
         visible={popUpModalOpen}
         title={
           "정말 " + (request === "approved" ? "승인" : "반려") + "하시겠습니까?"
@@ -217,6 +219,7 @@ export default function Proposal() {
           size="small"
           color="light"
           marginTop="1"
+          fontColor="var(--dark)"
           onClick={() => handlePopUp(false)}
         >
           취소
@@ -233,6 +236,8 @@ export default function Proposal() {
       <PopUpModal
         width={40}
         darkBackground={false}
+        onCancel={false}
+        onConfirm={false}
         visible={rejectPopUpModalOpen}
         title="반려 사유를 작성해주세요."
       >
@@ -271,6 +276,7 @@ const TitleText = styled.div`
   font-weight: 600;
   font-size: 1.3rem;
   margin-bottom: 1rem;
+  margin-left: 0.2rem;
 `;
 
 const ButtonContainer = styled.div`

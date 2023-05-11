@@ -327,6 +327,7 @@ const TitleText = styled.div`
   font-weight: 600;
   font-size: 1.3rem;
   margin-bottom: 1rem;
+  margin-left: 0.2rem;
 `;
 
 const ButtonContainer = styled.div`
