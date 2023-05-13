@@ -356,8 +356,6 @@ export default function Table({
                 )}
                 {Object.keys(row).map((field) => {
                   if (field !== "id") {
-                    console.log(field);
-
                     return (
                       <td key={field + row[field]} align="center">
                         {row[field]}
