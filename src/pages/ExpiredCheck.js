@@ -44,7 +44,7 @@ const ExpiredCheck = (props) => {
     authCheck(); // 로그인 체크 함수
   }, []);
 
-  const logOut = () => {
+  const handleLogOut = () => {
     for (let key in cookies) {
       removeCookie(key); // 쿠키 삭제
     }
@@ -101,8 +101,8 @@ const UserBox = styled.div`
   font-size: 0.8rem;
   letter-spacing: 0.125rem;
 
-  /* color: white; */
-  background-color: white;
+  color: white;
+  background-color: var(--main);
 
   transition: all 0.5s ease-in-out;
 
@@ -135,7 +135,7 @@ const Logout = styled.div`
   justify-content: center;
   opacity: 0;
 
-  /* color: white; */
+  color: white;
 
   @keyframes hovered {
     from {
