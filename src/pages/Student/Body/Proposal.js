@@ -5,8 +5,8 @@ import Table from "../../../components/Table";
 import BottomModal from "../../../components/BottomModal";
 
 export default function Proposal() {
-  const [selecetedRow, setSelectedRow] = useState([]);
-  const [page,setPage] = useState(0);
+  const [selectedRow, setSelectedRow] = useState([]);
+  const [page, setPage] = useState(0);
   const [selectedRowId, setSelectedRowId] = useState("");
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
   const [toggle, setToggle] = useState("Waiting");
@@ -48,6 +48,8 @@ export default function Proposal() {
   const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
   const waitingList = dummy.filter((row) => row.status === "waiting");
   const processedList = dummy.filter((row) => row.status !== "waiting");
+  console.log("processedList:", processedList);
+  console.log("selectedRow", selectedRow);
 
   return (
     <Container>
@@ -87,7 +89,8 @@ export default function Proposal() {
         data={toggle === "Waiting" ? [waitingList] : [processedList]}
         header={["Name", "Created At", "Status"]}
         onClick={handleRowClick}
-        checkBox={false}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
         pagination={true}
         page={page}
         setPage={setPage}

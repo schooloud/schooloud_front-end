@@ -14,7 +14,7 @@ const ExpiredCheck = (props) => {
 
   const isExpired = (expiredAt) => {
     let now = new Date().getTime();
-    console.log("현재 시간은은은" + now);
+    console.log("현재 시간은" + now);
     //compare now and expiredAt
 
     if (now > expiredAt) {
@@ -51,59 +51,33 @@ const ExpiredCheck = (props) => {
     navigate("/"); // 메인 페이지로 이동
   };
 
-  const changeNameLogout = () => {
-    setTimeout(() => {
-      setIsLogined(isLogined + " 로그아웃");
-    }, 1000);
-  };
-
   //유저박스에 마우스 올리면 로그아웃 버튼 보여주기
   const handleMouseOver = () => {
-    console.log("마우스 올라옴");
-    // setReadyForLogout(false);
-    changeNameLogout();
     setIsHover(true);
   };
 
   //유저박스에서 마우스 떼면 로그아웃 버튼 숨기기
   const handleMouseLeave = () => {
-    console.log("마우스 떼짐");
-    // setReadyForLogout(true);
-    // setIsLogined(cookies.name.slice(-2));
-    setIsHover(false);
-    setIsLogined(isLogined.slice(0, -4));
+    setTimeout(() => setIsHover(false), 500);
   };
-
-  console.log("로그인상태:" + isLogined);
 
   return (
     <>
       {isLogined && (
         <UserBox
-          className={isHover ? "hovered" : ""}
+          className={isHover ? "hovered" : "unhovered"}
           onMouseOver={handleMouseOver}
           onMouseLeave={handleMouseLeave}
         >
-          {/* {isHover ? (
-            <Div className="logout">{isLogined} 로그아웃</Div>
-          ) : (
-            <Div className="">석희</Div>
-          )} */}
-          {isLogined}
+          <NameCircle>{isLogined}</NameCircle>
+          <Logout className={isHover ? "hovered" : "unhovered"}>
+            로그아웃
+          </Logout>
         </UserBox>
       )}
     </>
   );
 };
-
-const fadeIn = keyframes`
-  from {
-    display: none;
-  }
-  to {
-    opacity: block;
-  }
-`;
 
 const UserBox = styled.div`
   //포지션
@@ -114,51 +88,82 @@ const UserBox = styled.div`
   //style
   width: 3rem;
   height: 3rem;
-  border: 1px solid black;
-  border-radius: 50%;
+  /* border: 1px solid black; */
+  border-radius: 3rem;
 
   z-index: 200;
 
   //내용물
   display: flex;
   align-items: center;
-  justify-content: center;
 
   cursor: pointer;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
+  font-size: 0.8rem;
+  letter-spacing: 0.125rem;
 
+  /* color: white; */
   background-color: white;
 
-  transition: all 0.3s ease-in-out;
+  transition: all 0.5s ease-in-out;
 
-  &:hover {
-    width: 8rem;
-    border-radius: 50px;
+  &.hovered {
+    width: 7rem;
+  }
+  &.unhovered {
+    width: 3rem;
+    transition-delay: 1s;
   }
 `;
 
-const Div = styled.div`
-  transition: all 2s ease-in-out;
-  width: 100%;
+const NameCircle = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border-radius: 3rem;
   display: flex;
+  align-items: center;
   justify-content: center;
+`;
 
-  //에니메이션
-  animation-duration: 0.25s;
-  animation-timing-function: ease-in-out;
-  animation-name: none;
-  animation-fill-mode: forwards;
+const Logout = styled.div`
+  position: fixed;
+  top: 0.25rem;
+  right: 0.6rem;
+  width: 5rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
 
-  &.logout {
-    animation-name: ${fadeIn};
+  /* color: white; */
+
+  @keyframes hovered {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes unhovered {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  &.hovered {
+    display: flex;
+    justify-content: center;
+    animation: hovered 1s ease-in-out forwards;
+    animation-delay: 0.5s;
+  }
+  &.unhovered {
+    animation-play-state: paused;
+    animation: unhovered 1s ease-in-out forwards;
   }
 `;
 
 export default ExpiredCheck;
-
-/* ${(props) =>
-    props.diappear &&
-    css`
-      animation-name: ${fadeIn};
-    `} */
