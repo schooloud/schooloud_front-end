@@ -1,14 +1,14 @@
 //check and logout
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import PersonIcon from "@mui/icons-material/Person";
+import i from "rechart/lib/chart";
+import styled, { css, keyframes } from "styled-components";
 
 const ExpiredCheck = (props) => {
   const [isLogined, setIsLogined] = useState(null);
   const [cookies, removeCookie] = useCookies(null);
-  const [showLogoutButton, setShowLogoutButton] = useState(false);
+  const [isHover, setIsHover] = useState(false);
 
   const navigate = useNavigate();
 
@@ -17,12 +17,9 @@ const ExpiredCheck = (props) => {
     console.log("현재 시간은은은" + now);
     //compare now and expiredAt
 
-    console.log("토큰 만료시간은" + expiredAt);
     if (now > expiredAt) {
-      console.log("토큰 만료시간이 지났습니다.");
       return true;
     } else {
-      console.log("토큰 만료시간이 지나지 않았습니다.");
       return false;
     }
   };
@@ -39,13 +36,13 @@ const ExpiredCheck = (props) => {
     }
     //만료 안됐으면 로그인 상태 유지
     else {
-      setIsLogined(cookies.name);
+      setIsLogined(cookies.name.slice(-2));
     }
   };
 
   useEffect(() => {
     authCheck(); // 로그인 체크 함수
-  });
+  }, []);
 
   const logOut = () => {
     for (let key in cookies) {
@@ -54,73 +51,114 @@ const ExpiredCheck = (props) => {
     navigate("/"); // 메인 페이지로 이동
   };
 
-  const handleOver = () => {
-    //클릭하면 아래에 로그아웃 버튼이 생성되고, 로그아웃 버튼을 누르면 로그아웃
-    if (isLogined) {
-      setShowLogoutButton(true);
-    }
+  const changeNameLogout = () => {
+    setTimeout(() => {
+      setIsLogined(isLogined + " 로그아웃");
+    }, 1000);
   };
 
-  const handleLeave = () => {
-    setShowLogoutButton(false);
+  //유저박스에 마우스 올리면 로그아웃 버튼 보여주기
+  const handleMouseOver = () => {
+    console.log("마우스 올라옴");
+    // setReadyForLogout(false);
+    changeNameLogout();
+    setIsHover(true);
   };
+
+  //유저박스에서 마우스 떼면 로그아웃 버튼 숨기기
+  const handleMouseLeave = () => {
+    console.log("마우스 떼짐");
+    // setReadyForLogout(true);
+    // setIsLogined(cookies.name.slice(-2));
+    setIsHover(false);
+    setIsLogined(isLogined.slice(0, -4));
+  };
+
+  console.log("로그인상태:" + isLogined);
 
   return (
     <>
       {isLogined && (
-        <UserIcon onClick={handleOver} onMouseLeave={handleLeave}>
-          <PersonIcon />
-          <UserName>{isLogined}</UserName>
-        </UserIcon>
-      )}
-      {showLogoutButton && (
-        <LogOutButton
-          onClick={logOut}
-          onMouseOver={(e) => setShowLogoutButton(true)}
-          onMouseLeave={(e) => setShowLogoutButton(false)}
+        <UserBox
+          className={isHover ? "hovered" : ""}
+          onMouseOver={handleMouseOver}
+          onMouseLeave={handleMouseLeave}
         >
-          로그아웃
-        </LogOutButton>
+          {/* {isHover ? (
+            <Div className="logout">{isLogined} 로그아웃</Div>
+          ) : (
+            <Div className="">석희</Div>
+          )} */}
+          {isLogined}
+        </UserBox>
       )}
     </>
   );
 };
 
-const UserIcon = styled.div`
+const fadeIn = keyframes`
+  from {
+    display: none;
+  }
+  to {
+    opacity: block;
+  }
+`;
+
+const UserBox = styled.div`
+  //포지션
   position: fixed;
-  top: 1rem;
-  right: 2.7rem;
+  top: 0.25rem;
+  right: 1rem;
+
+  //style
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid black;
+  border-radius: 50%;
 
   z-index: 200;
+
+  //내용물
   display: flex;
   align-items: center;
-  cursor: pointer;
-`;
-
-const UserName = styled.div`
-  font-size: 20px;
-  font-weight: 100;
-`;
-
-const LogOutButton = styled.button`
-  //same width with UserIcon
-  width: 6rem;
-
-  box-shadow: 1px 2px rgba(0, 0, 0, 0.12);
-  border: none;
-  position: fixed;
-  top: 2.9rem;
-  right: 2.7rem;
-  z-index: 201;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: 100;
-  //글자 중간정렬
   justify-content: center;
 
-  background-color: whi3te;
+  cursor: pointer;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+
+  background-color: white;
+
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    width: 8rem;
+    border-radius: 50px;
+  }
+`;
+
+const Div = styled.div`
+  transition: all 2s ease-in-out;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  //에니메이션
+  animation-duration: 0.25s;
+  animation-timing-function: ease-in-out;
+  animation-name: none;
+  animation-fill-mode: forwards;
+
+  &.logout {
+    animation-name: ${fadeIn};
+  }
 `;
 
 export default ExpiredCheck;
+
+/* ${(props) =>
+    props.diappear &&
+    css`
+      animation-name: ${fadeIn};
+    `} */

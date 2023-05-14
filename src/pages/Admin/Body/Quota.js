@@ -4,6 +4,47 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
+import Paper from "../../../components/Paper";
+
+const USAGE = {
+  cpu: 11,
+  ram: 24,
+  storage: 101,
+  user: 10,
+};
+
+const TOTAL = {
+  cpu: 100,
+  ram: 200,
+  storage: 100,
+};
+
+const flavorData = [
+  {
+    id: "1",
+    flalvorName: "u2.c1m1",
+    flavorRam: "1GB",
+    flavorDisk: "20GB",
+    cpu: 1,
+    num: 1,
+  },
+  {
+    id: "2",
+    flalvorName: "u2.c2m2",
+    flavorRam: "2GB",
+    flavorDisk: "40GB",
+    cpu: 2,
+    num: 2,
+  },
+  {
+    id: "3",
+    flalvorName: "u2.c2m2",
+    flavorRam: "2GB",
+    flavorDisk: "40GB",
+    cpu: 2,
+    num: 3,
+  },
+];
 
 export default function Quota() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -68,9 +109,20 @@ export default function Quota() {
     },
   ];
 
+  const description =
+    "요청합니다 내가 이게 필요하니까 꼭 해달란 말이야 교수야 진짜 대학생이 돈이 어딨다고 aws를 결제하겠어";
+
+  const totalCPU = 7;
+  const totalRAM = 14;
+  const totalStorage = 70;
+
   const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
   const waitingList = dummy.filter((row) => row.status === "waiting");
   const processedList = dummy.filter((row) => row.status !== "waiting");
+
+  const handleOnClick = (id) => {
+    console.log(id);
+  };
 
   return (
     <Container>
@@ -124,45 +176,89 @@ export default function Quota() {
           </MainButton>
         </ModalButtonContainer>
         <ModalBody>
-          <Line />
-          <TextWrapper>
-            <BoldText>Project Name</BoldText>
-            <Text>: {selectedRowName}</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Project Purpose</BoldText>
-            <DescText>
-              : 저는 이 프로젝트를 수행하기 위해서 꼭 이 인스턴스가 필요해요우
-              살려주세요우 한번만 바주셍요 젭라
-            </DescText>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Quota - vCPU</BoldText>
-            <Text>: 10</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Quota - DISK</BoldText>
-            <Text>: 200GB</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Quota - RAM</BoldText>
-            <Text>: 4GB</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Created At</BoldText>
-            <Text>: 2023-05-08</Text>
-          </TextWrapper>
-          <Line />
-          <TextWrapper>
-            <BoldText>Period of Use</BoldText>
-            <Text>: 2023-12-31</Text>
-          </TextWrapper>
-          <Line />
+          <BodyContainer>
+            <LeftBody>
+              <Title>current usage</Title>
+              <PaperContainer>
+                <Paper
+                  title={"current usage / total CPU"}
+                  usage={USAGE.cpu}
+                  total={TOTAL.cpu}
+                  width={7.5}
+                  height={10}
+                  textSize="small"
+                  unit={"core"}
+                ></Paper>
+                <Paper
+                  title={"current usage / total RAM"}
+                  usage={USAGE.ram}
+                  total={TOTAL.ram}
+                  width={7.5}
+                  height={10}
+                  textSize="small"
+                  unit={"GB"}
+                ></Paper>
+                <Paper
+                  title={"current usage / total STORAGE"}
+                  usage={USAGE.storage}
+                  total={TOTAL.storage}
+                  width={7.5}
+                  height={10}
+                  textSize="small"
+                  unit={"GB"}
+                ></Paper>
+                <Paper
+                  title={"total USER"}
+                  usage={USAGE.cpu}
+                  total={TOTAL.cpu}
+                  width={7.5}
+                  height={10}
+                  textSize="small"
+                  unit={""}
+                ></Paper>
+              </PaperContainer>
+            </LeftBody>
+            <RightBody>
+              <Title>request</Title>
+              <RightBodyContainer>
+                <Line className="modal" />
+
+                <Div>
+                  <Label>Project Purpose</Label>
+                  <InputContainer>{description}</InputContainer>
+                </Div>
+                <Line className="modal" />
+
+                <Div>
+                  <Label>Quota request</Label>
+                  <Table
+                    checkBox={false}
+                    data={flavorData}
+                    header={["Name", "RAM", "DISK", "vCPU", "Num"]}
+                    onClick={handleOnClick}
+                  />
+                </Div>
+                <Line className="modal" />
+
+                <Div>
+                  <Label>total CPU</Label>
+                  {totalCPU}
+                </Div>
+                <Line className="modal" />
+
+                <Div>
+                  <Label>total RAM</Label>
+                  {totalRAM}
+                </Div>
+                <Line className="modal" />
+
+                <Div>
+                  <Label>total STORAGE</Label>
+                  {totalStorage}
+                </Div>
+              </RightBodyContainer>
+            </RightBody>
+          </BodyContainer>
         </ModalBody>
       </BottomModal>
       <PopUpModal
@@ -231,6 +327,7 @@ const TitleText = styled.div`
   font-weight: 600;
   font-size: 1.3rem;
   margin-bottom: 1rem;
+  margin-left: 0.2rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -243,40 +340,25 @@ const ModalButtonContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+  padding-right: 0.2rem;
 `;
 
 const ModalBody = styled.div`
   overflow: auto;
+  /* 아래와 같이 수정필요 */
+  margin: 0.5rem 0;
 `;
 
 const Line = styled.div`
+  &.modal {
+    margin: 0;
+  }
   margin: 1rem 0;
   height: 1px;
   background-color: #f0f0f0;
   width: 100%;
 `;
 
-const TextWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const BoldText = styled.div`
-  margin-left: 2rem;
-  font-weight: 600;
-  min-width: 8rem;
-`;
-
-const Text = styled.div`
-  margin-left: 2rem;
-  font-weight: 400;
-`;
-
-const DescText = styled.div`
-  margin-left: 2rem;
-  word-break: break-all;
-  font-weight: 400;
-`;
 const BodyWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -290,4 +372,64 @@ const Input = styled.textarea`
   border: 0.5px solid gray;
   border-radius: 0.3rem;
   padding: 0.8rem 0.8rem;
+`;
+
+const BodyContainer = styled.div`
+  /* border: 1px solid blue; */
+  display: flex;
+  width: 100%;
+  padding: 0 0.2rem;
+`;
+
+const LeftBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: visible;
+  padding-right: 1rem;
+`;
+
+const RightBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+  height: 100%;
+  width: 50%;
+  border-left: 1px solid #f0f0f0;
+`;
+
+const Title = styled.div`
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const PaperContainer = styled.div`
+  display: flex;
+`;
+
+const RightBodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+`;
+
+const Label = styled.div`
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 80%;
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
 `;

@@ -43,19 +43,6 @@ const Login = (props) => {
     [form]
   );
 
-  // const login = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .post("/users/login", {
-  //       // 로그인 요청
-  //       id: formRef.current.id.value,
-  //       password: formRef.current.passWord.value,
-  //     })
-  //     .then((res) => {
-  //       setCookie("id", res.data.token); // 쿠키에 토큰 저장
-  //     });
-  // };
-
   const login = (e) => {
     e.preventDefault();
     if (form.id === serverDummy.id && form.password === serverDummy.password) {
@@ -81,8 +68,8 @@ const Login = (props) => {
           <Logo>
             <LogoImage src={logoImage} alt="" />
           </Logo>
-          <Box>
-            <BoxContainer>
+          <BoxContainer>
+            <Box>
               <Title>로그인</Title>
               <Form>
                 <Input
@@ -112,8 +99,8 @@ const Login = (props) => {
                   로그인
                 </MainButton>
               </Form>
-            </BoxContainer>
-          </Box>
+            </Box>
+          </BoxContainer>
           <SignUpButton onClick={handleClick}>회원가입</SignUpButton>
         </Container>
       </LoginWrapper>
@@ -144,7 +131,7 @@ const Container = styled.div`
   width: 30rem;
 `;
 
-const BoxContainer = styled.div`
+const Box = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -160,14 +147,14 @@ const Logo = styled.div`
   height: 3rem;
   background-color: #ffffff;
   color: #000000;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 `;
 
 const LogoImage = styled.img`
   height: 100%;
 `;
 
-const Box = styled.div`
+const BoxContainer = styled.div`
   padding: 3rem 0;
   width: 100%;
   display: flex;
@@ -179,7 +166,7 @@ const Box = styled.div`
 `;
 
 const Title = styled.h1`
-  margin: 0 0 20px 0;
+  margin: 0 0 1.4rem 0;
   width: 100%;
   font-size: 1rem;
 `;
@@ -195,10 +182,10 @@ const Form = styled.form`
 const Input = styled.input`
   width: 100%;
   height: 40px;
-  margin-bottom: 10px;
+  margin-bottom: 0.6rem;
   border: 0.5px solid grey;
   border-radius: 5px;
-  padding: 0 10px;
+  padding: 0 0.6rem;
 `;
 
 const SignUpButton = styled.div`

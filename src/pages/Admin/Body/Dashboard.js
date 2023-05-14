@@ -13,7 +13,7 @@ const USAGE = {
 const TOTAL = {
   cpu: 100,
   ram: 200,
-  storage: 1000,
+  storage: 100,
 };
 
 const quataDummy = [
@@ -102,8 +102,6 @@ export default function Dashboard() {
     .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
     .slice(0, 5);
 
-  console.log(quataData);
-
   //data 에서 createdAt 빼기
   quataData.forEach((element) => {
     delete element.createAt;
@@ -131,31 +129,35 @@ export default function Dashboard() {
           title={"current usage / total CPU"}
           usage={USAGE.cpu}
           total={TOTAL.cpu}
-          width={25}
+          width={17}
           height={10}
+          textSize="medium"
           unit={"core"}
         ></Paper>
         <Paper
           title={"current usage / total RAM"}
           usage={USAGE.ram}
           total={TOTAL.ram}
-          width={25}
+          width={17}
           height={10}
+          textSize="medium"
           unit={"GB"}
         ></Paper>
         <Paper
           title={"current usage / total STORAGE"}
           usage={USAGE.storage}
           total={TOTAL.storage}
-          width={25}
+          width={17}
           height={10}
+          textSize="medium"
           unit={"GB"}
         ></Paper>
         <Paper
           title={"total USER"}
           usage={USAGE.user}
-          width={25}
+          width={17}
           height={10}
+          textSize="medium"
         ></Paper>
       </PaperGroup>
       <TitleText2>Proposal Request</TitleText2>
@@ -169,7 +171,7 @@ export default function Dashboard() {
       <Table
         data={proposalData}
         header={["Name", "Status"]}
-        onClick={handleRowClick}
+        onClick={() => {}}
         checkBox={false}
       />
       <SpaceDiv></SpaceDiv>

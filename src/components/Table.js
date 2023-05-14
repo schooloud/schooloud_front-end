@@ -354,14 +354,15 @@ export default function Table({
                     </CheckBoxWrapper>
                   </td>
                 )}
-                {Object.keys(row).map(
-                  (field) =>
-                    field === "id" || (
-                      <td key={row[field]} align="center">
+                {Object.keys(row).map((field) => {
+                  if (field !== "id") {
+                    return (
+                      <td key={field + row[field]} align="center">
                         {row[field]}
                       </td>
-                    )
-                )}
+                    );
+                  }
+                })}
               </tr>
             ))}
           {pagination &&
@@ -427,7 +428,7 @@ const TableWrapper = styled.div`
 
   th {
     font-weight: 600;
-    font-size:0.9rem;
+    font-size: 0.9rem;
     padding: 0 0.4rem;
     &.checkboxth {
       padding: 0 0;
@@ -435,7 +436,7 @@ const TableWrapper = styled.div`
   }
 
   tr {
-    font-size:0.9rem;
+    font-size: 0.9rem;
     height: 3rem;
     border-top: 1px solid #e0e0e0;
   }
@@ -469,8 +470,8 @@ const CheckBoxWrapper = styled.div`
     cursor: pointer;
   }
   input[type="checkbox"] {
-    width:0.65rem;
-    height:0.65rem;
+    width: 0.65rem;
+    height: 0.65rem;
     transform: scale(1.3);
     accent-color: var(--dark);
     cursor: pointer;
@@ -503,12 +504,12 @@ const PaginationButton = styled.div`
 
   &:hover {
     background-color: var(--medium);
-    color:white;
+    color: white;
   }
 
   &.selected {
     background-color: var(--medium);
-    color:white;
+    color: white;
     cursor: default;
   }
 `;

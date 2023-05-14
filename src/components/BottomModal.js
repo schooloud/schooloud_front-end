@@ -4,6 +4,7 @@ import Crop169Icon from "@mui/icons-material/Crop169";
 import Crop32Icon from "@mui/icons-material/Crop32";
 import Crop75Icon from "@mui/icons-material/Crop75";
 import { useEffect, useState } from "react";
+
 export default function BottomModal({ open, setOpen, children }) {
   const [modalHeight, setModalHeight] = useState("medium");
   const [mount, setMount] = useState(false);

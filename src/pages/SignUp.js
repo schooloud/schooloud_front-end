@@ -92,12 +92,12 @@ const SignUp = () => {
   return (
     <SignupContainer>
       <SignUpWrapper>
-        <Container>
+        <BoxContainer>
           <Logo>
             <LogoImage src={logoImage} alt="" />
           </Logo>
           <Box>
-            <BoxContainer>
+            <BoxWrapper>
               <Title>회원가입</Title>
               <Form ref={formRef}>
                 <Label>이메일</Label>
@@ -191,9 +191,9 @@ const SignUp = () => {
               >
                 가입하기
               </MainButton>
-            </BoxContainer>
+            </BoxWrapper>
           </Box>
-        </Container>
+        </BoxContainer>
         <PopUpModal
           width={30}
           height={15}
@@ -223,18 +223,19 @@ const SignUpWrapper = styled.div`
   width: 100%;
   min-width: 32rem;
 
-  margin: 5rem 0;
+  margin: 2rem 0;
 
   /* height: 100%; */
   //height빼고 overflow auto
   /* overflow: auto; */
 `;
 
-const Container = styled.div`
+const BoxContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 30rem;
+  margin-top: 1rem;
 `;
 
 const Logo = styled.div`
@@ -245,7 +246,7 @@ const Logo = styled.div`
   height: 3rem;
   background-color: #ffffff;
   color: #000000;
-  margin-bottom: 1.3rem;
+  margin-bottom: 1.5rem;
 `;
 
 const LogoImage = styled.img`
@@ -263,7 +264,7 @@ const Box = styled.div`
 `;
 
 const Title = styled.h1`
-  margin: 50px 0 20px 0;
+  margin: 3.4rem 0 1.4rem 0;
   width: 100%;
   font-size: 1rem;
 `;
@@ -284,21 +285,21 @@ const EmailDiv = styled.div`
 
 const PasswordCheckMessage = styled.div`
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 0.6rem;
   color: ${(props) => props.color || "red"};
   font-size: 0.8rem;
 `;
 
 const EmailCheckMessage = styled.div`
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 0.6rem;
   color: ${(props) => props.color || "red"};
   font-size: 0.8rem;
 `;
 
 const Input = styled.input`
   width: 100%;
-  height: 40px;
+  height: 2.4rem;
   margin-bottom: 10px;
   border: 0.5px solid grey;
   border-radius: 5px;
@@ -307,14 +308,14 @@ const Input = styled.input`
 
 const InputEmail = styled.input`
   width: 70%;
-  height: 2.5rem;
-  margin-bottom: 10px;
+  height: 2.4rem;
+  margin-bottom: 0.6rem;
   border: 0.5px solid grey;
   border-radius: 5px;
-  padding: 0 10px;
+  padding: 0 0.6rem;
 `;
 
-const BoxContainer = styled.div`
+const BoxWrapper = styled.div`
   width: 80%;
   position: relative;
   bottom: 1.5rem;
@@ -327,7 +328,7 @@ const BoxContainer = styled.div`
 const Label = styled.div`
   text-align: left;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 0.3rem;
   font-size: 0.8rem;
 `;
 

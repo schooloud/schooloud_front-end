@@ -318,11 +318,11 @@ const InputContainer = styled.div`
 `;
 
 const Input = styled.input`
-  width: 50px;
-  height: 20px;
+  width: 3rem;
+  height: 1.4rem;
   border: 0.7px solid var(--dark);
   border-radius: 2px;
-  font-size: 15px;
+  font-size: 1rem;
   text-align: center;
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;

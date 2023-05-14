@@ -224,7 +224,7 @@ export default function Dashboard() {
           쿼터 변경
         </MainButton>
       </MainButtonDiv>
-      <ChartDiv>
+      <ChartContainer>
         <BarChart
           barGap={15}
           barSize={35}
@@ -246,7 +246,7 @@ export default function Dashboard() {
           <Bar dataKey="usage" fill="#AAD8A1" />
           <Bar dataKey="total" fill="#2D791E" />
         </BarChart>
-      </ChartDiv>
+      </ChartContainer>
       <PopUpModal
         width={35}
         height={14}
@@ -318,6 +318,7 @@ export default function Dashboard() {
             size="small"
             marginRight={0.5}
             color="light"
+            fontColor="var(--dark)"
             onClick={handleQuataCancel}
           >
             취소
@@ -362,7 +363,7 @@ const InputMember = styled.input`
   height: 2rem;
   border: 0.5px solid var(--dark);
   border-radius: 5px;
-  padding: 0 10px;
+  padding: 0 0.5rem;
 `;
 
 const Label = styled.div`
@@ -411,11 +412,11 @@ const TableDiv = styled.div`
 `;
 
 const InputNum = styled.input`
-  width: 50px;
-  height: 20px;
-  border: 0.7px solid var(--dark);
+  width: 3rem;
+  height: 1.4rem;
+  border: 0.5px solid var(--dark);
   border-radius: 2px;
-  font-size: 15px;
+  font-size: 1rem;
   text-align: center;
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -432,7 +433,6 @@ const ButtonGroup = styled.div`
   justify-content: flex-start;
 `;
 
-const ChartDiv = styled.div`
+const ChartContainer = styled.div`
   width: 100%;
-  height: 500px;
 `;
