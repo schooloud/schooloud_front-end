@@ -251,6 +251,13 @@ export default function Table({
 }) {
   const allSelectedRow = [];
   const paginationButton = [];
+  var length = data.length;
+
+  if (pagination) {
+    length = data[page].length;
+  } else {
+    length = data.length;
+  }
 
   pagination && data[page].map((row) => allSelectedRow.push(row.id));
   pagination || data.map((row) => allSelectedRow.push(row.id));
@@ -286,9 +293,6 @@ export default function Table({
   };
 
   const headSelectedHandler = () => {
-    var length = data.length;
-    length = pagination && data[page].length;
-
     if (selectedRow?.length === length) {
       setSelectedRow([]);
     } else {
@@ -307,7 +311,7 @@ export default function Table({
                   <CheckBoxWrapper onClick={headSelectedHandler}>
                     <input
                       type="checkbox"
-                      checked={selectedRow?.length === data?.length}
+                      checked={selectedRow?.length === length}
                       readOnly
                     />
                   </CheckBoxWrapper>

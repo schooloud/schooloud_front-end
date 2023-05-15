@@ -41,7 +41,6 @@ author = [String]
 
 export default function WriteProposal() {
   const [date, setDate] = useState(new Date());
-  const [selectedRow, setSelectedRow] = useState([]);
   const [selectedId, setSelectedId] = useState();
   // const [totalCPU, setTotalCPU] = useState(0);
   // const [totalRAM, setTotalRAM] = useState(0);

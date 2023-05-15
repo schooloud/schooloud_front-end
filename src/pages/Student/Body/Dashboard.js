@@ -94,7 +94,6 @@ export default function Dashboard() {
   const [quataModalopen, setQuataModalOpen] = useState(false);
   const [addingMemberEmail, setAddingMemberEmail] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const [selectedRow, setSelectedRow] = useState([]);
   const [selectedId, setSelectedId] = useState();
 
   const handleMemberClick = () => {
