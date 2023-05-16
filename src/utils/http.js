@@ -17,16 +17,16 @@ export async function useGetApi(url, headers, params) {
     params: params,
   });
 
-  return response.data;
+  return response;
 }
 
 export async function usePostApi(url, requestBody, headers, params) {
   const response = await axios.post(BACKEND_URL + url, requestBody, {
     headers: headers,
     params: params,
+    withCredentials: true,
   });
-
-  return response.data;
+  return response;
 }
 
 export async function usePutApi(url, requestBody, headers, params) {
@@ -35,7 +35,7 @@ export async function usePutApi(url, requestBody, headers, params) {
     params: params,
   });
 
-  return response.data;
+  return response;
 }
 
 export async function usePatchApi(url, requestBody, headers, params) {
@@ -44,7 +44,7 @@ export async function usePatchApi(url, requestBody, headers, params) {
     params: params,
   });
 
-  return response.data;
+  return response;
 }
 
 export async function useDeleteApi(url, headers) {
@@ -52,5 +52,5 @@ export async function useDeleteApi(url, headers) {
     headers: headers,
   });
 
-  return response.data;
+  return response;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
@@ -16,10 +17,16 @@ const SignUp = () => {
     useState(false);
   //이메일 중복 검사
   const [isEmailDuplicateChecked, setIsEmailDuplicateChecked] = useState(false);
+  //사용가능한 이메일
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
   //비밀번호 일치 검사
   const [isPasswordSame, setIsPasswordSame] = useState(false);
 
-  //form
+  // //현재 input창에 캐시 때문에 들어가있는 값을 form에 넣어주기
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+
+  // form
   const [form, setForm] = useState({
     email: "",
     student_id: "",
@@ -30,76 +37,85 @@ const SignUp = () => {
   });
 
   //이메일 변경 시
-  const handleEmailChange = useCallback(
-    (e) => {
-      const emailRegex =
-        /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-      const emailCurrent = e.target.value;
-      const { name } = e.target;
-      setForm({
-        ...form,
-        [name]: emailCurrent,
-      });
+  const handleEmailChange = (e) => {
+    const emailRegex =
+      /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    const emailCurrent = e.target.value;
+    const { name } = e.target;
+    setForm({
+      ...form,
+      [name]: emailCurrent,
+    });
 
-      if (!emailRegex.test(emailCurrent)) {
-        setIsEmailValid(false);
-      } else {
-        setIsEmailValid(true);
-      }
-    },
-    [form]
-  );
+    if (!emailRegex.test(emailCurrent)) {
+      setIsEmailValid(false);
+    } else {
+      setIsEmailValid(true);
+    }
+  };
 
   //input 값 변경 시
-  const handleInputChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setForm({
-        ...form,
-        [name]: value,
-      });
-    },
-    [form]
-  );
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
 
   // 회원가입 hook
-  const signUpMutation = useMutation(usePostApi("user/register", form));
+  const signUpMutation = useMutation({
+    mutationFn: (form) => usePostApi("user/register", form),
+    onSuccess: () => {
+      navigate("/");
+    },
+  });
+
   // 이메일 중복확인 hook
-  const checkEmailDuplicateMutation = useMutation(
-    "user/email-check",
-    form.email
-  );
+  const checkEmailDuplicateMutation = useMutation({
+    mutationFn: (email) => usePostApi("user/email-check", email),
+    onError: (error) => {
+      setIsEmailAvailable(false);
+    },
+    onSuccess: () => {
+      setIsEmailAvailable(true);
+    },
+  });
 
   //가입하기 버튼 클릭 시
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     //가입 api
-    signUpMutation.mutate();
-  }, []);
+    signUpMutation.mutate(form);
+  };
 
   //중복확인 클릭 시
-  const handleDuplicateCheck = useCallback((e) => {
+  const handleDuplicateCheck = (e) => {
     e.preventDefault();
+
     //중복확인 api
-    checkEmailDuplicateMutation.mutate();
+    const emailForm = {};
+    emailForm.email = form.email;
+
+    checkEmailDuplicateMutation.mutate(emailForm);
     setIsEmailDuplicateModalOpen(true);
-  }, []);
+  };
 
   //이 이메일을 사용하시겠습니까?
-  const onEmailAvailConfirm = useCallback(() => {
+  const onEmailAvailConfirm = () => {
     setIsEmailDuplicateChecked(true);
     setIsEmailDuplicateModalOpen(false);
-  }, []);
+  };
 
   //이 이메일을 사용하지 않겠습니까?
-  const onEmailAvailCancel = useCallback(() => {
+  const onEmailAvailCancel = () => {
     setIsEmailDuplicateModalOpen(false);
-  }, []);
+  };
 
   //이메일 중복 : 이메일을 다시 입력해주세요.
-  const onEmailNotAvailConfirm = useCallback(() => {
+  const onEmailNotAvailConfirm = () => {
     setIsEmailDuplicateModalOpen(false);
-  }, []);
+  };
 
   //비밀번호 재확인
   const handlePasswordCheck = (e) => {
@@ -111,8 +127,6 @@ const SignUp = () => {
     }
   };
 
-  const formRef = useRef();
-
   return (
     <SignupContainer>
       <SignUpWrapper>
@@ -123,10 +137,11 @@ const SignUp = () => {
           <Box>
             <BoxWrapper>
               <Title>회원가입</Title>
-              <Form ref={formRef}>
+              <Form>
                 <Label>이메일</Label>
                 <EmailDiv>
                   <InputEmail
+                    ref={emailInputRef}
                     type="text"
                     name="email"
                     onChange={handleEmailChange}
@@ -151,6 +166,7 @@ const SignUp = () => {
                 )}
                 <Label>비밀번호</Label>
                 <Input
+                  ref={passwordInputRef}
                   type="password"
                   name="password"
                   onChange={handleInputChange}
@@ -175,7 +191,7 @@ const SignUp = () => {
                 <Label>학번</Label>
                 <Input
                   type="text"
-                  name="studentId"
+                  name="student_id"
                   onChange={handleInputChange}
                   required
                 />
@@ -207,10 +223,10 @@ const SignUp = () => {
                     form.major &&
                     form.name &&
                     form.password &&
-                    form.studentId
+                    form.student_id
                   )
                 }
-                marginTop={1.2}
+                marginTop={1}
                 onClick={handleSubmit}
               >
                 가입하기
@@ -220,7 +236,7 @@ const SignUp = () => {
         </BoxContainer>
         {/* 이메일 중복 확인 모달 */}
         {/* 중복확인 mutation이 성공이라면 */}
-        {checkEmailDuplicateMutation.isSuccess && (
+        {isEmailAvailable && (
           <PopUpModal
             width={30}
             height={15}
@@ -234,7 +250,7 @@ const SignUp = () => {
           </PopUpModal>
         )}
         {/* 중복확인 mutation이 실패라면 */}
-        {checkEmailDuplicateMutation.isError && (
+        {!isEmailAvailable && (
           <PopUpModal
             width={30}
             height={15}

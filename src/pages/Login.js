@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
@@ -19,7 +20,6 @@ const serverDummy = {
 const Login = (props) => {
   const location = useLocation();
   const cookies = new Cookies();
-
   const navigate = useNavigate();
 
   //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
@@ -42,59 +42,72 @@ const Login = (props) => {
     [form]
   );
 
+  // 로그인 hook
+  const loginMutation = useMutation({
+    mutationFn: (form) => usePostApi("user/login", form),
+    onSuccess: (data) => {
+      // console.log(data);
+      // navigate("/student/project/project1/dashboard");
+      alert("login success");
+    },
+  });
+
   //로그인 hook
   // const loginMutation = useMutation(usePostApi("/auth/login", form));
 
   //로그인 버튼 클릭 시
   const handleClickLogin = (e) => {
     e.preventDefault();
-
+    // const response = usePostApi("user/login", form);
     //토큰 dummy
-    const tokenDummy = {
-      sessionKey: "1",
-      //get now time and add 10 minutes
-      expiredAt: new Date().getTime() + 1000 * 60 * 10,
-      email: "cat1181123@naver.com",
-      role: "STUDENT",
-      name: "김뚱이",
-    };
+    // const tokenDummy = {
+    //   sessionKey: "1",
+    //   //get now time and add 10 minutes
+    //   expiredAt: new Date().getTime() + 1000 * 60 * 10,
+    //   email: "cat1181123@naver.com",
+    //   role: "STUDENT",
+    //   name: "김뚱이",
+    // };
+    // 이메일 중복확인 hook
+
+    loginMutation.mutate(form);
 
     //로그인 성공
-    if (
-      form.email === serverDummy.id &&
-      form.password === serverDummy.password
-    ) {
-      //토큰 저장
-      for (let key in tokenDummy) {
-        cookies.set(key, tokenDummy[key]);
-      }
-      //쿠키 출력
+    // if  {
+    //   //토큰 저장
+    //   for (let key in tokenDummy) {
+    //     cookies.set(key, tokenDummy[key]);
+    //   }
+    //   //쿠키 출력
 
-      navigate("/home"); // 로그인 성공시 role에 따라 페이지 이동
-    } else {
-      alert("아이디 또는 비밀번호가 틀렸습니다.");
-    }
+    //   navigate("/home"); // 로그인 성공시 role에 따라 페이지 이동
+    // } else {
+    //   alert("아이디 또는 비밀번호가 틀렸습니다.");
+    // }
   };
+
+  console.log(loginMutation);
 
   //회원가입 버튼 클릭 시
   const handleClick = () => {
     navigate("/signup");
   };
 
-  useEffect(() => {
-    if (!!cookies.sessionKey) {
-      console.log("쿠키가 있다.");
-      //토큰 만료시간이 안 지났다면 로그인 처리
-      if (cookies.expiredAt > new Date().getTime()) {
-        navigate("/home");
-      } else {
-        //쿠키 삭제
-        removeCookies();
-      }
-    } else {
-      removeCookies();
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   if (!!cookies.sessionKey) {
+  //     console.log("쿠키가 있다.");
+  //     //토큰 만료시간이 안 지났다면 로그인 처리
+  //     if (cookies.expiredAt.getTime() > new Date().getTime()) {
+  //       navigate("/home");
+  //     } else {
+  //       //쿠키 삭제
+  //       // removeCookies();
+  //     }
+  //   } else {
+  //     console.log(cookies?.expiredAt);
+  //     // removeCookies();
+  //   }
+  // }, [location]);
 
   return (
     <LoginContainer>
