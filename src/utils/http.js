@@ -33,6 +33,7 @@ export async function usePutApi(url, requestBody, headers, params) {
   const response = await axios.put(BACKEND_URL + url, requestBody, {
     headers: headers,
     params: params,
+    withCredentials: true,
   });
 
   return response;

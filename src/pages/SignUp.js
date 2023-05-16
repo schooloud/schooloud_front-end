@@ -311,7 +311,7 @@ const Box = styled.div`
   display: flex;
   justify-content: center;
 
-  border-radius: 10px;
+  border-radius: 0.6rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 `;
 
@@ -352,9 +352,9 @@ const EmailCheckMessage = styled.div`
 const Input = styled.input`
   width: 100%;
   height: 2.4rem;
-  margin-bottom: 10px;
+  margin-bottom: 0.6rem;
   border: 0.5px solid grey;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   padding: 0 10px;
 `;
 
@@ -363,7 +363,7 @@ const InputEmail = styled.input`
   height: 2.4rem;
   margin-bottom: 0.6rem;
   border: 0.5px solid grey;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   padding: 0 0.6rem;
 `;
 
