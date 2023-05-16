@@ -4,6 +4,8 @@ import logoImage from "../assets/Logo.png";
 import { useNavigate } from "react-router-dom";
 import PopUpModal from "../components/PopUpModal";
 import MainButton from "../components/MainButton";
+import { useMutation } from "react-query";
+import { usePostApi } from "../utils/http";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -17,16 +19,18 @@ const SignUp = () => {
   //비밀번호 일치 검사
   const [isPasswordSame, setIsPasswordSame] = useState(false);
 
+  //form
   const [form, setForm] = useState({
     email: "",
-    studentId: "",
+    student_id: "",
     name: "",
     password: "",
     major: "",
     role: "STUDENT",
   });
 
-  const onChangeEmail = useCallback(
+  //이메일 변경 시
+  const handleEmailChange = useCallback(
     (e) => {
       const emailRegex =
         /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
@@ -46,7 +50,8 @@ const SignUp = () => {
     [form]
   );
 
-  const handleChange = useCallback(
+  //input 값 변경 시
+  const handleInputChange = useCallback(
     (e) => {
       const { name, value } = e.target;
       setForm({
@@ -57,27 +62,46 @@ const SignUp = () => {
     [form]
   );
 
+  // 회원가입 hook
+  const signUpMutation = useMutation(usePostApi("user/register", form));
+  // 이메일 중복확인 hook
+  const checkEmailDuplicateMutation = useMutation(
+    "user/email-check",
+    form.email
+  );
+
+  //가입하기 버튼 클릭 시
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    navigate("/");
+    //가입 api
+    signUpMutation.mutate();
   }, []);
 
+  //중복확인 클릭 시
   const handleDuplicateCheck = useCallback((e) => {
     e.preventDefault();
+    //중복확인 api
+    checkEmailDuplicateMutation.mutate();
     setIsEmailDuplicateModalOpen(true);
+  }, []);
+
+  //이 이메일을 사용하시겠습니까?
+  const onEmailAvailConfirm = useCallback(() => {
     setIsEmailDuplicateChecked(true);
-  }, []);
-
-  const onConfirm = useCallback(() => {
-    console.log("확인");
     setIsEmailDuplicateModalOpen(false);
   }, []);
 
-  const onCancel = useCallback(() => {
-    console.log("취소");
+  //이 이메일을 사용하지 않겠습니까?
+  const onEmailAvailCancel = useCallback(() => {
     setIsEmailDuplicateModalOpen(false);
   }, []);
 
+  //이메일 중복 : 이메일을 다시 입력해주세요.
+  const onEmailNotAvailConfirm = useCallback(() => {
+    setIsEmailDuplicateModalOpen(false);
+  }, []);
+
+  //비밀번호 재확인
   const handlePasswordCheck = (e) => {
     const { value } = e.target;
     if (form.password === value) {
@@ -105,7 +129,7 @@ const SignUp = () => {
                   <InputEmail
                     type="text"
                     name="email"
-                    onChange={onChangeEmail}
+                    onChange={handleEmailChange}
                     required
                   />
                   <MainButton
@@ -129,7 +153,7 @@ const SignUp = () => {
                 <Input
                   type="password"
                   name="password"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
                 <Label>비밀번호 재확인</Label>
@@ -152,21 +176,21 @@ const SignUp = () => {
                 <Input
                   type="text"
                   name="studentId"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
                 <Label>이름</Label>
                 <Input
                   type="text"
                   name="name"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
                 <Label>전공</Label>
                 <Input
                   type="text"
                   name="major"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
               </Form>
@@ -194,17 +218,34 @@ const SignUp = () => {
             </BoxWrapper>
           </Box>
         </BoxContainer>
-        <PopUpModal
-          width={30}
-          height={15}
-          darkBackground={true}
-          title="사용가능한 이메일입니다."
-          onConfirm={onConfirm}
-          onCancel={onCancel}
-          visible={isEmailDuplicateModalOpen}
-        >
-          이 이메일을 사용하시겠습니까?
-        </PopUpModal>
+        {/* 이메일 중복 확인 모달 */}
+        {/* 중복확인 mutation이 성공이라면 */}
+        {checkEmailDuplicateMutation.isSuccess && (
+          <PopUpModal
+            width={30}
+            height={15}
+            darkBackground={true}
+            title="사용가능한 이메일입니다."
+            onConfirm={onEmailAvailConfirm}
+            onCancel={onEmailAvailCancel}
+            visible={isEmailDuplicateModalOpen}
+          >
+            이 이메일을 사용하시겠습니까?
+          </PopUpModal>
+        )}
+        {/* 중복확인 mutation이 실패라면 */}
+        {checkEmailDuplicateMutation.isError && (
+          <PopUpModal
+            width={30}
+            height={15}
+            darkBackground={true}
+            title="사용 불가능한 이메일입니다."
+            onConfirm={onEmailNotAvailConfirm}
+            visible={isEmailDuplicateModalOpen}
+          >
+            다른 이메일을 입력해주세요.
+          </PopUpModal>
+        )}
       </SignUpWrapper>
     </SignupContainer>
   );
@@ -222,12 +263,7 @@ const SignUpWrapper = styled.div`
   align-items: center; /* 수평 중앙 정렬 */
   width: 100%;
   min-width: 32rem;
-
   margin: 2rem 0;
-
-  /* height: 100%; */
-  //height빼고 overflow auto
-  /* overflow: auto; */
 `;
 
 const BoxContainer = styled.div`

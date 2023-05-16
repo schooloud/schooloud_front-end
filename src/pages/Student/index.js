@@ -34,6 +34,7 @@ export default function Student() {
           <Body />
         </BodyWrapper>
       </MainWrapper>
+      {/* token check */}
       <ExpiredCheck />
     </PageWrapper>
   );

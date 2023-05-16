@@ -165,9 +165,7 @@ export default function Dashboard() {
 
   const chartWidth =
     window.screen.width - 16 * (window.screen.width / 1440) * 18;
-  console.log(chartWidth + "px");
 
-  console.log(num);
   for (let i in num) {
     totalCPU += flavorData[i - 1].cpu * num[i];
     totalRAM += parseInt(flavorData[i - 1].flavorRam) * num[i];
