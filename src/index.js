@@ -22,12 +22,10 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>
-        <RecoilRoot>
-          <BrowserRouter>
-            <GlobalStyles />
-            <App />
-          </BrowserRouter>
-        </RecoilRoot>
+        <BrowserRouter>
+          <GlobalStyles />
+          <App />
+        </BrowserRouter>
       </CookiesProvider>
     </QueryClientProvider>
   </React.StrictMode>

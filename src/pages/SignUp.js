@@ -268,7 +268,7 @@ const SignUp = () => {
 };
 
 const SignupContainer = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow: auto;
 `;

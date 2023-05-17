@@ -16,6 +16,7 @@ const serverDummy = {
 
 //현재의 오류
 //tokenDummy의 expiredAt이 로그인할 때 마다 업데이트 되지 않음
+
 const Login = (props) => {
   const location = useLocation();
   const cookies = new Cookies();
@@ -43,56 +44,15 @@ const Login = (props) => {
 
   // 로그인 hook
   const loginMutation = useMutation({
-    mutationFn: (form) =>
-      usePostApi("user/login", form, {
-        email: cookies.get("email"),
-        expired_at: cookies.get("expired_at"),
-        name: cookies.get("name"),
-        role: cookies.get("role"),
-        session_key: cookies.get("session_key"),
-        // Access_Control_Allow_Origin: "test-api.schooloud.cloud",
-      }),
+    mutationFn: (form) => usePostApi("user/login", form),
     onSuccess: (data) => {
-      cookies.set("email", data.data.email, {
-        path: "/",
-        // sameSite: "Lax",
-      });
-      cookies.set("email", data.data.email, {
-        path: "/",
-        sameSite: true,
-        domain: ".schooloud.cloud",
-      });
-      cookies.set("expired_at", new Date(data.data.expired_at).getTime(), {
-        path: "/",
-        sameSite: "Lax",
-        domain: "localhost",
-      });
-      cookies.set("name", data.data.name, {
-        path: "/",
-        // sameSite: "none",
-      });
-      cookies.set("role", data.data.role, {
-        path: "/",
-        // sameSite: "none",
-      });
-      cookies.set("session_key", data.data.session_key, {
-        path: "/",
-        // sameSite: "none",
-      });
+      console.log(data);
+      //쿠키에서 role 가져와서 role에 따라 페이지 이동
       // navigate("/student/project/project1/dashboard");
+      console.log(cookies.get("role"));
       alert("login success");
     },
   });
-  // useEffect(() => {
-  //   cookies.set("email", "yerimtesttest@knu.ac.kr");
-  //   cookies.set("expired_at", "2023-05-18 00:48:49");
-  //   cookies.set("name", "yerimlee");
-  //   cookies.set("role", "STUDENT");
-  //   cookies.set(
-  //     "session_key",
-  //     "bf916fe831e7060293f0e40b469dcd0bbf916fe831e7060293f0e40b469dcd0b"
-  //   );
-  // }, []);
 
   //로그인 hook
   // const loginMutation = useMutation(usePostApi("/auth/login", form));
@@ -100,45 +60,10 @@ const Login = (props) => {
   //로그인 버튼 클릭 시
   const handleClickLogin = (e) => {
     e.preventDefault();
-    /*
-    email=yerimtesttest@knu.ac.kr; expired_at="2023-05-18 00:48:49"; name=yerimlee; role=STUDENT; session_key=bf916fe831e7060293f0e40b469dcd0b
-bf916fe831e7060293f0e40b469dcd0b
-    */
-    // cookies.set("email", "yerimtesttest@knu.ac.kr");
-    // cookies.set("expired_at", "2023-05-18 00:48:49");
-    // cookies.set("name", "yerimlee");
-    // cookies.set("role", "STUDENT");
-    // cookies.set(
-    //   "session_key",
-    //   "bf916fe831e7060293f0e40b469dcd0bbf916fe831e7060293f0e40b469dcd0b"
-    // );
-    // const response = usePostApi("user/login", form);
-    //토큰 dummy
-    // const tokenDummy = {
-    //   sessionKey: "1",
-    //   //get now time and add 10 minutes
-    //   expiredAt: new Date().getTime() + 1000 * 60 * 10,
-    //   email: "cat1181123@naver.com",
-    //   role: "STUDENT",
-    //   name: "김뚱이",
-    // };
-    // 이메일 중복확인 hook
-
     loginMutation.mutate(form);
-
-    //로그인 성공
-    // if  {
-    //   //토큰 저장
-    //   for (let key in tokenDummy) {
-    //     cookies.set(key, tokenDummy[key]);
-    //   }
-    //   //쿠키 출력
-
-    //   navigate("/home"); // 로그인 성공시 role에 따라 페이지 이동
-    // } else {
-    //   alert("아이디 또는 비밀번호가 틀렸습니다.");
-    // }
   };
+
+  console.log(loginMutation);
 
   //회원가입 버튼 클릭 시
   const handleClick = () => {
@@ -261,7 +186,7 @@ const BoxContainer = styled.div`
   align-items: center;
   justify-content: center;
 
-  border-radius: 0.6rem;
+  border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 `;
 
@@ -281,10 +206,10 @@ const Form = styled.form`
 
 const Input = styled.input`
   width: 100%;
-  height: 2.5rem;
+  height: 40px;
   margin-bottom: 0.6rem;
   border: 0.5px solid grey;
-  border-radius: 0.3rem;
+  border-radius: 5px;
   padding: 0 0.6rem;
 `;
 
