@@ -26,7 +26,11 @@ const ExpiredCheck = (props) => {
 
   //토큰 만료시간 체크
   const isExpired = (expiredAt) => {
+    //현재 시간
     let now = new Date().getTime();
+    //토큰 만료 시간
+    expiredAt = new Date(expiredAt).getTime();
+
     console.log("현재 시간은 : " + now);
     console.log("토큰 만료 시간은 : " + expiredAt);
 
@@ -44,10 +48,11 @@ const ExpiredCheck = (props) => {
   }, []);
 
   const authCheck = () => {
-    const exp = cookies.get("expiredAt");
-    const sessionKey = cookies.get("sessionKey");
+    const exp = cookies.get("expired_at");
+    const sessionKey = cookies.get("session_key");
     //토큰이 없거나 만료됐으면 쿠키 삭제 및 로그아웃
     if (!sessionKey || isExpired(exp)) {
+      console.log("토큰이 만료됐습니다.");
       removeAndNavigate();
     }
   };
@@ -66,9 +71,6 @@ const ExpiredCheck = (props) => {
   }, []);
 
   authCheck();
-
-  //로그아웃 hook
-  // const logoutMutation = useMutation(usePostApi("/auth/logout"));
 
   //로그아웃 버튼 클릭 시
   const handleLogOut = () => {

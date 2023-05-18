@@ -9,21 +9,12 @@ import { usePostApi } from "../utils/http";
 import { useMutation } from "react-query";
 import removeCookies from "../utils/removeCookies";
 
-const serverDummy = {
-  id: "test@naver.com",
-  password: "1234",
-};
-
-//현재의 오류
-//tokenDummy의 expiredAt이 로그인할 때 마다 업데이트 되지 않음
-
 const Login = (props) => {
   const location = useLocation();
-  const cookies = new Cookies();
   const navigate = useNavigate();
 
-  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
-  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효하지 않다면 쿠키를 삭제하고 로그인 페이지로 이동
+  const cookies = new Cookies();
+
   //form
   const [form, setForm] = useState({
     email: "",
@@ -46,16 +37,16 @@ const Login = (props) => {
   const loginMutation = useMutation({
     mutationFn: (form) => usePostApi("user/login", form),
     onSuccess: (data) => {
-      console.log(data);
       //쿠키에서 role 가져와서 role에 따라 페이지 이동
-      // navigate("/student/project/project1/dashboard");
-      console.log(cookies.get("role"));
-      alert("login success");
+      if (cookies.get("role") === "STUDENT") {
+        navigate("/student/project/project1/dashboard");
+      } else if (cookies.get("role") === "PROFESSOR") {
+        navigate("/professor/proposal");
+      } else if (cookies.get("role") === "ADMIN") {
+        navigate("/admin/dashboard");
+      }
     },
   });
-
-  //로그인 hook
-  // const loginMutation = useMutation(usePostApi("/auth/login", form));
 
   //로그인 버튼 클릭 시
   const handleClickLogin = (e) => {
@@ -63,28 +54,38 @@ const Login = (props) => {
     loginMutation.mutate(form);
   };
 
-  console.log(loginMutation);
-
   //회원가입 버튼 클릭 시
   const handleClick = () => {
     navigate("/signup");
   };
 
-  // useEffect(() => {
-  //   if (!!cookies.sessionKey) {
-  //     console.log("쿠키가 있다.");
-  //     //토큰 만료시간이 안 지났다면 로그인 처리
-  //     if (cookies.expiredAt.getTime() > new Date().getTime()) {
-  //       navigate("/home");
-  //     } else {
-  //       //쿠키 삭제
-  //       // removeCookies();
-  //     }
-  //   } else {
-  //     console.log(cookies?.expiredAt);
-  //     // removeCookies();
-  //   }
-  // }, [location]);
+  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
+  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효하지 않다면 쿠키를 삭제하고 로그인 페이지로 이동
+  useEffect(() => {
+    if (!!cookies.get("session_key")) {
+      console.log("쿠키가 있다.");
+      //토큰 만료시간이 안 지났다면 로그인 처리
+      if (
+        new Date(cookies.get("expired_at")).getTime() > new Date().getTime()
+      ) {
+        //role에 따라 페이지 이동
+        if (cookies.get("role") === "STUDENT") {
+          navigate("/student/project/project1/dashboard");
+        } else if (cookies.get("role") === "PROFESSOR") {
+          navigate("/professor/proposal");
+        } else if (cookies.get("role") === "ADMIN") {
+          navigate("/admin/dashboard");
+        }
+      } else {
+        //토큰 만료시간이 지났다면 쿠키 삭제
+        removeCookies();
+      }
+    } else {
+      //쿠키가 없다면
+      console.log(cookies?.get("expired_at"));
+      removeCookies();
+    }
+  }, [location]);
 
   return (
     <LoginContainer>
@@ -119,7 +120,6 @@ const Login = (props) => {
                   disabled={
                     form.email === "" || form.password === "" ? true : false
                   }
-                  // marginTop={"1rem"}
                 >
                   로그인
                 </MainButton>
