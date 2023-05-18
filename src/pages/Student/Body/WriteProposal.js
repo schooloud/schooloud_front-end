@@ -4,6 +4,9 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import "./Calendar.css";
 import Table from "../../../components/Table";
+import Cookies from "universal-cookie";
+import { useQuery } from "react-query";
+import { useGetApi } from "../../../utils/http";
 
 const flavorData = [
   {
@@ -42,9 +45,14 @@ author = [String]
 export default function WriteProposal() {
   const [date, setDate] = useState(new Date());
   const [selectedId, setSelectedId] = useState();
-  // const [totalCPU, setTotalCPU] = useState(0);
-  // const [totalRAM, setTotalRAM] = useState(0);
-  // const [totalStorage, setTotalStorage] = useState(0);
+  const cookies = new Cookies();
+
+  //get user info
+  const { data, isSuccess } = useQuery({
+    queryKey: "userInfo",
+    queryFn: () => useGetApi("user/list"),
+  });
+  console.log(data);
 
   const [proposal, setProposal] = useState({
     name: "",
@@ -85,7 +93,7 @@ export default function WriteProposal() {
     //proposal 객체에 date 추가
     proposal.end_at = date.toLocaleDateString();
     //proposal 객체에 author_email 추가
-    proposal.author_email = "";
+    proposal.author_email = cookies.get("email");
 
     console.log(proposal);
   };

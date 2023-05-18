@@ -36,7 +36,7 @@ const Login = (props) => {
   // 로그인 hook
   const loginMutation = useMutation({
     mutationFn: (form) => usePostApi("user/login", form),
-    onSuccess: (data) => {
+    onSuccess: () => {
       //쿠키에서 role 가져와서 role에 따라 페이지 이동
       if (cookies.get("role") === "STUDENT") {
         navigate("/student/project/project1/dashboard");

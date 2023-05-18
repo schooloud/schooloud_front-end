@@ -4,6 +4,8 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import removeCookies from "../utils/removeCookies";
+import { useMutation } from "react-query";
+import { usePostApi } from "../utils/http";
 
 /*
 로그인을 하면 쿠키 값을 저장하고
@@ -41,12 +43,14 @@ const ExpiredCheck = (props) => {
     }
   };
 
+  //쿠키에 name이 있으면 로그인 상태로 변경
   useEffect(() => {
     if (!!cookies.get("name")) {
       setIsLogined(cookies.get("name").slice(-2));
     }
   }, []);
 
+  // 쿠키에 토큰이 있으면 토큰 만료시간 체크
   const authCheck = () => {
     const exp = cookies.get("expired_at");
     const sessionKey = cookies.get("session_key");
@@ -72,9 +76,17 @@ const ExpiredCheck = (props) => {
 
   authCheck();
 
+  //logout hook
+  const logoutMutation = useMutation({
+    mutationFn: () => usePostApi("user/logout"),
+    onSuccess: () => {
+      removeAndNavigate();
+    },
+  });
+
   //로그아웃 버튼 클릭 시
   const handleLogOut = () => {
-    removeAndNavigate();
+    logoutMutation.mutate();
   };
 
   //유저박스에 마우스 올리면 로그아웃 버튼 보여주기
@@ -114,7 +126,7 @@ const ExpiredCheck = (props) => {
 const UserBox = styled.div`
   //포지션
   position: fixed;
-  top: 0.25rem;
+  top: 0.26rem;
   right: 1rem;
 
   //style
