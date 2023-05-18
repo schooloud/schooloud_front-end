@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
@@ -14,18 +14,15 @@ const serverDummy = {
 //tokenDummy의 expiredAt이 로그인할 때 마다 업데이트 되지 않음
 //로그인할 때 마다 새로운 토큰을 발급해야함
 
-const tokenDummy = {
-  sessionKey: "1",
-  //get now time and add 10 minutes
-  expiredAt: new Date().getTime() + 1000 * 60 * 1000,
-  email: "cat1181123@naver.com",
-  name: "김석희",
-};
-
-console.log(tokenDummy.expiredAt);
 const Login = (props) => {
   const [cookies, setCookie] = useCookies({}); // 쿠키 훅
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies.sessionKey) {
+      navigate("/home");
+    }
+  }, []);
 
   const [form, setForm] = useState({
     id: "",
@@ -45,6 +42,15 @@ const Login = (props) => {
 
   const login = (e) => {
     e.preventDefault();
+
+    const tokenDummy = {
+      sessionKey: "1",
+      //get now time and add 10 minutes
+      expiredAt: new Date().getTime() + 1000 * 10 * 1,
+      email: "cat1181123@naver.com",
+      name: "김석희",
+    };
+
     if (form.id === serverDummy.id && form.password === serverDummy.password) {
       //토큰 저장
       for (let key in tokenDummy) {

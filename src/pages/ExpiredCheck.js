@@ -7,7 +7,7 @@ import styled, { css, keyframes } from "styled-components";
 
 const ExpiredCheck = (props) => {
   const [isLogined, setIsLogined] = useState(null);
-  const [cookies, removeCookie] = useCookies(null);
+  const [cookies, removeCookie] = useCookies({});
   const [isHover, setIsHover] = useState(false);
 
   const navigate = useNavigate();
@@ -30,12 +30,14 @@ const ExpiredCheck = (props) => {
     //토큰이 만료됐으면 쿠키 삭제 및 로그아웃
     if (!exp || isExpired(exp)) {
       for (let key in cookies) {
+        console.log("시간 만료돼서 삭제됨");
         removeCookie(key); // 쿠키 삭제
       }
-      navigate("/"); // 메인 페이지로 이동
+      navigate("/"); // 1 페이지로 이동
     }
     //만료 안됐으면 로그인 상태 유지
     else {
+      console.log("만료 안됐다. 이게 문제?");
       setIsLogined(cookies.name.slice(-2));
     }
   };
@@ -70,7 +72,10 @@ const ExpiredCheck = (props) => {
           onMouseLeave={handleMouseLeave}
         >
           <NameCircle>{isLogined}</NameCircle>
-          <Logout className={isHover ? "hovered" : "unhovered"}>
+          <Logout
+            onClick={handleLogOut}
+            className={isHover ? "hovered" : "unhovered"}
+          >
             로그아웃
           </Logout>
         </UserBox>
