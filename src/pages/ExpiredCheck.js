@@ -32,10 +32,6 @@ const ExpiredCheck = (props) => {
     let now = new Date().getTime();
     //토큰 만료 시간
     expiredAt = new Date(expiredAt).getTime();
-
-    console.log("현재 시간은 : " + now);
-    console.log("토큰 만료 시간은 : " + expiredAt);
-
     if (now > expiredAt) {
       return true;
     } else {

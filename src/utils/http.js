@@ -15,6 +15,7 @@ export async function useGetApi(url, headers, params) {
   const response = await axios.get(BACKEND_URL + url, {
     headers: headers,
     params: params,
+    withCredentials: true,
   });
 
   return response;
@@ -43,6 +44,7 @@ export async function usePatchApi(url, requestBody, headers, params) {
   const response = await axios.patch(BACKEND_URL + url, requestBody, {
     headers: headers,
     params: params,
+    withCredentials: true,
   });
 
   return response;
@@ -51,6 +53,7 @@ export async function usePatchApi(url, requestBody, headers, params) {
 export async function useDeleteApi(url, headers) {
   const response = await axios.delete(BACKEND_URL + url, {
     headers: headers,
+    withCredentials: true,
   });
 
   return response;

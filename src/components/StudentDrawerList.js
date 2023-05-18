@@ -5,7 +5,9 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { useQuery } from "react-query";
+import { useGetApi } from "../utils/http";
 
 export default function StudentDrawerList() {
   const navigate = useNavigate();
@@ -13,25 +15,37 @@ export default function StudentDrawerList() {
   const [selectedDrawer, setSelectedDrawer] = useState(
     params.selectedDrawer || "dashboard"
   );
+  const [disabled, setDisabled] = useState(false);
+
+  const projects = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => useGetApi("project/list"),
+    onSuccess: (data) => {
+      if (!data.data.projects.length) {
+        setDisabled(true);
+      }
+    },
+  });
 
   useEffect(() => setSelectedDrawer(params.selectedDrawer), [params]);
 
   const handleDrawerClick = (event) => {
     const newSelectedDrawer = event.currentTarget.id;
-    const projectId = params.projectId || "project1";
-
+    const projectId =
+      params.projectId || projects.data.data.projects[0]?.project_id;
     if (newSelectedDrawer === selectedDrawer) {
       return;
     } else if (["proposal", "writeproposal"].includes(newSelectedDrawer)) {
-      navigate(`/student/${newSelectedDrawer}`);
+      navigate(`/${newSelectedDrawer}`);
     } else {
-      navigate(`/student/project/${projectId}/${newSelectedDrawer}`);
+      navigate(`/projectId/${projectId}/${newSelectedDrawer}`);
     }
   };
 
   return (
     <DrawerWrapper>
       <ListButton
+        disabled={disabled}
         id="dashboard"
         className={selectedDrawer === "dashboard" && "selected"}
         onClick={handleDrawerClick}
@@ -41,6 +55,7 @@ export default function StudentDrawerList() {
       </ListButton>
       <ListCategory>Compute</ListCategory>
       <ListButton
+        disabled={disabled}
         id="instance"
         className={selectedDrawer === "instance" && "selected"}
         onClick={handleDrawerClick}
@@ -49,6 +64,7 @@ export default function StudentDrawerList() {
         <ListText>Instance</ListText>
       </ListButton>
       <ListButton
+        disabled={disabled}
         id="keypair"
         className={selectedDrawer === "keypair" && "selected"}
         onClick={handleDrawerClick}
@@ -82,20 +98,34 @@ const DrawerWrapper = styled.div`
   overflow: auto;
 `;
 
-const ListButton = styled.div`
+const ListButton = styled.button`
   width: 100%;
   height: 3.6rem;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   padding-left: 1.3rem;
+  border: 0;
   &.selected {
     background-color: var(--light);
   }
   &:hover {
-    background-color: var(--light);
-    cursor: pointer;
+    ${({ disabled }) =>
+      disabled ||
+      css`
+        background-color: var(--light);
+        cursor: pointer;
+      `}
   }
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      background-color: #f0f0f0;
+      color: #909090;
+      &:hover {
+        cursor: default;
+      }
+    `}
 `;
 
 const ListCategory = styled.div`
