@@ -49,8 +49,8 @@ export default function WriteProposal() {
 
   //get user info
   const { data, isSuccess } = useQuery({
-    queryKey: "userInfo",
-    queryFn: () => useGetApi("user/list"),
+    queryKey: "quataInfo",
+    queryFn: () => useGetApi("flavor/list"),
   });
   console.log(data);
 
