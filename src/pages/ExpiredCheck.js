@@ -1,21 +1,40 @@
 //check and logout
 import React, { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
+import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-import i from "rechart/lib/chart";
-import styled, { css, keyframes } from "styled-components";
+import styled from "styled-components";
+import removeCookies from "../utils/removeCookies";
+import { useMutation } from "react-query";
+import { usePostApi } from "../utils/http";
+
+/*
+로그인을 하면 쿠키 값을 저장하고
+useEffect로 쿠키 값이 있는지 확인
+쿠키 시간이 만료되거나 로그아웃을 하면 쿠키 삭제
+*/
 
 const ExpiredCheck = (props) => {
   const [isLogined, setIsLogined] = useState(null);
-  const [cookies, removeCookie] = useCookies({});
   const [isHover, setIsHover] = useState(false);
-
+  const [first, setFirst] = useState(true);
+  const cookies = new Cookies();
   const navigate = useNavigate();
 
+  //쿠키를 지우고 메인 페이지로 이동
+  async function removeAndNavigate() {
+    await removeCookies();
+    navigate("/");
+  }
+
+  //토큰 만료시간 체크
   const isExpired = (expiredAt) => {
+    //현재 시간
     let now = new Date().getTime();
-    console.log("현재 시간은" + now);
-    //compare now and expiredAt
+    //토큰 만료 시간
+    expiredAt = new Date(expiredAt).getTime();
+
+    console.log("현재 시간은 : " + now);
+    console.log("토큰 만료 시간은 : " + expiredAt);
 
     if (now > expiredAt) {
       return true;
@@ -24,33 +43,50 @@ const ExpiredCheck = (props) => {
     }
   };
 
-  //토큰 만료시간 체크
-  const authCheck = () => {
-    const exp = cookies.expiredAt;
-    //토큰이 만료됐으면 쿠키 삭제 및 로그아웃
-    if (!exp || isExpired(exp)) {
-      for (let key in cookies) {
-        console.log("시간 만료돼서 삭제됨");
-        removeCookie(key); // 쿠키 삭제
-      }
-      navigate("/"); // 1 페이지로 이동
+  //쿠키에 name이 있으면 로그인 상태로 변경
+  useEffect(() => {
+    if (!!cookies.get("name")) {
+      setIsLogined(cookies.get("name").slice(-2));
     }
-    //만료 안됐으면 로그인 상태 유지
-    else {
-      console.log("만료 안됐다. 이게 문제?");
-      setIsLogined(cookies.name.slice(-2));
+  }, []);
+
+  // 쿠키에 토큰이 있으면 토큰 만료시간 체크
+  const authCheck = () => {
+    const exp = cookies.get("expired_at");
+    const sessionKey = cookies.get("session_key");
+    //토큰이 없거나 만료됐으면 쿠키 삭제 및 로그아웃
+    if (!sessionKey || isExpired(exp)) {
+      console.log("토큰이 만료됐습니다.");
+      removeAndNavigate();
     }
   };
 
   useEffect(() => {
-    authCheck(); // 로그인 체크 함수
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      authCheck();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
+  authCheck();
+
+  //logout hook
+  const logoutMutation = useMutation({
+    mutationFn: () => usePostApi("user/logout"),
+    onSuccess: () => {
+      removeAndNavigate();
+    },
+  });
+
+  //로그아웃 버튼 클릭 시
   const handleLogOut = () => {
-    for (let key in cookies) {
-      removeCookie(key); // 쿠키 삭제
-    }
-    navigate("/"); // 메인 페이지로 이동
+    logoutMutation.mutate();
   };
 
   //유저박스에 마우스 올리면 로그아웃 버튼 보여주기
@@ -60,6 +96,9 @@ const ExpiredCheck = (props) => {
 
   //유저박스에서 마우스 떼면 로그아웃 버튼 숨기기
   const handleMouseLeave = () => {
+    if (first) {
+      setFirst(false);
+    }
     setTimeout(() => setIsHover(false), 500);
   };
 
@@ -74,7 +113,7 @@ const ExpiredCheck = (props) => {
           <NameCircle>{isLogined}</NameCircle>
           <Logout
             onClick={handleLogOut}
-            className={isHover ? "hovered" : "unhovered"}
+            className={isHover ? "hovered" : !first && "unhovered"}
           >
             로그아웃
           </Logout>
@@ -87,13 +126,12 @@ const ExpiredCheck = (props) => {
 const UserBox = styled.div`
   //포지션
   position: fixed;
-  top: 0.25rem;
+  top: 0.26rem;
   right: 1rem;
 
   //style
   width: 3rem;
   height: 3rem;
-  /* border: 1px solid black; */
   border-radius: 3rem;
 
   z-index: 200;
@@ -166,7 +204,6 @@ const Logout = styled.div`
     animation-delay: 0.5s;
   }
   &.unhovered {
-    animation-play-state: paused;
     animation: unhovered 1s ease-in-out forwards;
   }
 `;

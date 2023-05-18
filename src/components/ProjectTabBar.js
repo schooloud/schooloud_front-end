@@ -2,6 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FolderIcon from "@mui/icons-material/Folder";
+import { useQuery } from "react-query";
+import { useGetApi } from "../utils/http";
 
 export default function ProjectTabBar() {
   const navigate = useNavigate();
@@ -9,6 +11,13 @@ export default function ProjectTabBar() {
   const [selectedProject, setSelectedProject] = useState(
     params.projectId || "project1"
   );
+
+  //get project api//get user info
+  // const { data, isSuccess } = useQuery({
+  //   queryKey: "projectList",
+  //   queryFn: () => useGetApi("project/list"),
+  // });
+  // console.log(data);
 
   useEffect(() => setSelectedProject(params.projectId), [params]);
 

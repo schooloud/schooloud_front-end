@@ -1,9 +1,12 @@
+/* eslint-disable */
 import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
 import { useNavigate } from "react-router-dom";
 import PopUpModal from "../components/PopUpModal";
 import MainButton from "../components/MainButton";
+import { useMutation } from "react-query";
+import { usePostApi } from "../utils/http";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -14,70 +17,107 @@ const SignUp = () => {
     useState(false);
   //이메일 중복 검사
   const [isEmailDuplicateChecked, setIsEmailDuplicateChecked] = useState(false);
+  //사용가능한 이메일
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
   //비밀번호 일치 검사
   const [isPasswordSame, setIsPasswordSame] = useState(false);
 
+  // //현재 input창에 캐시 때문에 들어가있는 값을 form에 넣어주기
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+
+  // form
   const [form, setForm] = useState({
     email: "",
-    studentId: "",
+    student_id: "",
     name: "",
     password: "",
     major: "",
     role: "STUDENT",
   });
 
-  const onChangeEmail = useCallback(
-    (e) => {
-      const emailRegex =
-        /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-      const emailCurrent = e.target.value;
-      const { name } = e.target;
-      setForm({
-        ...form,
-        [name]: emailCurrent,
-      });
+  //이메일 변경 시
+  const handleEmailChange = (e) => {
+    const emailRegex =
+      /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    const emailCurrent = e.target.value;
+    const { name } = e.target;
+    setForm({
+      ...form,
+      [name]: emailCurrent,
+    });
 
-      if (!emailRegex.test(emailCurrent)) {
-        setIsEmailValid(false);
-      } else {
-        setIsEmailValid(true);
-      }
+    if (!emailRegex.test(emailCurrent)) {
+      setIsEmailValid(false);
+    } else {
+      setIsEmailValid(true);
+    }
+  };
+
+  //input 값 변경 시
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  // 회원가입 hook
+  const signUpMutation = useMutation({
+    mutationFn: (form) => usePostApi("user/register", form),
+    onSuccess: () => {
+      navigate("/");
     },
-    [form]
-  );
+  });
 
-  const handleChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setForm({
-        ...form,
-        [name]: value,
-      });
+  // 이메일 중복확인 hook
+  const checkEmailDuplicateMutation = useMutation({
+    mutationFn: (email) => usePostApi("user/email-check", email),
+    onError: (error) => {
+      setIsEmailAvailable(false);
     },
-    [form]
-  );
+    onSuccess: () => {
+      setIsEmailAvailable(true);
+    },
+  });
 
-  const handleSubmit = useCallback((e) => {
+  //가입하기 버튼 클릭 시
+  const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/");
-  }, []);
+    //가입 api
+    signUpMutation.mutate(form);
+  };
 
-  const handleDuplicateCheck = useCallback((e) => {
+  //중복확인 클릭 시
+  const handleDuplicateCheck = (e) => {
     e.preventDefault();
+
+    //중복확인 api
+    const emailForm = {};
+    emailForm.email = form.email;
+
+    checkEmailDuplicateMutation.mutate(emailForm);
     setIsEmailDuplicateModalOpen(true);
+  };
+
+  //이 이메일을 사용하시겠습니까?
+  const onEmailAvailConfirm = () => {
     setIsEmailDuplicateChecked(true);
-  }, []);
-
-  const onConfirm = useCallback(() => {
-    console.log("확인");
     setIsEmailDuplicateModalOpen(false);
-  }, []);
+  };
 
-  const onCancel = useCallback(() => {
-    console.log("취소");
+  //이 이메일을 사용하지 않겠습니까?
+  const onEmailAvailCancel = () => {
     setIsEmailDuplicateModalOpen(false);
-  }, []);
+  };
 
+  //이메일 중복 : 이메일을 다시 입력해주세요.
+  const onEmailNotAvailConfirm = () => {
+    setIsEmailDuplicateModalOpen(false);
+  };
+
+  //비밀번호 재확인
   const handlePasswordCheck = (e) => {
     const { value } = e.target;
     if (form.password === value) {
@@ -86,8 +126,6 @@ const SignUp = () => {
       setIsPasswordSame(false);
     }
   };
-
-  const formRef = useRef();
 
   return (
     <SignupContainer>
@@ -99,13 +137,14 @@ const SignUp = () => {
           <Box>
             <BoxWrapper>
               <Title>회원가입</Title>
-              <Form ref={formRef}>
+              <Form>
                 <Label>이메일</Label>
                 <EmailDiv>
                   <InputEmail
+                    ref={emailInputRef}
                     type="text"
                     name="email"
-                    onChange={onChangeEmail}
+                    onChange={handleEmailChange}
                     required
                   />
                   <MainButton
@@ -127,9 +166,10 @@ const SignUp = () => {
                 )}
                 <Label>비밀번호</Label>
                 <Input
+                  ref={passwordInputRef}
                   type="password"
                   name="password"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
                 <Label>비밀번호 재확인</Label>
@@ -151,22 +191,22 @@ const SignUp = () => {
                 <Label>학번</Label>
                 <Input
                   type="text"
-                  name="studentId"
-                  onChange={handleChange}
+                  name="student_id"
+                  onChange={handleInputChange}
                   required
                 />
                 <Label>이름</Label>
                 <Input
                   type="text"
                   name="name"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
                 <Label>전공</Label>
                 <Input
                   type="text"
                   name="major"
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
               </Form>
@@ -183,10 +223,10 @@ const SignUp = () => {
                     form.major &&
                     form.name &&
                     form.password &&
-                    form.studentId
+                    form.student_id
                   )
                 }
-                marginTop={1.2}
+                marginTop={1}
                 onClick={handleSubmit}
               >
                 가입하기
@@ -194,24 +234,41 @@ const SignUp = () => {
             </BoxWrapper>
           </Box>
         </BoxContainer>
-        <PopUpModal
-          width={30}
-          height={15}
-          darkBackground={true}
-          title="사용가능한 이메일입니다."
-          onConfirm={onConfirm}
-          onCancel={onCancel}
-          visible={isEmailDuplicateModalOpen}
-        >
-          이 이메일을 사용하시겠습니까?
-        </PopUpModal>
+        {/* 이메일 중복 확인 모달 */}
+        {/* 중복확인 mutation이 성공이라면 */}
+        {isEmailAvailable && (
+          <PopUpModal
+            width={30}
+            height={15}
+            darkBackground={true}
+            title="사용가능한 이메일입니다."
+            onConfirm={onEmailAvailConfirm}
+            onCancel={onEmailAvailCancel}
+            visible={isEmailDuplicateModalOpen}
+          >
+            이 이메일을 사용하시겠습니까?
+          </PopUpModal>
+        )}
+        {/* 중복확인 mutation이 실패라면 */}
+        {!isEmailAvailable && (
+          <PopUpModal
+            width={30}
+            height={15}
+            darkBackground={true}
+            title="사용 불가능한 이메일입니다."
+            onConfirm={onEmailNotAvailConfirm}
+            visible={isEmailDuplicateModalOpen}
+          >
+            다른 이메일을 입력해주세요.
+          </PopUpModal>
+        )}
       </SignUpWrapper>
     </SignupContainer>
   );
 };
 
 const SignupContainer = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow: auto;
 `;
@@ -222,12 +279,7 @@ const SignUpWrapper = styled.div`
   align-items: center; /* 수평 중앙 정렬 */
   width: 100%;
   min-width: 32rem;
-
   margin: 2rem 0;
-
-  /* height: 100%; */
-  //height빼고 overflow auto
-  /* overflow: auto; */
 `;
 
 const BoxContainer = styled.div`
@@ -259,7 +311,7 @@ const Box = styled.div`
   display: flex;
   justify-content: center;
 
-  border-radius: 10px;
+  border-radius: 0.6rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 `;
 
@@ -300,9 +352,9 @@ const EmailCheckMessage = styled.div`
 const Input = styled.input`
   width: 100%;
   height: 2.4rem;
-  margin-bottom: 10px;
+  margin-bottom: 0.6rem;
   border: 0.5px solid grey;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   padding: 0 10px;
 `;
 
@@ -311,7 +363,7 @@ const InputEmail = styled.input`
   height: 2.4rem;
   margin-bottom: 0.6rem;
   border: 0.5px solid grey;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   padding: 0 0.6rem;
 `;
 
