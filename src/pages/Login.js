@@ -12,7 +12,6 @@ import removeCookies from "../utils/removeCookies";
 const Login = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const cookies = new Cookies();
 
   //form
