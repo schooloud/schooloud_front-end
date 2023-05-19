@@ -160,7 +160,7 @@ export default function InstanceCreate({ params, navigate }) {
           fontColor="var(--dark)"
           onClick={() => {
             console.log("취소");
-            navigate(`/student/project/${params.projectId}/instance`);
+            navigate(`/projectId/${params.projectId}/instance`);
           }}
         >
           취소
@@ -171,7 +171,7 @@ export default function InstanceCreate({ params, navigate }) {
           marginLeft={1}
           onClick={() => {
             console.log("생성");
-            navigate(`/student/project/${params.projectId}/instance`);
+            navigate(`/projectId/${params.projectId}/instance`);
           }}
         >
           생성

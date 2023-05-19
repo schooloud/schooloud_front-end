@@ -5,8 +5,8 @@ import Cookies from "universal-cookie";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
 import MainButton from "../components/MainButton";
-import { usePostApi } from "../utils/http";
-import { useMutation } from "react-query";
+import { useGetApi, usePostApi } from "../utils/http";
+import { useMutation, useQuery } from "react-query";
 import removeCookies from "../utils/removeCookies";
 
 const Login = (props) => {
@@ -36,14 +36,60 @@ const Login = (props) => {
   const loginMutation = useMutation({
     mutationFn: (form) => usePostApi("user/login", form),
     onSuccess: () => {
-      //쿠키에서 role 가져와서 role에 따라 페이지 이동
-      if (cookies.get("role") === "STUDENT") {
-        navigate("/student/project/project1/dashboard");
-      } else if (cookies.get("role") === "PROFESSOR") {
-        navigate("/professor/proposal");
-      } else if (cookies.get("role") === "ADMIN") {
-        navigate("/admin/dashboard");
+      console.log("로그인 성공");
+    },
+    onError: () => {
+      alert("로그인에 실패했습니다.");
+    },
+  });
+
+  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
+  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효하지 않다면 쿠키를 삭제하고 로그인 페이지로 이동
+  useEffect(() => {
+    if (!!cookies.get("session_key")) {
+      //토큰 만료시간이 안 지났다면 로그인 처리
+      if (
+        new Date(cookies.get("expired_at")).getTime() <= new Date().getTime()
+      ) {
+        //토큰 만료시간이 지났다면 쿠키 삭제
+        removeCookies();
       }
+    } else {
+      //세션키가 없다면 나머지 쿠키 삭제
+      removeCookies();
+    }
+  }, [location]);
+
+  //프로젝트 목록 가져오기
+  useQuery({
+    queryKey: ["projects"],
+    queryFn: () => useGetApi("project/list"),
+    enabled: !!cookies.get("session_key"),
+    onSuccess: (data) => {
+      console.log("프로젝트 목록 가져오기 성공");
+      console.log(data);
+      //계정에 프로젝트가 있으면 대시보드 페이지로 이동
+      if (!!data.data.projects.length) {
+        if (cookies.get("role") === "STUDENT") {
+          navigate(`/projectId/${data.data.projects[0].project_id}/dashboard`);
+        } else if (cookies.get("role") === "PROFESSOR") {
+          navigate("/proposal");
+        } else if (cookies.get("role") === "ADMIN") {
+          navigate("/dashboard");
+        }
+      } else {
+        //계정에 프로젝트가 없다면 제안서 페이지로 이동
+        if (cookies.get("role") === "STUDENT") {
+          navigate(`/proposal`);
+        } else if (cookies.get("role") === "PROFESSOR") {
+          navigate("/proposal");
+        } else if (cookies.get("role") === "ADMIN") {
+          navigate("/dashboard");
+        }
+      }
+    },
+    onError: (error) => {
+      alert("로그인에 실패했습니다.", error);
     },
   });
 
@@ -57,34 +103,6 @@ const Login = (props) => {
   const handleClick = () => {
     navigate("/signup");
   };
-
-  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
-  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효하지 않다면 쿠키를 삭제하고 로그인 페이지로 이동
-  useEffect(() => {
-    if (!!cookies.get("session_key")) {
-      console.log("쿠키가 있다.");
-      //토큰 만료시간이 안 지났다면 로그인 처리
-      if (
-        new Date(cookies.get("expired_at")).getTime() > new Date().getTime()
-      ) {
-        //role에 따라 페이지 이동
-        if (cookies.get("role") === "STUDENT") {
-          navigate("/student/project/project1/dashboard");
-        } else if (cookies.get("role") === "PROFESSOR") {
-          navigate("/professor/proposal");
-        } else if (cookies.get("role") === "ADMIN") {
-          navigate("/admin/dashboard");
-        }
-      } else {
-        //토큰 만료시간이 지났다면 쿠키 삭제
-        removeCookies();
-      }
-    } else {
-      //쿠키가 없다면
-      console.log(cookies?.get("expired_at"));
-      removeCookies();
-    }
-  }, [location]);
 
   return (
     <LoginContainer>

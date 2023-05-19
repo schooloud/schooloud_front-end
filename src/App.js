@@ -1,11 +1,12 @@
 import Student from "./pages/Student";
 import Professor from "./pages/Professor";
+import Admin from "./pages/Admin";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Admin from "./pages/Admin";
 import styled from "styled-components";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import LoadingOverlay from "./components/LoadingOverlay";
 
 function App() {
   return (
@@ -14,19 +15,24 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/student/project" element={<Student />}>
-            <Route path=":projectId" element={<Student />}>
-              <Route path=":selectedDrawer" element={<Student />}>
-                <Route path=":create" element={<Student />} />
+          <Route path="/projectId" element={<Home />}>
+            <Route path=":projectId" element={<Home />}>
+              <Route path=":selectedDrawer" element={<Home />}>
+                <Route path=":create" element={<Home />} />
               </Route>
             </Route>
           </Route>
-          <Route path="/student" element={<Student />}>
-            <Route path=":selectedDrawer" element={<Student />} />
-          </Route>
-          <Route path="/professor/:selectedDrawer" element={<Professor />} />
-          <Route path="/admin/:selectedDrawer" element={<Admin />} />
+          <Route path=":selectedDrawer" element={<Home />} />
+          <Route
+            path="/*"
+            element={
+              <LoadingOverlayWrapper>
+                <LoadingOverlay />
+                <Text>You found Infinite Storm!!</Text>
+                <Text>Please don't come here.</Text>
+              </LoadingOverlayWrapper>
+            }
+          />
         </Routes>
       </AppWrapper>
     </AppContainer>
@@ -46,4 +52,18 @@ const AppWrapper = styled.div`
   height: 100%;
   background-color: white;
   overflow: hidden;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Text = styled.div`
+  color: #4fa94d;
+  font-size: 1rem;
 `;
