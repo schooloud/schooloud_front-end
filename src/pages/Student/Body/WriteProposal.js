@@ -47,13 +47,6 @@ export default function WriteProposal() {
   const [selectedId, setSelectedId] = useState();
   const cookies = new Cookies();
 
-  //get user info
-  // const { data, isSuccess } = useQuery({
-  //   queryKey: "quataInfo",
-  //   queryFn: () => useGetApi("flavor/list"),
-  // });
-  // console.log(data);
-
   const [proposal, setProposal] = useState({
     name: "",
     purpose: "",

@@ -28,7 +28,7 @@ function App() {
             element={
               <LoadingOverlayWrapper>
                 <LoadingOverlay />
-                <Text>This is Infinite Storm.</Text>
+                <Text>You found Infinite Storm!!</Text>
                 <Text>Please don't come here.</Text>
               </LoadingOverlayWrapper>
             }
