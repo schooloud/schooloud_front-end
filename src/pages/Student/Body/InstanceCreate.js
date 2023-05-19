@@ -3,75 +3,100 @@ import Table from "../../../components/Table";
 import { useState } from "react";
 import MainButton from "../../../components/MainButton";
 import PopUpModal from "../../../components/PopUpModal";
-
-const imageData = [
-  {
-    id: "1",
-    name: "Ubuntu Server 20.04 LTS",
-    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
-    minblock: "20 GB",
-    bit: "64 BIT",
-  },
-  {
-    id: "2",
-    name: "Ubuntu Server 20.04 LTS",
-    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
-    minblock: "20 GB",
-    bit: "64 BIT",
-  },
-  {
-    id: "3",
-    name: "Ubuntu Server 20.04 LTS",
-    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
-    minblock: "20 GB",
-    bit: "64 BIT",
-  },
-  {
-    id: "4",
-    name: "Ubuntu Server 20.04 LTS",
-    desc: "Ubuntu Server 20.04 LTS(2023.03.21)",
-    minblock: "20 GB",
-    bit: "64 BIT",
-  },
-];
-
-const typeData = [
-  {
-    id: "1",
-    type: "t2",
-    name: "t2.c1m1",
-    vCPU: "1",
-    RAM: "1GB",
-  },
-  {
-    id: "2",
-    type: "m2",
-    name: "m2.c1m2",
-    vCPU: "1",
-    RAM: "2GB",
-  },
-  {
-    id: "3",
-    type: "m2",
-    name: "m2.c2m4",
-    vCPU: "2",
-    RAM: "4GB",
-  },
-  {
-    id: "4",
-    type: "m2",
-    name: "m2.c4m8",
-    vCPU: "4",
-    RAM: "8GB",
-  },
-];
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function InstanceCreate({ params, navigate }) {
   const [selectedImageRow, setSelectedImageRow] = useState([]);
   const [selectedTypeRow, setSelectedTypeRow] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState();
-  const [keypairCreate, setKeypairCreate] = useState(false);
+  const [selectedType, setSelectedType] = useState("");
+  const [isKeypairCreate, setIsKeypairCreate] = useState(false);
+  const [keypairCreatePopUp, setKeypairCreatePopUp] = useState(false);
+  const [selectedKeypair, setSelectedKeypair] = useState("");
+  const [keypairList, setKeypairList] = useState([]);
+  const [createKeypairName, setCreateKeypairName] = useState("");
+  const [createPrivateKey, setCreatePrivateKey] = useState("");
+  const [instanceName, setInstanceName] = useState("");
+  const [imageList, setImageList] = useState([]);
+  const [flavorList, setFlavorList] = useState([]);
+  const [fetchingModal, setFetchingModal] = useState(false);
+  const queryClient = useQueryClient();
+
+  useQuery({
+    queryKey: ["keypairs"],
+    queryFn: () => useGetApi("keypair/list"),
+    onSuccess: (data) => {
+      setKeypairList([]);
+      data.data.key_list.map((newKeypair) =>
+        setKeypairList((oldKeypair) => [...oldKeypair, newKeypair.keypair_name])
+      );
+    },
+  });
+
+  const { isSuccess } = useQuery({
+    queryKey: ["images"],
+    queryFn: () => useGetApi("image/list"),
+    onSuccess: (data) => {
+      setImageList([]);
+      data.data.images.map((newImage) => {
+        const newImageObj = {};
+
+        newImageObj["id"] = newImage.id;
+        newImageObj["name"] = newImage.image_name;
+        newImageObj["description"] = newImage.description;
+        newImageObj["size"] = newImage.size;
+
+        setImageList((oldImage) => [...oldImage, newImageObj]);
+      });
+    },
+  });
+
+  useQuery({
+    queryKey: ["flavors"],
+    queryFn: () => useGetApi("flavor/list"),
+    onSuccess: (data) => {
+      setFlavorList([]);
+      data.data.flavors.map((newFlavor) => {
+        const newFlavorObj = {};
+
+        newFlavorObj["id"] = newFlavor.id;
+        newFlavorObj["name"] = newFlavor.name;
+        newFlavorObj["ram"] = newFlavor.ram;
+        newFlavorObj["disk"] = newFlavor.disk;
+        newFlavorObj["cpu"] = newFlavor.cpu;
+
+        setFlavorList((oldFlavor) => [...oldFlavor, newFlavorObj]);
+      });
+    },
+  });
+
+  const keypairCreate = useMutation({
+    mutationFn: (keypairName) =>
+      usePostApi("keypair/create", { keypair_name: keypairName }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("keypairs");
+      setCreatePrivateKey(data.data.private_key);
+    },
+  });
+
+  const InstanceCreate = useMutation({
+    mutationFn: () =>
+      usePostApi("instance/create", {
+        project_id: params.projectId,
+        instance_name: instanceName,
+        keypair_name: selectedKeypair,
+        image_name: imageList.find((image) => image.id === selectedImageRow[0])
+          .name,
+        flavor_name: selectedType,
+      }),
+    onSuccess: () => {
+      // queryClient.invalidateQueries("instances");
+      setFetchingModal(false);
+      navigate(`/projectId/${params.projectId}/instance`);
+    },
+  });
 
   const handleImageRowClick = (id) => {
     if (selectedImageRow.includes(id)) {
@@ -89,6 +114,24 @@ export default function InstanceCreate({ params, navigate }) {
     }
   };
 
+  const handleKeypairSave = () => {
+    const element = document.createElement("a");
+    const file = new Blob([createPrivateKey], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = `${createKeypairName}.pem`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  // console.log({
+  //   project_id: params.projectId,
+  //   instance_name: instanceName,
+  //   keypair_name: selectedKeypair,
+  //   image_name: imageList.find((image) => image.id === selectedImageRow[0])
+  //     .name,
+  //   flavor_name: selectedType,
+  // });
   return (
     <Container>
       <TitleText>인스턴스 생성</TitleText>
@@ -96,21 +139,31 @@ export default function InstanceCreate({ params, navigate }) {
       <CreateTitleText>Image</CreateTitleText>
       <Line />
       <TableWrapper>
-        <Table
-          data={imageData}
-          header={["Name", "Description", "Min Block Storage(GB)", "BIT"]}
-          selectedRow={selectedImageRow}
-          setSelectedRow={setSelectedImageRow}
-          onClick={handleImageRowClick}
-          multiSelect={false}
-        />
+        {isSuccess ? (
+          <Table
+            data={imageList}
+            header={["Name", "Description", "Image Size"]}
+            selectedRow={selectedImageRow}
+            setSelectedRow={setSelectedImageRow}
+            onClick={handleImageRowClick}
+            multiSelect={false}
+          />
+        ) : (
+          <LoadingOverlayWrapper>
+            <LoadingOverlay />
+          </LoadingOverlayWrapper>
+        )}
       </TableWrapper>
       <Line />
       <CreateTitleText>Information</CreateTitleText>
       <Line />
       <InputLine>
         <Text>인스턴스 이름</Text>
-        <Input type="text" name="name" />
+        <Input
+          type="text"
+          name="name"
+          onBlur={(e) => setInstanceName(e.target.value)}
+        />
       </InputLine>
       <InputLine>
         <Text>인스턴스 타입</Text>
@@ -126,26 +179,48 @@ export default function InstanceCreate({ params, navigate }) {
       </InputLine>
       <InputLine>
         <Text>키 페어</Text>
-        <Select />
+        <Select
+          name="keypair"
+          value={selectedKeypair}
+          onChange={(e) => setSelectedKeypair(e.target.value)}
+          required
+        >
+          <option value="" disabled>
+            키페어를 선택해주세요.
+          </option>
+          {keypairList?.map((key) => (
+            <option key={key} value={key}>
+              {key}
+            </option>
+          ))}
+        </Select>
         <MainButton
           size="small"
           color="medium"
           marginLeft={1}
-          onClick={() => setKeypairCreate((state) => !state)}
+          onClick={() => setIsKeypairCreate((state) => !state)}
         >
-          {keypairCreate ? "닫기" : "생성"}
+          {isKeypairCreate ? "닫기" : "생성"}
         </MainButton>
       </InputLine>
-      {keypairCreate && (
+      {isKeypairCreate && (
         <KeypairCreateBox>
           <InputLine>
             <Text>키페어 이름</Text>
-            <Input type="text" name="name" />
+            <Input
+              type="text"
+              name="name"
+              onBlur={(e) => setCreateKeypairName(e.target.value)}
+            />
             <MainButton
               size="small"
               color="medium"
               marginLeft={1}
-              onClick={() => console.log("키페어 생성")}
+              onClick={() => {
+                !keypairList.includes(createKeypairName) &&
+                  keypairCreate.mutate(createKeypairName);
+                setKeypairCreatePopUp(true);
+              }}
             >
               생성
             </MainButton>
@@ -169,9 +244,15 @@ export default function InstanceCreate({ params, navigate }) {
           size="small"
           color="medium"
           marginLeft={1}
+          disabled={
+            !instanceName ||
+            !selectedKeypair ||
+            !selectedImageRow.length ||
+            !selectedType
+          }
           onClick={() => {
-            console.log("생성");
-            navigate(`/projectId/${params.projectId}/instance`);
+            InstanceCreate.mutate();
+            setFetchingModal(true);
           }}
         >
           생성
@@ -184,8 +265,8 @@ export default function InstanceCreate({ params, navigate }) {
         title="인스턴스 타입 선택"
       >
         <Table
-          data={typeData}
-          header={["Type", "Name", "vCPU", "RAM"]}
+          data={flavorList}
+          header={["Name", "RAM", "Disk", "vCPU"]}
           selectedRow={selectedTypeRow}
           setSelectedRow={setSelectedTypeRow}
           onClick={handleTypeRowClick}
@@ -195,7 +276,7 @@ export default function InstanceCreate({ params, navigate }) {
           size="small"
           color="light"
           fontColor="var(--dark)"
-          marginTop="1"
+          marginTop="1.2"
           onClick={() => setModalOpen(false)}
         >
           취소
@@ -203,17 +284,58 @@ export default function InstanceCreate({ params, navigate }) {
         <MainButton
           size="small"
           color="medium"
-          marginLeft={1}
+          marginLeft="1"
           onClick={() => {
-            setModalOpen(false);
             setSelectedType(
-              typeData.find((data) => data.id === selectedTypeRow[0]).name
+              flavorList.find((data) => data.id === selectedTypeRow[0]).name
             );
+            setModalOpen(false);
           }}
           disabled={selectedTypeRow.length === 0}
         >
           확인
         </MainButton>
+      </PopUpModal>
+      <PopUpModal
+        width={25.4}
+        darkBackground={false}
+        visible={keypairCreatePopUp}
+        title="키페어 생성"
+      >
+        <div>키페어 생성이 완료되었습니다.</div>
+        <div>키페어 파일은 이 창을 닫으면 다시 다운 받을 수 없습니다.</div>
+
+        <MainButton
+          size="small"
+          color="medium"
+          marginTop="1.2"
+          onClick={() => handleKeypairSave()}
+        >
+          키페어 저장
+        </MainButton>
+        <MainButton
+          size="small"
+          color="light"
+          fontColor="var(--dark)"
+          marginLeft="0.3"
+          marginTop="1.2"
+          onClick={() => {
+            setKeypairCreatePopUp(false);
+            setIsKeypairCreate(false);
+            setCreateKeypairName("");
+          }}
+        >
+          닫기
+        </MainButton>
+      </PopUpModal>
+      <PopUpModal
+        width={20}
+        darkBackground={true}
+        visible={fetchingModal}
+        title="인스턴스 생성"
+      >
+        <div>인스턴스 생성 중입니다...</div>
+        <LoadingOverlay />
       </PopUpModal>
     </Container>
   );
@@ -288,4 +410,12 @@ const InputLine = styled.div`
 const KeypairCreateBox = styled.div`
   width: 40rem;
   background-color: var(--light);
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

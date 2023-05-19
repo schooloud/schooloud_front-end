@@ -3,51 +3,108 @@ import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function KeyPair() {
-  const [selecetedRow, setSelectedRow] = useState([]);
+  const queryClient = useQueryClient();
+  const [selectedRow, setSelectedRow] = useState([]);
   const [page, setPage] = useState(0);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [publicModalOpen, setPublicModalOpen] = useState(false);
+  const [keypairCreatePopUp, setKeypairCreatePopUp] = useState(false);
   const [keypairName, setKeypairName] = useState("");
+  const [keypairList, setKeypairList] = useState([]);
+  const [keypairNameList, setKeypairNameList] = useState([]);
+  const [createPrivateKey, setCreatePrivateKey] = useState("");
+  const [tableData, setTableData] = useState([]);
+  const [publicKeyId, setPublicKeyId] = useState(1);
 
-  const handleRowClick = (id) => {
-    console.log(id);
+  const { isSuccess } = useQuery({
+    queryKey: ["keypairs"],
+    queryFn: () => useGetApi("keypair/list"),
+    onSuccess: (data) => {
+      setKeypairList([]);
+      setTableData([]);
+      setKeypairNameList([]);
+      data.data.key_list.map((newKeypair, index) => {
+        const newTableData = {};
+
+        newTableData["id"] = index + 1;
+        newTableData["name"] = newKeypair.keypair_name;
+        newTableData["fingerprint"] = newKeypair.finger_print;
+
+        const newKeypairObj = {
+          ...newTableData,
+          publicKey: newKeypair.public_key,
+        };
+
+        setKeypairList((oldKeypair) => [...oldKeypair, newKeypairObj]);
+        setKeypairNameList((oldKeypairNameList) => [
+          ...oldKeypairNameList,
+          newKeypair.keypair_name,
+        ]);
+
+        newTableData["publicKey"] = (
+          <MainButton
+            size="small"
+            color="medium"
+            onClick={() => setPublicModalOpen(true)}
+          >
+            보기
+          </MainButton>
+        );
+
+        setTableData((oldTableData) => [...oldTableData, newTableData]);
+      });
+    },
+  });
+
+  const keypairCreate = useMutation({
+    mutationFn: (keypairName) =>
+      usePostApi("keypair/create", { keypair_name: keypairName }),
+    onSuccess: (data) => {
+      console.log("keypair = ", data);
+      setKeypairCreatePopUp(true);
+      queryClient.invalidateQueries("keypairs");
+      setCreatePrivateKey(data.data.private_key);
+    },
+  });
+
+  const keypairDelete = useMutation({
+    mutationFn: (keypairName) =>
+      usePostApi("keypair/delete", { keypair_name: keypairName }),
+    onSuccess: () => {
+      queryClient.invalidateQueries("keypairs");
+      alert("삭제되었습니다.");
+    },
+  });
+
+  const handleKeypairSave = () => {
+    const element = document.createElement("a");
+    const file = new Blob([createPrivateKey], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = `${keypairName}.pem`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
-  const publicKey =
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAlX8IJ3JRMwpuNh+7e4H8hzR5pM8y02gA6NnnA13pPy3VIPmedBzESe2FcNJxTTNtaLPGgA41wIyRLz3ksCDtInWm+BW5x3BpG8yETuDXOKWSH8W8qGRPY0iOs0I40K7LEIVlMwSJBaFHC18SasXjP+9e97/Rf58Z3Zs9mT64FV7cYCXpmrsBSufjljCJF08XJQ8rthgGGb1mMtIzMJ37a3TVLoprEDHbWcDkumUb+QtUkIFS9MBMyAEpRGkRcCGZ+0yuLljJIAvBKEsjts77cIwp0TkVM0PGQfvA9PXzlMFi1tTJ0qnzvqZsFbnMe1hWQWROsF2ykB2hA0iEevhv Generated-by-Nova";
+  const handleKeypairDelete = () => {
+    selectedRow.map((id) => {
+      const deleteKeypairName = keypairList.find(
+        (keypair) => keypair.id === id
+      ).name;
+      console.log(deleteKeypairName);
+      keypairDelete.mutate(deleteKeypairName);
+    });
+    setSelectedRow([]);
+  };
 
-  const dummy = [
-    {
-      id: "1",
-      name: "jsb-keypair",
-      fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
-      publickey: (
-        <MainButton
-          size="small"
-          color="medium"
-          onClick={() => setPublicModalOpen(true)}
-        >
-          보기
-        </MainButton>
-      ),
-    },
-    {
-      id: "2",
-      name: "abc-keypair",
-      fingerprint: "20:c3:85:13:2d:47:b2:c4:f2:48:d0:b0:b9:41:b0:b2",
-      publickey: (
-        <MainButton
-          size="small"
-          color="medium"
-          onClick={() => setPublicModalOpen(true)}
-        >
-          보기
-        </MainButton>
-      ),
-    },
-  ];
+  const handleRowClick = (id) => {
+    setPublicKeyId(id);
+  };
 
   return (
     <Container>
@@ -64,22 +121,28 @@ export default function KeyPair() {
           size="small"
           color="medium"
           marginLeft={0.3}
-          disabled
-          onClick={() => console.log("키페어 삭제")}
+          disabled={selectedRow.length === 0}
+          onClick={() => handleKeypairDelete()}
         >
           키페어 삭제
         </MainButton>
       </ButtonContainer>
-      <Table
-        data={[dummy]}
-        header={["Name", "Fingerprint", "Public Key"]}
-        selectedRow={selecetedRow}
-        setSelectedRow={setSelectedRow}
-        onClick={handleRowClick}
-        pagination={true}
-        page={page}
-        setPage={setPage}
-      />
+      {isSuccess ? (
+        <Table
+          data={[tableData]}
+          header={["Name", "Fingerprint", "Public Key"]}
+          selectedRow={selectedRow}
+          setSelectedRow={setSelectedRow}
+          onClick={handleRowClick}
+          pagination={true}
+          page={page}
+          setPage={setPage}
+        />
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      )}
       <PopUpModal
         width={30}
         darkBackground={false}
@@ -98,6 +161,7 @@ export default function KeyPair() {
         <MainButton
           size="small"
           color="light"
+          fontColor="var(--dark)"
           marginTop="1"
           onClick={() => {
             setKeypairName("");
@@ -111,6 +175,8 @@ export default function KeyPair() {
           color="medium"
           marginLeft={1}
           onClick={() => {
+            !keypairNameList.includes(keypairName) &&
+              keypairCreate.mutate(keypairName);
             setCreateModalOpen(false);
           }}
           disabled={!keypairName}
@@ -124,12 +190,48 @@ export default function KeyPair() {
         visible={publicModalOpen}
         title="Public Key"
       >
-        <PublicKeyText>{publicKey}</PublicKeyText>
+        <PublicKeyText>
+          {
+            keypairList?.find((keypair) => keypair.id === publicKeyId)
+              ?.publicKey
+          }
+        </PublicKeyText>
         <MainButton
           size="small"
           color="medium"
-          marginTop="1"
+          marginTop="1.2"
           onClick={() => setPublicModalOpen(false)}
+        >
+          닫기
+        </MainButton>
+      </PopUpModal>
+      <PopUpModal
+        width={25.4}
+        darkBackground={false}
+        visible={keypairCreatePopUp}
+        title="키페어 생성"
+      >
+        <div>키페어 생성이 완료되었습니다.</div>
+        <div>키페어 파일은 이 창을 닫으면 다시 다운 받을 수 없습니다.</div>
+
+        <MainButton
+          size="small"
+          color="medium"
+          marginTop="1.2"
+          onClick={() => handleKeypairSave()}
+        >
+          키페어 저장
+        </MainButton>
+        <MainButton
+          size="small"
+          color="light"
+          fontColor="var(--dark)"
+          marginLeft="0.3"
+          marginTop="1.2"
+          onClick={() => {
+            setKeypairCreatePopUp(false);
+            setKeypairName("");
+          }}
         >
           닫기
         </MainButton>
@@ -154,6 +256,14 @@ const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 1.5rem;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const InputLine = styled.div`
