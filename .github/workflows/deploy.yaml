@@ -28,6 +28,5 @@ jobs:
             cd /schooloud_front-end/
             sudo git checkout develop
             sudo git pull origin develop
-            sudo npm install
             sudo npm run build
             sudo systemctl restart nginx
