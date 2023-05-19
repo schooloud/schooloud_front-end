@@ -230,7 +230,7 @@ export default function Instance() {
           color="medium"
           onClick={() => {
             console.log("인스턴스 생성");
-            navigate(`/student/project/${params.projectId}/instance/create`);
+            navigate(`/projectId/${params.projectId}/instance/create`);
           }}
         >
           인스턴스 생성

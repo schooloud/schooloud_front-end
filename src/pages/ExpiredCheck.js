@@ -4,6 +4,8 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import removeCookies from "../utils/removeCookies";
+import { useMutation } from "react-query";
+import { usePostApi } from "../utils/http";
 
 /*
 로그인을 하면 쿠키 값을 저장하고
@@ -26,10 +28,10 @@ const ExpiredCheck = (props) => {
 
   //토큰 만료시간 체크
   const isExpired = (expiredAt) => {
+    //현재 시간
     let now = new Date().getTime();
-    console.log("현재 시간은 : " + now);
-    console.log("토큰 만료 시간은 : " + expiredAt);
-
+    //토큰 만료 시간
+    expiredAt = new Date(expiredAt).getTime();
     if (now > expiredAt) {
       return true;
     } else {
@@ -37,17 +39,20 @@ const ExpiredCheck = (props) => {
     }
   };
 
+  //쿠키에 name이 있으면 로그인 상태로 변경
   useEffect(() => {
     if (!!cookies.get("name")) {
       setIsLogined(cookies.get("name").slice(-2));
     }
   }, []);
 
+  // 쿠키에 토큰이 있으면 토큰 만료시간 체크
   const authCheck = () => {
-    const exp = cookies.get("expiredAt");
-    const sessionKey = cookies.get("sessionKey");
+    const exp = cookies.get("expired_at");
+    const sessionKey = cookies.get("session_key");
     //토큰이 없거나 만료됐으면 쿠키 삭제 및 로그아웃
     if (!sessionKey || isExpired(exp)) {
+      console.log("토큰이 만료됐습니다.");
       removeAndNavigate();
     }
   };
@@ -67,12 +72,17 @@ const ExpiredCheck = (props) => {
 
   authCheck();
 
-  //로그아웃 hook
-  // const logoutMutation = useMutation(usePostApi("/auth/logout"));
+  //logout hook
+  const logoutMutation = useMutation({
+    mutationFn: () => usePostApi("user/logout"),
+    onSuccess: () => {
+      removeAndNavigate();
+    },
+  });
 
   //로그아웃 버튼 클릭 시
   const handleLogOut = () => {
-    removeAndNavigate();
+    logoutMutation.mutate();
   };
 
   //유저박스에 마우스 올리면 로그아웃 버튼 보여주기
@@ -112,7 +122,7 @@ const ExpiredCheck = (props) => {
 const UserBox = styled.div`
   //포지션
   position: fixed;
-  top: 0.25rem;
+  top: 0.26rem;
   right: 1rem;
 
   //style

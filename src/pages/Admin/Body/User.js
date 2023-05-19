@@ -2,6 +2,8 @@ import styled from "styled-components";
 import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
+import { useQuery } from "react-query";
+import { useGetApi } from "../../../utils/http";
 
 export default function User() {
   const [toggle, setToggle] = useState("Student");
@@ -13,6 +15,18 @@ export default function User() {
     setPage(0);
     setToggle(to);
   };
+
+  //get user info
+  // const { data, isSuccess } = useQuery({
+  //   queryKey: "userInfo",
+  //   queryFn: () => useGetApi("user/list"),
+  // });
+  // console.log(data);
+
+  //로딩 중
+  // if(!isSuccess){
+  //   return <LoadingOverlay>
+  // }
 
   const dummy = [
     {

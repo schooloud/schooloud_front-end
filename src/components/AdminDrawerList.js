@@ -23,7 +23,7 @@ export default function StudentDrawerList() {
     if (newSelectedDrawer === selectedDrawer) {
       return;
     } else {
-      navigate(`/admin/${newSelectedDrawer}`);
+      navigate(`/${newSelectedDrawer}`);
     }
   };
 

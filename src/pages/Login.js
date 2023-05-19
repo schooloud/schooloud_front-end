@@ -5,25 +5,16 @@ import Cookies from "universal-cookie";
 import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
 import MainButton from "../components/MainButton";
-import { usePostApi } from "../utils/http";
-import { useMutation } from "react-query";
+import { useGetApi, usePostApi } from "../utils/http";
+import { useMutation, useQuery } from "react-query";
 import removeCookies from "../utils/removeCookies";
-
-const serverDummy = {
-  id: "test@naver.com",
-  password: "1234",
-};
-
-//현재의 오류
-//tokenDummy의 expiredAt이 로그인할 때 마다 업데이트 되지 않음
 
 const Login = (props) => {
   const location = useLocation();
-  const cookies = new Cookies();
   const navigate = useNavigate();
 
-  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
-  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효하지 않다면 쿠키를 삭제하고 로그인 페이지로 이동
+  const cookies = new Cookies();
+
   //form
   const [form, setForm] = useState({
     email: "",
@@ -45,69 +36,70 @@ const Login = (props) => {
   // 로그인 hook
   const loginMutation = useMutation({
     mutationFn: (form) => usePostApi("user/login", form),
-    onSuccess: (data) => {
-      // console.log(data);
-      // navigate("/student/project/project1/dashboard");
-      alert("login success");
+    onSuccess: () => {},
+    onError: (error) => {
+      alert("로그인에 실패했습니다.");
     },
   });
 
-  //로그인 hook
-  // const loginMutation = useMutation(usePostApi("/auth/login", form));
+  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효한지 검사하고 유효하다면 로그인 처리
+  //만약 쿠키에 들고 있는 토큰이 있다면 그 토큰이 유효하지 않다면 쿠키를 삭제하고 로그인 페이지로 이동
+  useEffect(() => {
+    if (!!cookies.get("session_key")) {
+      //토큰 만료시간이 안 지났다면 로그인 처리
+      if (
+        new Date(cookies.get("expired_at")).getTime() <= new Date().getTime()
+      ) {
+        //토큰 만료시간이 지났다면 쿠키 삭제
+        removeCookies();
+      }
+    } else {
+      //세션키가 없다면 나머지 쿠키 삭제
+      removeCookies();
+    }
+  }, [location]);
+
+  //프로젝트 목록 가져오기
+  useQuery({
+    queryKey: ["projects"],
+    queryFn: () => useGetApi("project/list"),
+    enabled: !!cookies.get("session_key"),
+    onSuccess: (data) => {
+      //계정에 프로젝트가 있으면 대시보드 페이지로 이동
+      if (!!data.data.projects.length) {
+        if (cookies.get("role") === "STUDENT") {
+          navigate(`/projectId/${data.data.projects[0].project_id}/dashboard`);
+        } else if (cookies.get("role") === "PROFESSOR") {
+          navigate("/proposal");
+        } else if (cookies.get("role") === "ADMIN") {
+          navigate("/dashboard");
+        }
+      } else {
+        //계정에 프로젝트가 없다면 제안서 페이지로 이동
+        if (cookies.get("role") === "STUDENT") {
+          navigate(`/proposal`);
+        } else if (cookies.get("role") === "PROFESSOR") {
+          navigate("/proposal");
+        } else if (cookies.get("role") === "ADMIN") {
+          navigate("/dashboard");
+        }
+      }
+    },
+    onError: (error) => {
+      alert("로그인에 실패했습니다.", error);
+    },
+  });
 
   //로그인 버튼 클릭 시
   const handleClickLogin = (e) => {
     e.preventDefault();
-    // const response = usePostApi("user/login", form);
-    //토큰 dummy
-    // const tokenDummy = {
-    //   sessionKey: "1",
-    //   //get now time and add 10 minutes
-    //   expiredAt: new Date().getTime() + 1000 * 60 * 10,
-    //   email: "cat1181123@naver.com",
-    //   role: "STUDENT",
-    //   name: "김뚱이",
-    // };
-    // 이메일 중복확인 hook
-
     loginMutation.mutate(form);
-
-    //로그인 성공
-    // if  {
-    //   //토큰 저장
-    //   for (let key in tokenDummy) {
-    //     cookies.set(key, tokenDummy[key]);
-    //   }
-    //   //쿠키 출력
-
-    //   navigate("/home"); // 로그인 성공시 role에 따라 페이지 이동
-    // } else {
-    //   alert("아이디 또는 비밀번호가 틀렸습니다.");
-    // }
   };
-
-  console.log(loginMutation);
 
   //회원가입 버튼 클릭 시
   const handleClick = () => {
     navigate("/signup");
   };
-
-  // useEffect(() => {
-  //   if (!!cookies.sessionKey) {
-  //     console.log("쿠키가 있다.");
-  //     //토큰 만료시간이 안 지났다면 로그인 처리
-  //     if (cookies.expiredAt.getTime() > new Date().getTime()) {
-  //       navigate("/home");
-  //     } else {
-  //       //쿠키 삭제
-  //       // removeCookies();
-  //     }
-  //   } else {
-  //     console.log(cookies?.expiredAt);
-  //     // removeCookies();
-  //   }
-  // }, [location]);
 
   return (
     <LoginContainer>
@@ -142,7 +134,6 @@ const Login = (props) => {
                   disabled={
                     form.email === "" || form.password === "" ? true : false
                   }
-                  // marginTop={"1rem"}
                 >
                   로그인
                 </MainButton>

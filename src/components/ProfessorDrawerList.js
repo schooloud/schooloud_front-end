@@ -18,7 +18,7 @@ export default function ProfessorDrawerList() {
     if (newSelectedDrawer === selectedDrawer) {
       return;
     } else {
-      navigate(`/professor/${newSelectedDrawer}`);
+      navigate(`/${newSelectedDrawer}`);
     }
   };
 
