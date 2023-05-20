@@ -5,6 +5,8 @@ import MainButton from "../../../components/MainButton";
 import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { useGetApi } from "../../../utils/http";
 
 // const instanceData = [
 //   {
@@ -206,6 +208,15 @@ export default function Instance() {
   const [selectedId, setSelectedId] = useState();
   const [selectedModalTab, setSelectedModalTab] = useState(1);
   const [page, setPage] = useState(0);
+
+  // useQuery({
+  //   queryKey: ["instances"],
+  //   queryFn: () =>
+  //     useGetApi("instance/list", "", { project_id: params.projectId }),
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  // });
 
   const handleRowClick = (id) => {
     setSelectedId(id);

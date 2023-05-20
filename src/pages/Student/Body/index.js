@@ -6,27 +6,35 @@ import Proposal from "./Proposal";
 import WriteProposal from "./WriteProposal";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
+import { useGetApi } from "../../../utils/http";
+import removeCookies from "../../../utils/removeCookies";
 
 export default function Body() {
   const params = useParams();
   const navigate = useNavigate();
   const [content, setContent] = useState(<Dashboard />);
-  const queryClient = useQueryClient();
-  const projects = queryClient.getQueryData("projects") || [];
-  const projectList = [];
 
-  projects.data?.projects?.map((project) =>
-    projectList.push(project.project_id)
-  );
+  const projects = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => useGetApi("project/list"),
+    onSuccess: (data) => {
+      //잘못된 URL 접근 시 쿠키 삭제 후 홈으로 이동
+      const projectList = [];
+      data.data.projects.map((project) => {
+        projectList.push(project.project_id);
+      });
+      if (
+        !["proposal", "writeproposal"].includes(params.selectedDrawer) &&
+        !projectList.includes(params.projectId)
+      ) {
+        removeCookies();
+        navigate("/");
+      }
+    },
+  });
+
   useEffect(() => {
-    //잘못된 URL 접근 시 홈으로 이동
-    if (
-      !["proposal", "writeproposal"].includes(params.selectedDrawer) &&
-      !projectList.includes(params.projectId)
-    ) {
-      navigate("/");
-    }
     setContent(
       {
         dashboard: <Dashboard />,

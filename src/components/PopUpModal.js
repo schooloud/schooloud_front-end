@@ -35,8 +35,8 @@ function Modal({
         darkBackground={darkBackground}
         diappear={!visible}
       >
-        <h3>{title}</h3>
-        <p>{children}</p>
+        <Title>{title}</Title>
+        <div>{children}</div>
         <ButtonGroup height={height}>
           {onCancel && (
             <MainButton
@@ -133,6 +133,12 @@ const DarkBackground = styled.div`
     css`
       background: none;
     `}
+`;
+
+const Title = styled.div`
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
 `;
 
 const ModalBlock = styled.div`

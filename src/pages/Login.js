@@ -12,7 +12,6 @@ import removeCookies from "../utils/removeCookies";
 const Login = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const cookies = new Cookies();
 
   //form
@@ -37,7 +36,7 @@ const Login = (props) => {
   const loginMutation = useMutation({
     mutationFn: (form) => usePostApi("user/login", form),
     onSuccess: () => {
-      console.log("로그인 성공");
+      // console.log("로그인 성공");
     },
     onError: () => {
       alert("로그인에 실패했습니다.");
@@ -67,8 +66,6 @@ const Login = (props) => {
     queryFn: () => useGetApi("project/list"),
     enabled: !!cookies.get("session_key"),
     onSuccess: (data) => {
-      console.log("프로젝트 목록 가져오기 성공");
-      console.log(data);
       //계정에 프로젝트가 있으면 대시보드 페이지로 이동
       if (!!data.data.projects.length) {
         if (cookies.get("role") === "STUDENT") {
