@@ -39,6 +39,7 @@ export default function Proposal() {
     queryKey: ["proposals"],
     queryFn: () => useGetApi("proposal/list"),
     onSuccess: (data) => {
+      console.log("as");
       setPropoosalTableData([]);
       data.data.proposals.map((proposal) => {
         const newProposalTableData = {};
@@ -82,6 +83,7 @@ export default function Proposal() {
         ]);
       });
     },
+    retry: 1,
   });
 
   // 제안서 삭제 hook
