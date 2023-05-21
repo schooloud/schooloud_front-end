@@ -71,7 +71,7 @@ export default function KeyPair() {
     onSuccess: (data) => {
       console.log("keypair = ", data);
       setKeypairCreatePopUp(true);
-      queryClient.invalidateQueries("keypairs");
+      queryClient.invalidateQueries({ queryKey: ["keypairs"] });
       setCreatePrivateKey(data.data.private_key);
     },
   });
@@ -80,7 +80,7 @@ export default function KeyPair() {
     mutationFn: (keypairName) =>
       usePostApi("keypair/delete", { keypair_name: keypairName }),
     onSuccess: () => {
-      queryClient.invalidateQueries("keypairs");
+      queryClient.invalidateQueries({ queryKey: ["keypairs"] });
       alert("삭제되었습니다.");
     },
   });

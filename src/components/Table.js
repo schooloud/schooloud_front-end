@@ -311,7 +311,7 @@ export default function Table({
                   <CheckBoxWrapper onClick={headSelectedHandler}>
                     <input
                       type="checkbox"
-                      checked={selectedRow?.length === length}
+                      checked={selectedRow?.length === length && length !== 0}
                       readOnly
                     />
                   </CheckBoxWrapper>

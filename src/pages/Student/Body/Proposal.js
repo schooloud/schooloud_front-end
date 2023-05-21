@@ -88,7 +88,7 @@ export default function Proposal() {
   const proposalDelete = useMutation({
     mutationFn: (id) => usePostApi("proposal/delete", { proposal_id: id }),
     onSuccess: () => {
-      queryClient.invalidateQueries("keypairs");
+      queryClient.invalidateQueries({ queryKey: ["proposals"] });
       alert("제안서 삭제 성공");
     },
     onError: () => {
