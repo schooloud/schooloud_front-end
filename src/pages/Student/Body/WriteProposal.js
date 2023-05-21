@@ -5,7 +5,7 @@ import Calendar from "react-calendar";
 import "./Calendar.css";
 import Table from "../../../components/Table";
 import Cookies from "universal-cookie";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 
 const flavorData = [

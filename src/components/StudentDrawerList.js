@@ -6,7 +6,7 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../utils/http";
 
 export default function StudentDrawerList() {

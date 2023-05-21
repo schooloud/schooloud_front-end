@@ -4,7 +4,7 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 
 export default function Proposal() {
