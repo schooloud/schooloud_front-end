@@ -71,10 +71,10 @@ export default function Instance() {
         })
       ),
     onSuccess: (data) => {
+      alert("중지 요청을 보냈습니다. 시간이 조금 소요될 수 있습니다.");
       queryClient.invalidateQueries({ queryKey: ["instances"] });
       for (let i = 1; i <= 5; i++) {
         setTimeout(() => {
-          console.log(i, "번째 remove");
           queryClient.invalidateQueries({ queryKey: ["instances"] });
         }, 1000 * i);
       }
@@ -90,13 +90,49 @@ export default function Instance() {
         })
       ),
     onSuccess: (data) => {
+      alert("시작 요청을 보냈습니다. 시간이 조금 소요될 수 있습니다.");
       queryClient.invalidateQueries({ queryKey: ["instances"] });
       for (let i = 1; i <= 5; i++) {
         setTimeout(() => {
-          console.log(i, "번째 remove");
           queryClient.invalidateQueries({ queryKey: ["instances"] });
         }, 1000 * i);
       }
+      !!data?.data?.message && alert(data.data.message);
+    },
+  });
+
+  const rebootInstance = useMutation({
+    mutationFn: () =>
+      selectedRow.map((instanceId) =>
+        usePostApi("instance/reboot", {
+          project_id: params.projectId,
+          instance_id: instanceId,
+        })
+      ),
+    onSuccess: (data) => {
+      alert("재시작 요청을 보냈습니다. 시간이 조금 소요될 수 있습니다.");
+      queryClient.invalidateQueries({ queryKey: ["instances"] });
+      for (let i = 1; i <= 10; i++) {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ["instances"] });
+        }, 1000 * i);
+      }
+      !!data?.data?.message && alert(data.data.message);
+    },
+  });
+
+  const deleteInstance = useMutation({
+    mutationFn: () =>
+      selectedRow.map((instanceId) =>
+        usePostApi("instance/delete", {
+          project_id: params.projectId,
+          instance_id: instanceId,
+        })
+      ),
+    onSuccess: (data) => {
+      alert("삭제 요청을 보냈습니다. 시간이 조금 소요될 수 있습니다.");
+      queryClient.invalidateQueries({ queryKey: ["instances"] });
+      setSelectedRow([]);
       !!data?.data?.message && alert(data.data.message);
     },
   });
@@ -178,8 +214,25 @@ export default function Instance() {
           size="small"
           color="medium"
           marginLeft={0.3}
-          disabled
-          onClick={() => console.log("인스턴스 삭제")}
+          disabled={
+            !(
+              selectedRow.length > 0 &&
+              instanceList
+                .filter((data) => selectedRow.includes(data.id))
+                .filter((data) => data.status !== "REBOOT").length ===
+                selectedRow.length
+            )
+          }
+          onClick={() => rebootInstance.mutate()}
+        >
+          인스턴스 재시작
+        </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={0.3}
+          disabled={selectedRow.length === 0}
+          onClick={() => deleteInstance.mutate()}
         >
           인스턴스 삭제
         </MainButton>

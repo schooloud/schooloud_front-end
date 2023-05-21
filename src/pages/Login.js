@@ -66,6 +66,7 @@ const Login = (props) => {
     queryFn: () => useGetApi("project/list"),
     enabled: !!cookies.get("session_key"),
     onSuccess: (data) => {
+      console.log(data.data.projects);
       //계정에 프로젝트가 있으면 대시보드 페이지로 이동
       if (!!data.data.projects.length) {
         if (cookies.get("role") === "STUDENT") {
