@@ -229,7 +229,8 @@ export default function Quota() {
                 </Div>
                 <Line className="modal" />
 
-                <Div>
+                {/* flavor 별로 instance 몇 개가 필요한지 상세하게 보여주는 Table */}
+                {/* <Div>
                   <Label>Quota request</Label>
                   <Table
                     checkBox={false}
@@ -238,7 +239,7 @@ export default function Quota() {
                     onClick={handleOnClick}
                   />
                 </Div>
-                <Line className="modal" />
+                <Line className="modal" /> */}
 
                 <Div>
                   <Label>total CPU</Label>

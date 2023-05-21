@@ -26,6 +26,7 @@ export default function Proposal() {
     setSelectedRowId();
   };
 
+  //승인, 반려 버튼 클릭
   const handleRequest = (popUpRequest) => {
     setPopUpModalOpen(true);
     setRequest(popUpRequest);
@@ -38,10 +39,12 @@ export default function Proposal() {
       setBottomModalOpen(false);
       //승인 API
     } else if (popUpRequest && request === "rejected") {
+      //반려 사유 적으라는 모달 open
       setRejectPopUpModalOpen(true);
     }
   };
 
+  //반려 사유 적으라는 모달의 취소, 확인 버튼
   const handleReject = (popUpRequest) => {
     setRejectPopUpModalOpen(false);
     if (popUpRequest) {
@@ -176,8 +179,9 @@ export default function Proposal() {
           </Div>
           <Line />
 
-          <Div>
-            <Label>Quata</Label>
+          {/* flavor 별로 instance 몇 개가 필요한지 상세하게 보여주는 Table */}
+          {/* <Div>
+            <Label>Quota</Label>
             <Table
               data={flavorDataDummy}
               header={["Name", "RAM", "Disk", "CPU", "Num"]}
@@ -185,7 +189,7 @@ export default function Proposal() {
               checkBox={false}
             />
           </Div>
-          <Line />
+          <Line /> */}
 
           <Div>
             <Label>total CPU</Label>
@@ -326,7 +330,6 @@ const Div = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 1rem;
-  margin-top: 1rem;
 `;
 
 const Label = styled.div`

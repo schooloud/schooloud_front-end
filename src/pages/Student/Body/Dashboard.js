@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Table from "../../../components/Table";
 import MainButton from "../../../components/MainButton";
 import PopUpModal from "../../../components/PopUpModal";
+import { useParams } from "react-router-dom";
 
 import {
   BarChart,
@@ -95,6 +96,10 @@ export default function Dashboard() {
   const [addingMemberEmail, setAddingMemberEmail] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [selectedId, setSelectedId] = useState();
+
+  const params = useParams();
+
+  console.log(params.projectId);
 
   const handleMemberClick = () => {
     setMemberModalOpen(true);
