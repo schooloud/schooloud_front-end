@@ -26,8 +26,10 @@ export default function KeyPair() {
     queryFn: () => useGetApi("keypair/list"),
     onSuccess: (data) => {
       setKeypairList([]);
+
       setTableData([]);
       setKeypairNameList([]);
+
       data.data.key_list.map((newKeypair, index) => {
         const newTableData = {};
 
@@ -40,7 +42,9 @@ export default function KeyPair() {
           publicKey: newKeypair.public_key,
         };
 
+        //키페어 목록
         setKeypairList((oldKeypair) => [...oldKeypair, newKeypairObj]);
+        //키페어 이름 목록
         setKeypairNameList((oldKeypairNameList) => [
           ...oldKeypairNameList,
           newKeypair.keypair_name,

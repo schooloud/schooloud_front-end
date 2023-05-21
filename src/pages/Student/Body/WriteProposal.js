@@ -5,8 +5,8 @@ import Calendar from "react-calendar";
 import "./Calendar.css";
 import Table from "../../../components/Table";
 import Cookies from "universal-cookie";
-import { useQuery } from "react-query";
-import { useGetApi } from "../../../utils/http";
+import { useMutation, useQuery } from "react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
 
 const flavorData = [
   {
@@ -58,6 +58,38 @@ export default function WriteProposal() {
     end_at: "",
   });
 
+  //proposal 제출 hook
+  const proposalSubmmit = useMutation({
+    mutationFn: (proposal) => usePostApi("proposal/create", proposal),
+    onSuccess: (data) => {
+      alert("제출 성공");
+      console.log(data);
+    },
+    onError: () => {
+      alert("제출에 실패");
+    },
+  });
+
+  //날짜를 백엔드 형식에 맞게 수정
+  const modifyDate = (date) => {
+    //result : 2021-09-01
+    const result = date.toLocaleDateString().split(".");
+    return (result[0] + "-" + result[1] + "-" + result[2]).replace(/\s/g, "");
+  };
+
+  //프로젝트 목록 가져오기
+  useQuery({
+    queryKey: ["flavor"],
+    queryFn: () => useGetApi("flavor/list"),
+    onSuccess: (data) => {
+      console.log("flavor 목록 가져오기 성공");
+      console.log(data);
+    },
+    onError: (error) => {
+      alert("flavor 불러오기에 실패했습니다.", error);
+    },
+  });
+
   // project name, project purpose
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,11 +116,10 @@ export default function WriteProposal() {
     proposal.memory = totalRAM;
     proposal.storage = totalStorage;
     //proposal 객체에 date 추가
-    proposal.end_at = date.toLocaleDateString();
+    proposal.end_at = modifyDate(date);
     //proposal 객체에 author_email 추가
     proposal.author_email = cookies.get("email");
-
-    console.log(proposal);
+    proposalSubmmit.mutate(proposal);
   };
 
   let totalCPU = 0;
@@ -116,7 +147,6 @@ export default function WriteProposal() {
     });
   };
 
-  console.log(num);
   for (let i in num) {
     totalCPU += flavorData[i - 1].cpu * num[i];
     totalRAM += parseInt(flavorData[i - 1].flavorRam) * num[i];

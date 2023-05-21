@@ -3,19 +3,29 @@ import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
 import BottomModal from "../../../components/BottomModal";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function Proposal() {
+  const queryClient = useQueryClient();
+  //check box 선택된 행
   const [selectedRow, setSelectedRow] = useState([]);
   const [page, setPage] = useState(0);
+  //클릭된 행
   const [selectedRowId, setSelectedRowId] = useState("");
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
   const [toggle, setToggle] = useState("Waiting");
+  //제안서 목록
+  const [proposalTableData, setPropoosalTableData] = useState([]);
 
+  //클릭된 행 id => bottomModal에 표시
   const handleRowClick = (id) => {
     setSelectedRowId(id);
     setBottomModalOpen(true);
   };
 
+  //waiting List, progress List
   const handleToggleClick = (to) => {
     setPage(0);
     setBottomModalOpen(false);
@@ -24,32 +34,103 @@ export default function Proposal() {
     setSelectedRowId();
   };
 
-  const dummy = [
-    {
-      id: "1",
-      name: "project3",
-      createdAt: "2023-05-07",
-      status: "waiting",
-    },
-    {
-      id: "2",
-      name: "project2",
-      createdAt: "2023-05-06",
-      status: "rejected",
-    },
-    {
-      id: "3",
-      name: "project1",
-      createdAt: "2023-05-05",
-      status: "approved",
-    },
-  ];
+  //제안서 목록 가져오기
+  const { isSuccess } = useQuery({
+    queryKey: ["proposals"],
+    queryFn: () => useGetApi("proposal/list"),
+    onSuccess: (data) => {
+      setPropoosalTableData([]);
+      data.data.proposals.map((proposal) => {
+        const newProposalTableData = {};
 
-  const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
-  const waitingList = dummy.filter((row) => row.status === "waiting");
-  const processedList = dummy.filter((row) => row.status !== "waiting");
-  console.log("processedList:", processedList);
-  console.log("selectedRow", selectedRow);
+        for (let key in proposal) {
+          //키값 변경
+          if (key === "proposal_id") {
+            newProposalTableData["id"] = proposal[key];
+          } else if (key == "create_at") {
+            //날짜 형식 변경
+            const result = new Date(proposal[key])
+              .toLocaleDateString()
+              .split(".");
+            newProposalTableData["create_at"] = (
+              result[0] +
+              "-" +
+              result[1] +
+              "-" +
+              result[2]
+            ).replace(/\s/g, "");
+          } else if (key == "end_at") {
+            //날짜 형식 변경
+            const result = new Date(proposal[key])
+              .toLocaleDateString()
+              .split(".");
+            newProposalTableData["end_at"] = (
+              result[0] +
+              "-" +
+              result[1] +
+              "-" +
+              result[2]
+            ).replace(/\s/g, "");
+          } else {
+            //나머지 키값 그대로
+            newProposalTableData[key] = proposal[key];
+          }
+        }
+        setPropoosalTableData((oldProposalData) => [
+          ...oldProposalData,
+          newProposalTableData,
+        ]);
+      });
+    },
+  });
+
+  // 제안서 삭제 hook
+  const proposalDelete = useMutation({
+    mutationFn: (id) => usePostApi("proposal/delete", { proposal_id: id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries("keypairs");
+      alert("제안서 삭제 성공");
+    },
+    onError: () => {
+      alert("제안서 삭제 실패");
+    },
+  });
+
+  //제안서 삭제클릭
+  const handleProposalDelete = () => {
+    selectedRow.map((id) => {
+      proposalDelete.mutate(id);
+    });
+    setSelectedRow([]);
+  };
+
+  const selectedRowName = proposalTableData.find(
+    (row) => row.id === selectedRowId
+  )?.project_name;
+
+  // waiting list
+  const waitingList = proposalTableData.filter((row) => row.status === "WAIT");
+  const waitingListData = waitingList.map((row) => {
+    return {
+      id: row.id,
+      name: row.project_name,
+      createdAt: row.create_at,
+      status: row.status,
+    };
+  });
+
+  // processed list
+  const processedList = proposalTableData.filter(
+    (row) => row.status !== "WAIT"
+  );
+  const processedListData = processedList.map((row) => {
+    return {
+      id: row.id,
+      name: row.project_name,
+      createdAt: row.create_at,
+      status: row.status,
+    };
+  });
 
   return (
     <Container>
@@ -78,23 +159,40 @@ export default function Proposal() {
         <MainButton
           size="small"
           color="medium"
-          disabled
+          //selectedRow의 길이가 0이거나 proposalData의 id가 selectedRow인 데이터의 status가 APPROVED인 것이 포함돼있으면 disabled
+          disabled={
+            selectedRow.length === 0 ||
+            selectedRow.some((id) => {
+              return (
+                proposalTableData.find((row) => row.id === id)?.status ===
+                "APPROVED"
+              );
+            })
+          }
+          onClick={() => handleProposalDelete()}
           marginBottom={1}
-          onClick={() => console.log("키페어 삭제")}
         >
           제안서 삭제
         </MainButton>
       </ButtonContainer>
-      <Table
-        data={toggle === "Waiting" ? [waitingList] : [processedList]}
-        header={["Name", "Created At", "Status"]}
-        onClick={handleRowClick}
-        selectedRow={selectedRow}
-        setSelectedRow={setSelectedRow}
-        pagination={true}
-        page={page}
-        setPage={setPage}
-      />
+      {isSuccess ? (
+        <Table
+          data={toggle === "Waiting" ? [waitingListData] : [processedListData]}
+          header={["Name", "Created At", "Status"]}
+          //행 클릭 했을 때
+          onClick={handleRowClick}
+          //check box 클릭 했을 때
+          selectedRow={selectedRow}
+          setSelectedRow={setSelectedRow}
+          pagination={true}
+          page={page}
+          setPage={setPage}
+        />
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      )}
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>
         <ModalBody>
@@ -107,34 +205,67 @@ export default function Proposal() {
           <TextWrapper>
             <BoldText>Project Purpose</BoldText>
             <DescText>
-              : 저는 이 프로젝트를 수행하기 위해서 꼭 이 인스턴스가 필요해요우
-              살려주세요우 한번만 바주셍요 젭라
+              {" "}
+              :{" "}
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.purpose
+              }
             </DescText>
           </TextWrapper>
           <Line />
           <TextWrapper>
             <BoldText>Quota - vCPU</BoldText>
-            <Text>: 10</Text>
+            <Text>
+              : {proposalTableData.find((row) => row.id === selectedRowId)?.cpu}{" "}
+              core
+            </Text>
           </TextWrapper>
           <Line />
           <TextWrapper>
             <BoldText>Quota - DISK</BoldText>
-            <Text>: 200GB</Text>
+            <Text>
+              :{" "}
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.storage
+              }{" "}
+              GB
+            </Text>
           </TextWrapper>
           <Line />
           <TextWrapper>
             <BoldText>Quota - RAM</BoldText>
-            <Text>: 4GB</Text>
+            <Text>
+              :{" "}
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.memory
+              }{" "}
+              GB
+            </Text>
           </TextWrapper>
           <Line />
           <TextWrapper>
             <BoldText>Created At</BoldText>
-            <Text>: 2023-05-08</Text>
+            <Text>
+              :{" "}
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.create_at
+              }
+            </Text>
           </TextWrapper>
           <Line />
           <TextWrapper>
             <BoldText>Period of Use</BoldText>
-            <Text>: 2023-12-31</Text>
+            <Text>
+              :{" "}
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.end_at
+              }
+            </Text>
           </TextWrapper>
           <Line />
         </ModalBody>
@@ -192,4 +323,12 @@ const DescText = styled.div`
   margin-left: 2rem;
   word-break: break-all;
   font-weight: 400;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
