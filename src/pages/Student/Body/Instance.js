@@ -5,7 +5,7 @@ import MainButton from "../../../components/MainButton";
 import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import PopUpModal from "../../../components/PopUpModal";
 import LoadingOverlay from "../../../components/LoadingOverlay";
@@ -30,6 +30,7 @@ export default function Instance() {
     onSuccess: (data) => {
       setInstanceList([]);
       setTableData([]);
+      console.log("fetch");
 
       data.data.instance_list.map((newInstance) => {
         const newTableObj = {};
@@ -70,9 +71,14 @@ export default function Instance() {
         })
       ),
     onSuccess: (data) => {
-      queryClient.removeQueries({ queryKey: ["instances"] });
-      console.log("중지 성공");
-      !!data.data.message && alert(data.data.message);
+      queryClient.invalidateQueries({ queryKey: ["instances"] });
+      for (let i = 1; i <= 5; i++) {
+        setTimeout(() => {
+          console.log(i, "번째 remove");
+          queryClient.invalidateQueries({ queryKey: ["instances"] });
+        }, 1000 * i);
+      }
+      !!data?.data?.message && alert(data?.data?.message);
     },
   });
   const unpauseInstance = useMutation({
@@ -84,9 +90,14 @@ export default function Instance() {
         })
       ),
     onSuccess: (data) => {
-      queryClient.removeQueries({ queryKey: ["instances"] });
-      console.log("시작 성공");
-      !!data.data.message && alert(data.data.message);
+      queryClient.invalidateQueries({ queryKey: ["instances"] });
+      for (let i = 1; i <= 5; i++) {
+        setTimeout(() => {
+          console.log(i, "번째 remove");
+          queryClient.invalidateQueries({ queryKey: ["instances"] });
+        }, 1000 * i);
+      }
+      !!data?.data?.message && alert(data.data.message);
     },
   });
 
@@ -99,7 +110,9 @@ export default function Instance() {
       }),
     onSuccess: (data) => {
       queryClient.removeQueries({ queryKey: ["instances"] });
-      !!data.data.message ? alert(data.data.message) : alert("삭제되었습니다.");
+      !!data?.data?.message
+        ? alert(data.data.message)
+        : alert("삭제되었습니다.");
     },
   });
 

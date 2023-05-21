@@ -5,7 +5,7 @@ import logoImage from "../assets/Logo.png";
 import { useNavigate } from "react-router-dom";
 import PopUpModal from "../components/PopUpModal";
 import MainButton from "../components/MainButton";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { usePostApi } from "../utils/http";
 
 const SignUp = () => {

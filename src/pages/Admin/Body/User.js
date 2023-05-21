@@ -2,7 +2,7 @@ import styled from "styled-components";
 import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 
 export default function User() {

@@ -6,7 +6,7 @@ import styled from "styled-components";
 import logoImage from "../assets/Logo.png";
 import MainButton from "../components/MainButton";
 import { useGetApi, usePostApi } from "../utils/http";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import removeCookies from "../utils/removeCookies";
 
 const Login = (props) => {

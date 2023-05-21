@@ -3,7 +3,7 @@ import MainButton from "../../../components/MainButton";
 import { useState } from "react";
 import Table from "../../../components/Table";
 import BottomModal from "../../../components/BottomModal";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 

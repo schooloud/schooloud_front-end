@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Paper from "../../../components/Paper";
 import Table from "../../../components/Table";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 

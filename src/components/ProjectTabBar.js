@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FolderIcon from "@mui/icons-material/Folder";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../utils/http";
 export default function ProjectTabBar() {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import Table from "../../../components/Table";
 import { useState } from "react";
 import MainButton from "../../../components/MainButton";
 import PopUpModal from "../../../components/PopUpModal";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 
