@@ -9,6 +9,7 @@ export default function ProjectTabBar() {
   const [selectedProject, setSelectedProject] = useState(
     params.projectId || "project1"
   );
+
   const queryClient = useQueryClient();
   const projects = queryClient.getQueryData("projects")?.data?.projects;
 

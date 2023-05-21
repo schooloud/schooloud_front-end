@@ -4,9 +4,12 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
+import { useQuery } from "react-query";
+import { useGetApi } from "../../../utils/http";
 
 export default function Proposal() {
   const [selectedRowId, setSelectedRowId] = useState("");
+  const [proposalTableData, setPropoosalTableData] = useState([]); //제안서 목록
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
   const [popUpModalOpen, setPopUpModalOpen] = useState(false);
@@ -14,11 +17,91 @@ export default function Proposal() {
   const [toggle, setToggle] = useState("Waiting");
   const [request, setRequest] = useState("");
 
+  //제안서 목록 가져오기
+  const { isSuccess } = useQuery({
+    queryKey: ["proposals"],
+    queryFn: () => useGetApi("proposal/list"),
+    onSuccess: (data) => {
+      setPropoosalTableData([]);
+      data.data.proposals.map((proposal) => {
+        const newProposalTableData = {};
+
+        for (let key in proposal) {
+          //키값 변경
+          if (key === "proposal_id") {
+            newProposalTableData["id"] = proposal[key];
+          } else if (key == "create_at") {
+            //날짜 형식 변경
+            const result = new Date(proposal[key])
+              .toLocaleDateString()
+              .split(".");
+            newProposalTableData["create_at"] = (
+              result[0] +
+              "-" +
+              result[1] +
+              "-" +
+              result[2]
+            ).replace(/\s/g, "");
+          } else if (key == "end_at") {
+            //날짜 형식 변경
+            const result = new Date(proposal[key])
+              .toLocaleDateString()
+              .split(".");
+            newProposalTableData["end_at"] = (
+              result[0] +
+              "-" +
+              result[1] +
+              "-" +
+              result[2]
+            ).replace(/\s/g, "");
+          } else {
+            //나머지 키값 그대로
+            newProposalTableData[key] = proposal[key];
+          }
+        }
+        setPropoosalTableData((oldProposalData) => [
+          ...oldProposalData,
+          newProposalTableData,
+        ]);
+      });
+    },
+  });
+
+  // waiting list
+  const waitingList = proposalTableData.filter((row) => row.status === "WAIT");
+  const waitingListData = waitingList.map((row) => {
+    return {
+      id: row.id,
+      name: row.project_name,
+      createdAt: row.create_at,
+      status: row.status,
+    };
+  });
+
+  // processed list
+  const processedList = proposalTableData.filter(
+    (row) => row.status !== "WAIT"
+  );
+  const processedListData = processedList.map((row) => {
+    return {
+      id: row.id,
+      name: row.project_name,
+      createdAt: row.create_at,
+      status: row.status,
+    };
+  });
+
+  const selectedRowName = proposalTableData.find(
+    (row) => row.id === selectedRowId
+  )?.project_name;
+
+  //테이블 행 클릭
   const handleRowClick = (id) => {
     setSelectedRowId(id);
     setBottomModalOpen(true);
   };
 
+  //waiting, processed 버튼 클릭
   const handleToggleClick = (to) => {
     setPage(0);
     setBottomModalOpen(false);
@@ -32,6 +115,7 @@ export default function Proposal() {
     setRequest(popUpRequest);
   };
 
+  //승인, 반려 버튼 클릭 후 팝업 모달의 취소, 확인 버튼
   const handlePopUp = (popUpRequest) => {
     setPopUpModalOpen(false);
 
@@ -52,68 +136,6 @@ export default function Proposal() {
       setBottomModalOpen(false);
     }
   };
-
-  const dummy = [
-    {
-      id: "1",
-      name: "project3",
-      createdAt: "2023-05-07",
-      status: "waiting",
-    },
-    {
-      id: "2",
-      name: "project2",
-      createdAt: "2023-05-06",
-      status: "rejected",
-    },
-    {
-      id: "3",
-      name: "project1",
-      createdAt: "2023-05-05",
-      status: "approved",
-    },
-  ];
-
-  const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
-  const waitingList = dummy.filter((row) => row.status === "waiting");
-  const processedList = dummy.filter((row) => row.status !== "waiting");
-
-  const proposalDetailDummy = {
-    projectName: "이기자",
-    projectDescription:
-      "우리가 이기기 위해서는 이 프로젝트의 승인이 꼭 필요합니다. 무조건 승인해주세요.",
-    totalCPU: 2,
-    totalRAM: 4,
-    totalSTORAGE: 40,
-    selectedDate: "2021-05-07",
-  };
-
-  const flavorDataDummy = [
-    {
-      id: "1",
-      flalvorName: "u2.c1m1",
-      flavorRam: "1GB",
-      flavorDisk: "20GB",
-      cpu: 1,
-      num: 1,
-    },
-    {
-      id: "2",
-      flalvorName: "u2.c2m2",
-      flavorRam: "2GB",
-      flavorDisk: "40GB",
-      cpu: 2,
-      num: 2,
-    },
-    {
-      id: "3",
-      flalvorName: "u2.c2m2",
-      flavorRam: "2GB",
-      flavorDisk: "40GB",
-      cpu: 2,
-      num: 3,
-    },
-  ];
 
   return (
     <Container>
@@ -139,8 +161,9 @@ export default function Proposal() {
       </ButtonContainer>
       <Line />
       <Table
-        data={toggle === "Waiting" ? [waitingList] : [processedList]}
+        data={toggle === "Waiting" ? [waitingListData] : [processedListData]}
         header={["Name", "Created At", "Status"]}
+        //행 클릭
         onClick={handleRowClick}
         checkBox={false}
         pagination={true}
@@ -169,13 +192,23 @@ export default function Proposal() {
         <ModalBody>
           <Div>
             <Label>Project Name</Label>
-            <ProjectName>{proposalDetailDummy.projectName}</ProjectName>
+            <ProjectName>
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.project_name
+              }
+            </ProjectName>
           </Div>
           <Line />
 
           <Div>
             <Label>Project Purpose</Label>
-            <Description>{proposalDetailDummy.projectDescription}</Description>
+            <Description>
+              {
+                proposalTableData.find((row) => row.id === selectedRowId)
+                  ?.purpose
+              }
+            </Description>
           </Div>
           <Line />
 
@@ -193,19 +226,19 @@ export default function Proposal() {
 
           <Div>
             <Label>total CPU</Label>
-            {proposalDetailDummy.totalCPU}
+            {proposalTableData.find((row) => row.id === selectedRowId)?.cpu}
           </Div>
           <Line />
 
           <Div>
             <Label>total RAM</Label>
-            {proposalDetailDummy.totalRAM}
+            {proposalTableData.find((row) => row.id === selectedRowId)?.memory}
           </Div>
           <Line />
 
           <Div>
             <Label>total STORAGE</Label>
-            {proposalDetailDummy.totalSTORAGE}
+            {proposalTableData.find((row) => row.id === selectedRowId)?.storage}
           </Div>
         </ModalBody>
       </BottomModal>
@@ -313,12 +346,12 @@ const Line = styled.div`
 const BodyWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+
   width: 100%;
   height: 14rem;
 `;
 const Input = styled.textarea`
-  width: 33rem;
+  width: 100%;
   height: 10rem;
   border: 0.5px solid gray;
   border-radius: 0.3rem;
