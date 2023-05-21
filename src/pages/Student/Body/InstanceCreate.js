@@ -3,11 +3,12 @@ import Table from "../../../components/Table";
 import { useState } from "react";
 import MainButton from "../../../components/MainButton";
 import PopUpModal from "../../../components/PopUpModal";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function InstanceCreate({ params, navigate }) {
+  const queryClient = useQueryClient();
   const [selectedImageRow, setSelectedImageRow] = useState([]);
   const [selectedTypeRow, setSelectedTypeRow] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,7 +23,6 @@ export default function InstanceCreate({ params, navigate }) {
   const [imageList, setImageList] = useState([]);
   const [flavorList, setFlavorList] = useState([]);
   const [fetchingModal, setFetchingModal] = useState(false);
-  const queryClient = useQueryClient();
 
   useQuery({
     queryKey: ["keypairs"],
@@ -76,7 +76,7 @@ export default function InstanceCreate({ params, navigate }) {
     mutationFn: (keypairName) =>
       usePostApi("keypair/create", { keypair_name: keypairName }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries("keypairs");
+      queryClient.invalidateQueries({ queryKey: ["keypairs"] });
       setCreatePrivateKey(data.data.private_key);
     },
   });

@@ -6,7 +6,7 @@ import Proposal from "./Proposal";
 import WriteProposal from "./WriteProposal";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import removeCookies from "../../../utils/removeCookies";
 

@@ -2,16 +2,28 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FolderIcon from "@mui/icons-material/Folder";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGetApi } from "../utils/http";
 export default function ProjectTabBar() {
   const navigate = useNavigate();
   const params = useParams();
   const [selectedProject, setSelectedProject] = useState(
     params.projectId || "project1"
   );
-
+  const [projectList, setProjectList] = useState([]);
   const queryClient = useQueryClient();
-  const projects = queryClient.getQueryData("projects")?.data?.projects;
+  // const projects = queryClient.getQueryData("projects")?.data?.projects;
+
+  const projects = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => useGetApi("project/list"),
+    onSuccess: (data) => {
+      if (!data.data.projects.length) {
+        setDisabled(true);
+      }
+      setProjectList([...data.data.projects]);
+    },
+  });
 
   useEffect(() => setSelectedProject(params.projectId), [params]);
 
@@ -23,12 +35,13 @@ export default function ProjectTabBar() {
       return;
     } else {
       navigate(`/projectId/${newProjectId}/${selectedDrawer}`);
+      queryClient.removeQueries({ queryKey: ["instances"] });
     }
   };
 
   return (
     <TabWrapper>
-      {projects?.map(({ project_id, project_name }) => (
+      {projectList?.map(({ project_id, project_name }) => (
         <TabBox
           key={project_id}
           id={project_id}
@@ -47,34 +60,6 @@ export default function ProjectTabBar() {
           </TabBoxText>
         </TabBox>
       ))}
-      {/* <TabBox
-        id={"project2"}
-        className={selectedProject === "project2" ? "selected" : "unSelected"}
-        onClick={handleProjectClick}
-      >
-        {selectedProject === "project2" ? (
-          <FolderIcon />
-        ) : (
-          <FolderIcon style={{ color: "#b0b0b0" }} />
-        )}
-        <TabBoxText className={selectedProject === "project2" || "unSelected"}>
-          Project2
-        </TabBoxText>
-      </TabBox>
-      <TabBox
-        id={"project3"}
-        className={selectedProject === "project3" ? "selected" : "unSelected"}
-        onClick={handleProjectClick}
-      >
-        {selectedProject === "project3" ? (
-          <FolderIcon />
-        ) : (
-          <FolderIcon style={{ color: "#b0b0b0" }} />
-        )}
-        <TabBoxText className={selectedProject === "project3" || "unSelected"}>
-          Project3
-        </TabBoxText>
-      </TabBox> */}
     </TabWrapper>
   );
 }

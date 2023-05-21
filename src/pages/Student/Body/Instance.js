@@ -5,202 +5,13 @@ import MainButton from "../../../components/MainButton";
 import BottomModal from "../../../components/BottomModal";
 import InstanceCreate from "./InstanceCreate";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "react-query";
-import { useGetApi } from "../../../utils/http";
-
-// const instanceData = [
-//   {
-//     id: "1",
-//     name: "jsb-instance",
-//     os: "Ubuntu Server 20.04 LTS",
-//     ip: "192.168.0.8",
-//     type: "u2.c1m1 (1vCPU, 1GB)",
-//     keypair: "jsb-keypair",
-//     status: "ON",
-//   },
-//   {
-//     id: "2",
-//     name: "yjh-instance",
-//     os: "Ubuntu Server 20.04 LTS",
-//     ip: "192.168.0.8",
-//     type: "u2.c1m1 (1vCPU, 1GB)",
-//     keypair: "yjh-keypair",
-//     status: "ON",
-//   },
-//   {
-//     id: "3",
-//     name: "ksh-instance",
-//     os: "Ubuntu Server 20.04 LTS",
-//     ip: "192.168.0.8",
-//     type: "u2.c1m1 (1vCPU, 1GB)",
-//     keypair: "ksh-keypair",
-//     status: "ON",
-//   },
-//   {
-//     id: "4",
-//     name: "lyr-instance",
-//     os: "Ubuntu Server 20.04 LTS",
-//     ip: "192.168.0.8",
-//     type: "u2.c1m1 (1vCPU, 1GB)",
-//     keypair: "lyr-keypair",
-//     status: "ON",
-//   },
-//   {
-//     id: "5",
-//     name: "lsi-instance",
-//     os: "Ubuntu Server 20.04 LTS",
-//     ip: "192.168.0.8",
-//     type: "u2.c1m1 (1vCPU, 1GB)",
-//     keypair: "lsi-keypair",
-//     status: "ON",
-//   },
-// ];
-
-const pagnationDummy = [
-  [
-    {
-      id: "1",
-      name: "jsb-instance",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "jsb-keypair",
-      status: "ON",
-    },
-    {
-      id: "2",
-      name: "yjh-instance",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "yjh-keypair",
-      status: "ON",
-    },
-    {
-      id: "3",
-      name: "ksh-instance",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "ksh-keypair",
-      status: "ON",
-    },
-    {
-      id: "4",
-      name: "lyr-instance",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "lyr-keypair",
-      status: "ON",
-    },
-    {
-      id: "5",
-      name: "lsi-instance",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "lsi-keypair",
-      status: "ON",
-    },
-  ],
-  [
-    {
-      id: "6",
-      name: "jsb-instance2",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "jsb-keypair",
-      status: "ON",
-    },
-    {
-      id: "7",
-      name: "yjh-instance2",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "yjh-keypair",
-      status: "ON",
-    },
-    {
-      id: "8",
-      name: "ksh-instance2",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "ksh-keypair",
-      status: "ON",
-    },
-    {
-      id: "9",
-      name: "lyr-instance2",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "lyr-keypair",
-      status: "ON",
-    },
-    {
-      id: "10",
-      name: "lsi-instance2",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "lsi-keypair",
-      status: "ON",
-    },
-  ],
-  [
-    {
-      id: "11",
-      name: "jsb-instance3",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "jsb-keypair",
-      status: "ON",
-    },
-    {
-      id: "12",
-      name: "yjh-instance3",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "yjh-keypair",
-      status: "ON",
-    },
-    {
-      id: "13",
-      name: "ksh-instance3",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "ksh-keypair",
-      status: "ON",
-    },
-    {
-      id: "14",
-      name: "lyr-instance3",
-      os: "Ubuntu Server 20.04 LTS",
-      ip: "192.168.0.8",
-      type: "u2.c1m1 (1vCPU, 1GB)",
-      keypair: "lyr-keypair",
-      status: "ON",
-    },
-    // {
-    //   id: "15",
-    //   name: "lsi-instance3",
-    //   os: "Ubuntu Server 20.04 LTS",
-    //   ip: "192.168.0.8",
-    //   type: "u2.c1m1 (1vCPU, 1GB)",
-    //   keypair: "lsi-keypair",
-    //   status: "ON",
-    // },
-  ],
-];
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
+import PopUpModal from "../../../components/PopUpModal";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function Instance() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
   const [selectedRow, setSelectedRow] = useState([]);
@@ -208,25 +19,108 @@ export default function Instance() {
   const [selectedId, setSelectedId] = useState();
   const [selectedModalTab, setSelectedModalTab] = useState(1);
   const [page, setPage] = useState(0);
+  const [instanceList, setInstanceList] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [domainName, setDomainName] = useState("");
+  const [domainModal, setDomainModal] = useState(false);
 
-  // useQuery({
-  //   queryKey: ["instances"],
-  //   queryFn: () =>
-  //     useGetApi("instance/list", "", { project_id: params.projectId }),
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //   },
-  // });
+  const { isSuccess } = useQuery({
+    queryKey: ["instances"],
+    queryFn: () => useGetApi(`instance/list/${params.projectId}`),
+    onSuccess: (data) => {
+      setInstanceList([]);
+      setTableData([]);
+      console.log("fetch");
+
+      data.data.instance_list.map((newInstance) => {
+        const newTableObj = {};
+        newTableObj["id"] = newInstance.instance_id;
+        newTableObj["name"] = newInstance.instance_name;
+        newTableObj["image"] = newInstance.image_name;
+        newTableObj["ip"] = (
+          <div>
+            <div>{newInstance.ip_addresses[0]}</div>
+            <div>{newInstance.ip_addresses[1]}</div>
+          </div>
+        );
+        newTableObj["flavor"] = newInstance.flavor;
+        newTableObj["keypair"] = newInstance.keypair_name;
+        newTableObj["status"] = newInstance.status;
+
+        setTableData((oldinstance) => [...oldinstance, newTableObj]);
+
+        const newInstanceObj = {
+          ...newTableObj,
+          domain: newInstance.domain,
+          ipPort: newInstance.ip_addresses[1],
+        };
+
+        setInstanceList((oldinstance) => [...oldinstance, newInstanceObj]);
+      });
+    },
+  });
+
+  const selectedInstance = instanceList.find((row) => row.id === selectedId);
+
+  const pauseInstance = useMutation({
+    mutationFn: () =>
+      selectedRow.map((instanceId) =>
+        usePostApi("instance/pause", {
+          project_id: params.projectId,
+          instance_id: instanceId,
+        })
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["instances"] });
+      for (let i = 1; i <= 5; i++) {
+        setTimeout(() => {
+          console.log(i, "번째 remove");
+          queryClient.invalidateQueries({ queryKey: ["instances"] });
+        }, 1000 * i);
+      }
+      !!data?.data?.message && alert(data?.data?.message);
+    },
+  });
+  const unpauseInstance = useMutation({
+    mutationFn: () =>
+      selectedRow.map((instanceId) =>
+        usePostApi("instance/unpause", {
+          project_id: params.projectId,
+          instance_id: instanceId,
+        })
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["instances"] });
+      for (let i = 1; i <= 5; i++) {
+        setTimeout(() => {
+          console.log(i, "번째 remove");
+          queryClient.invalidateQueries({ queryKey: ["instances"] });
+        }, 1000 * i);
+      }
+      !!data?.data?.message && alert(data.data.message);
+    },
+  });
+
+  const domainAssign = useMutation({
+    mutationFn: (domain) =>
+      usePostApi("domain/assign", {
+        project_id: params.projectId,
+        instance_id: selectedId,
+        domain: domain,
+      }),
+    onSuccess: (data) => {
+      queryClient.removeQueries({ queryKey: ["instances"] });
+      !!data?.data?.message
+        ? alert(data.data.message)
+        : alert("삭제되었습니다.");
+    },
+  });
 
   const handleRowClick = (id) => {
+    setSelectedRow([id]);
     setSelectedId(id);
     setModalOpen(true);
   };
-
-  // const selectedInstance = instanceData.find((row) => row.id === selectedId);
-  const selectedInstance = pagnationDummy[page].find(
-    (row) => row.id === selectedId
-  );
 
   if (params.create === "create") {
     return <InstanceCreate params={params} navigate={navigate} />;
@@ -250,8 +144,16 @@ export default function Instance() {
           size="small"
           color="medium"
           marginLeft={0.3}
-          disabled
-          onClick={() => console.log("인스턴스 중지")}
+          disabled={
+            !(
+              selectedRow.length > 0 &&
+              instanceList
+                .filter((data) => selectedRow.includes(data.id))
+                .filter((data) => data.status === "ACTIVE").length ===
+                selectedRow.length
+            )
+          }
+          onClick={() => pauseInstance.mutate()}
         >
           인스턴스 중지
         </MainButton>
@@ -259,8 +161,16 @@ export default function Instance() {
           size="small"
           color="medium"
           marginLeft={0.3}
-          disabled
-          onClick={() => console.log("인스턴스 시작")}
+          disabled={
+            !(
+              selectedRow.length > 0 &&
+              instanceList
+                .filter((data) => selectedRow.includes(data.id))
+                .filter((data) => data.status === "PAUSED").length ===
+                selectedRow.length
+            )
+          }
+          onClick={() => unpauseInstance.mutate()}
         >
           인스턴스 시작
         </MainButton>
@@ -275,23 +185,29 @@ export default function Instance() {
         </MainButton>
       </ButtonContainer>
       <TableWrapper>
-        <Table
-          data={pagnationDummy}
-          header={[
-            "Name",
-            "OS",
-            "IP Adress",
-            "Instance Type",
-            "KeyPair",
-            "Status",
-          ]}
-          selectedRow={selectedRow}
-          setSelectedRow={setSelectedRow}
-          onClick={handleRowClick}
-          pagination={true}
-          page={page}
-          setPage={setPage}
-        />
+        {isSuccess ? (
+          <Table
+            data={[tableData]}
+            header={[
+              "Name",
+              "Image",
+              "IP Adress",
+              "Instance Type",
+              "KeyPair",
+              "Status",
+            ]}
+            selectedRow={selectedRow}
+            setSelectedRow={setSelectedRow}
+            onClick={handleRowClick}
+            pagination={true}
+            page={page}
+            setPage={setPage}
+          />
+        ) : (
+          <LoadingOverlayWrapper>
+            <LoadingOverlay />
+          </LoadingOverlayWrapper>
+        )}
       </TableWrapper>
       <BottomModal open={modalOpen} setOpen={setModalOpen}>
         <TitleText>{selectedInstance?.name}</TitleText>
@@ -326,12 +242,12 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>OS</BoldText>
-                <Text>: {selectedInstance?.os}</Text>
+                <Text>: {selectedInstance?.image}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Instance Type</BoldText>
-                <Text>: {selectedInstance?.type}</Text>
+                <Text>: {selectedInstance?.flavor}</Text>
               </TextWrapper>
               <Line />
               <TextWrapper>
@@ -346,39 +262,32 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>IP Address</BoldText>
-                <Text>: {selectedInstance?.ip}</Text>
+                <Text>:&nbsp;</Text>
+                {selectedInstance?.ip}
               </TextWrapper>
               <Line />
               <TextWrapper>
                 <BoldText>Domain</BoldText>
-                <Text>: domain</Text>
-              </TextWrapper>
-              <Line />
-              <TextWrapper>
-                <BoldText>Floating IP</BoldText>
-                <Text>: floating ip</Text>
+                <Text>: {selectedInstance?.domain}</Text>
               </TextWrapper>
               <Line />
             </div>
           ) : selectedModalTab === 2 ? (
             <div>
               <FlexContainer>
-                <MainButton color="medium" size="small">
-                  Floating IP 할당
-                </MainButton>
-                <MainButton color="medium" size="small" marginLeft={0.5}>
+                <MainButton
+                  color="medium"
+                  size="small"
+                  marginLeft={0.5}
+                  onClick={() => setDomainModal(true)}
+                >
                   도메인 할당
                 </MainButton>
               </FlexContainer>
               <Line />
               <TextWrapper>
-                <BoldText>Floating IP</BoldText>
-                <Text>: none</Text>
-              </TextWrapper>
-              <Line />
-              <TextWrapper>
                 <BoldText>Domain</BoldText>
-                <Text>: none</Text>
+                <Text>: {selectedInstance?.domain}</Text>
               </TextWrapper>
               <Line />
             </div>
@@ -386,13 +295,76 @@ export default function Instance() {
             <div>
               <Line />
               <TextWrapper>
-                <Text>ssh -i keypir.pem ubuntu@192.168.0.100</Text>
+                <BoldText>SSH 접속</BoldText>
+                <Text>
+                  : ssh -i {selectedInstance.keypair}.pem{" "}
+                  {selectedInstance.image === "cirros-0.5.2-x86_64-disk"
+                    ? "cirros"
+                    : "ubuntu"}
+                  @{selectedInstance.ipPort}
+                </Text>
+              </TextWrapper>
+              <Line />
+              <TextWrapper>
+                <BoldText>HTTP 접속</BoldText>
+                <Text>
+                  :{" "}
+                  {!!selectedInstance.domain &&
+                    selectedInstance.domain + ".schooloud.cloud"}
+                </Text>
               </TextWrapper>
               <Line />
             </div>
           )}
         </ModalBody>
       </BottomModal>
+      <PopUpModal
+        width={30}
+        darkBackground={false}
+        visible={domainModal}
+        title="도메인 할당"
+      >
+        <TextWrapper>
+          <DomainText>도메인</DomainText>
+          <TextWrapper>
+            <Div>:&nbsp;</Div>
+            <Input
+              type="text"
+              name="domainName"
+              value={domainName}
+              onChange={(e) =>
+                setDomainName(e.target.value.replace(/[^A-Za-z0-9]/gi, ""))
+              }
+            />
+            .schooloud.cloud
+          </TextWrapper>
+        </TextWrapper>
+        <MainButton
+          size="small"
+          color="light"
+          fontColor="var(--dark)"
+          marginTop="1"
+          onClick={() => {
+            setDomainName("");
+            setDomainModal(false);
+          }}
+        >
+          취소
+        </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => {
+            domainAssign.mutate(domainName);
+            setDomainModal(false);
+            setDomainName("");
+          }}
+          disabled={!domainName}
+        >
+          할당
+        </MainButton>
+      </PopUpModal>
     </Container>
   );
 }
@@ -416,6 +388,14 @@ const ButtonContainer = styled.div`
 
 const TableWrapper = styled.div`
   margin-bottom: 1.5rem;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ModalTab = styled.div`
@@ -481,7 +461,25 @@ const Text = styled.div`
   font-weight: 400;
 `;
 
+const DomainText = styled.div`
+  min-width: 4rem;
+  font-weight: 400;
+`;
+
 const FlexContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const Input = styled.input`
+  width: 10rem;
+  height: 1.8rem;
+  border: 0.5px solid gray;
+  margin-right: 0.2rem;
+  border-radius: 0.3rem;
+  padding: 0 0.3rem;
+`;
+
+const Div = styled.div`
+  font-weight: 400;
 `;
