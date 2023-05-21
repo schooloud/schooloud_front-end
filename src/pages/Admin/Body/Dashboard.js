@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Paper from "../../../components/Paper";
 import Table from "../../../components/Table";
+import { useQuery } from "react-query";
+import { useGetApi } from "../../../utils/http";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 const USAGE = {
   cpu: 11,
@@ -61,41 +64,52 @@ const quataDummy = [
   },
 ];
 
-const proposalDummy = [
-  {
-    id: "1",
-    name: "project3",
-    createdAt: "2023-05-07",
-    status: "waiting",
-  },
-  {
-    id: "2",
-    name: "project2",
-    createdAt: "2023-05-06",
-    status: "rejected",
-  },
-  {
-    id: "3",
-    name: "project1",
-    createdAt: "2023-05-05",
-    status: "approved",
-  },
-  {
-    id: "4",
-    name: "project1",
-    createdAt: "2023-05-05",
-    status: "approved",
-  },
-  {
-    id: "5",
-    name: "project1",
-    createdAt: "2023-05-05",
-    status: "approved",
-  },
-];
-
 export default function Dashboard() {
   const [selectedRowId, setSelectedRowId] = useState("");
+  const [proposalTableData, setPropoosalTableData] = useState([]);
+
+  //제안서 목록 가져오기
+  const { isSuccess } = useQuery({
+    queryKey: ["adminProposals"],
+    queryFn: () => useGetApi("proposal/list"),
+    onSuccess: (data) => {
+      setPropoosalTableData([]);
+      data.data.proposals.map((proposal) => {
+        //Table에 넣을 데이터
+        const newProposalTableData = {};
+
+        for (let key in proposal) {
+          //키값 변경
+          if (key === "proposal_id") {
+            newProposalTableData["id"] = proposal[key];
+          }
+          //project_name 이랑 status만 가져오기
+          else if (
+            key === "project_name" ||
+            key === "status" ||
+            key === "create_at"
+          ) {
+            newProposalTableData[key] = proposal[key];
+          }
+        }
+
+        setPropoosalTableData((oldProposalData) => [
+          ...oldProposalData,
+          newProposalTableData,
+        ]);
+      });
+    },
+  });
+
+  // 최근 5개만 보여주기
+  const proposalData = proposalTableData
+    .sort((a, b) => new Date(b.create_at) - new Date(a.create_at))
+    .slice(0, 5);
+
+  //data 에서 createdAt 빼기
+  proposalData.forEach((element) => {
+    delete element.create_at;
+  });
 
   // 최근 5개만 보여주기
   const quataData = quataDummy
@@ -105,16 +119,6 @@ export default function Dashboard() {
   //data 에서 createdAt 빼기
   quataData.forEach((element) => {
     delete element.createAt;
-  });
-
-  // 최근 5개만 보여주기
-  const proposalData = proposalDummy
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 5);
-
-  //data 에서 createdAt 빼기
-  proposalData.forEach((element) => {
-    delete element.createdAt;
   });
 
   const handleRowClick = (id) => {
@@ -161,15 +165,21 @@ export default function Dashboard() {
         ></Paper>
       </PaperGroup>
       <TitleText2>Proposal Request</TitleText2>
-      <Table
-        data={quataData}
-        header={["Name", "Status"]}
-        onClick={handleRowClick}
-        checkBox={false}
-      />
+      {isSuccess ? (
+        <Table
+          data={proposalData}
+          header={["Name", "Status"]}
+          onClick={handleRowClick}
+          checkBox={false}
+        />
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      )}
       <TitleText2>Quata Request</TitleText2>
       <Table
-        data={proposalData}
+        data={quataData}
         header={["Name", "Status"]}
         onClick={() => {}}
         checkBox={false}
@@ -203,4 +213,12 @@ const TitleText2 = styled(TitleText)`
 
 const SpaceDiv = styled.div`
   height: 2rem;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
