@@ -9,6 +9,12 @@ export default function User() {
   const [toggle, setToggle] = useState("Student");
   const [page, setPage] = useState(0);
 
+  // const userList = useQuery({
+  //   queryKey: ["users"],
+  //   queryFn: () => useGetApi("user/list"),
+  //   onSuccess: (data) => console.log(data),
+  // });
+
   const handleRowClick = (id) => {};
 
   const handleToggleClick = (to) => {
