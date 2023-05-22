@@ -46,7 +46,7 @@ export default function Proposal() {
           //키값 변경
           if (key === "proposal_id") {
             newProposalTableData["id"] = proposal[key];
-          } else if (key == "create_at") {
+          } else if (key === "create_at") {
             //날짜 형식 변경
             const result = new Date(proposal[key])
               .toLocaleDateString()
@@ -58,7 +58,7 @@ export default function Proposal() {
               "-" +
               result[2]
             ).replace(/\s/g, "");
-          } else if (key == "end_at") {
+          } else if (key === "end_at") {
             //날짜 형식 변경
             const result = new Date(proposal[key])
               .toLocaleDateString()
