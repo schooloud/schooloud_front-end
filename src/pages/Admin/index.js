@@ -5,40 +5,6 @@ import ExpiredCheck from "../../pages/ExpiredCheck";
 import logoImage from "../../assets/Logo.png";
 
 export default function Admin() {
-
-  //제안서 목록 가져오기
-  const { isSuccess } = useQuery({
-    queryKey: ["adminProposals"],
-    queryFn: () => useGetApi("proposal/list"),
-    onSuccess: (data) => {
-      setPropoosalTableData([]);
-      data.data.proposals.map((proposal) => {
-        //Table에 넣을 데이터
-        const newProposalTableData = {};
-
-        for (let key in proposal) {
-          //키값 변경
-          if (key === "proposal_id") {
-            newProposalTableData["id"] = proposal[key];
-          }
-          //project_name 이랑 status만 가져오기
-          else if (
-            key === "project_name" ||
-            key === "status" ||
-            key === "create_at"
-          ) {
-            newProposalTableData[key] = proposal[key];
-          }
-        }
-
-        setPropoosalTableData((oldProposalData) => [
-          ...oldProposalData,
-          newProposalTableData,
-        ]);
-      });
-    },
-  });
-  
   return (
     <PageWrapper>
       <LeftBarWapper>
