@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import GlobalStyles from "./styles/globalStyles";
-import { CookiesProvider } from "react-cookie";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // React Query는 내부적으로 queryClient를 사용하여
@@ -14,12 +13,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <CookiesProvider>
-        <BrowserRouter>
-          <GlobalStyles />
-          <App />
-        </BrowserRouter>
-      </CookiesProvider>
+      <BrowserRouter>
+        <GlobalStyles />
+        <App />
+      </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>
 );
