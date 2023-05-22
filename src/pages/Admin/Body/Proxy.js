@@ -2,62 +2,45 @@ import styled from "styled-components";
 import Table from "../../../components/Table";
 import { useState } from "react";
 import MainButton from "../../../components/MainButton";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGetApi } from "../../../utils/http";
 export default function Proxy() {
   const [toggle, setToggle] = useState("SSH");
   const [page, setPage] = useState(0);
+  const [proxyList, setProxyList] = useState([]);
+  const queryClient = useQueryClient();
+
+  const proxy = useQuery({
+    queryKey: ["proxy"],
+    queryFn: () => useGetApi("domain/list"),
+    onSuccess: (data) => {
+      setProxyList([]);
+      data.data.domain_list.map((proxy, index) => {
+        const newProxyList = [];
+
+        newProxyList["id"] = index;
+        newProxyList["projectName"] = proxy.project_name;
+        newProxyList["instanceIdd"] = proxy.instance_id;
+        newProxyList["instanceName"] = proxy.instance_name;
+        newProxyList["port"] = proxy.port;
+        newProxyList["domain"] = proxy.domain;
+
+        setProxyList((oldProxyList) => [...oldProxyList, newProxyList]);
+      });
+      console.log(proxyList);
+    },
+  });
 
   const handleRowClick = (id) => {};
   const handleToggleClick = (to) => {
     setPage(0);
-    setToggle(to); 
+    setToggle(to);
   };
-  
-  const dummy = [
-    {
-      id: "1",
-      projectName: "project2",
-      instanceId: "1",
-      instanceName: "instance1",
-      port: "2001",
-      domain: "ateam",
-    },
-    {
-      id: "2",
-      projectName: "project3",
-      instanceId: "2",
-      instanceName: "instance2",
-      port: "2002",
-      domain: "bteam",
-    },
-    {
-      id: "3",
-      projectName: "project3",
-      instanceId: "3",
-      instanceName: "instance3",
-      port: "2003",
-      domain: "cteam",
-    },
-    {
-      id: "4",
-      projectName: "project2",
-      instanceId: "4",
-      instanceName: "instance4",
-      port: "2004",
-      domain: "",
-    },
-    {
-      id: "5",
-      projectName: "project1",
-      instanceId: "5",
-      instanceName: "instance5",
-      port: "2005",
-      domain: "",
-    },
-  ];
 
-  const sshList = dummy.map(({domain, ...rest}) => rest);
-  const domainList = dummy.filter((row) => !!row.domain === true).map(({port, ...rest}) => rest);
-
+  const sshList = proxyList?.map(({ domain, ...rest }) => rest);
+  const domainList = proxyList
+    ?.filter((row) => !!row.domain === true)
+    .map(({ port, ...rest }) => rest);
 
   return (
     <Container>
@@ -84,17 +67,11 @@ export default function Proxy() {
       <Line />
       <Table
         data={toggle === "SSH" ? [sshList] : [domainList]}
-        header={toggle === "SSH" ? [
-          "Project Name",
-          "Instance Id",
-          "Instance Name",
-          "Port",
-        ] : [
-          "Project Name",
-          "Instance Id",
-          "Instance Name",
-          "Domain",
-        ]}
+        header={
+          toggle === "SSH"
+            ? ["Project Name", "Instance Id", "Instance Name", "Port"]
+            : ["Project Name", "Instance Id", "Instance Name", "Domain"]
+        }
         onClick={handleRowClick}
         checkBox={false}
         pagination={true}

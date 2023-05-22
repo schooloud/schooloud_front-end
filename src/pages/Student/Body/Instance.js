@@ -148,7 +148,7 @@ export default function Instance() {
       queryClient.removeQueries({ queryKey: ["instances"] });
       !!data?.data?.message
         ? alert(data.data.message)
-        : alert("삭제되었습니다.");
+        : alert("도메인이 할당되었습니다.");
     },
   });
 
@@ -321,7 +321,7 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>Domain</BoldText>
-                <Text>: {selectedInstance?.domain}</Text>
+                <Text>: {selectedInstance?.domain}.schooloud.cloud</Text>
               </TextWrapper>
               <Line />
             </div>
@@ -340,7 +340,7 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>Domain</BoldText>
-                <Text>: {selectedInstance?.domain}</Text>
+                <Text>: {selectedInstance?.domain}.schooloud.cloud</Text>
               </TextWrapper>
               <Line />
             </div>

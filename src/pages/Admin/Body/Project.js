@@ -3,6 +3,8 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import BottomModal from "../../../components/BottomModal";
 import Paper from "../../../components/Paper";
+import { useQuery } from "@tanstack/react-query";
+import { useGetApi } from "../../../utils/http";
 
 const proposalDetailDummy = {
   projectName: "이기자",
@@ -52,6 +54,12 @@ export default function Project() {
   const [selectedRowId, setSelectedRowId] = useState("");
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
+
+  // const projectList = useQuery({
+  //   queryKey: ["projects"],
+  //   queryFn: () => useGetApi("project/list"),
+  //   onSuccess: (data) => console.log(data),
+  // });
 
   const handleRowClick = (id) => {
     setSelectedRowId(id);
