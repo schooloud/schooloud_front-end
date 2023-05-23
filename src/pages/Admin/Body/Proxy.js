@@ -20,14 +20,13 @@ export default function Proxy() {
 
         newProxyList["id"] = index;
         newProxyList["projectName"] = proxy.project_name;
-        newProxyList["instanceIdd"] = proxy.instance_id;
+        newProxyList["instanceId"] = proxy.instance_id;
         newProxyList["instanceName"] = proxy.instance_name;
         newProxyList["port"] = proxy.port;
         newProxyList["domain"] = proxy.domain;
 
         setProxyList((oldProxyList) => [...oldProxyList, newProxyList]);
       });
-      console.log(proxyList);
     },
   });
 

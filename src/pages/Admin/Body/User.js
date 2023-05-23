@@ -8,12 +8,28 @@ import { useGetApi } from "../../../utils/http";
 export default function User() {
   const [toggle, setToggle] = useState("Student");
   const [page, setPage] = useState(0);
+  const [userList, setUserList] = useState([]);
 
-  // const userList = useQuery({
-  //   queryKey: ["users"],
-  //   queryFn: () => useGetApi("user/list"),
-  //   onSuccess: (data) => console.log(data),
-  // });
+  useQuery({
+    queryKey: ["users"],
+    queryFn: () => useGetApi("user/list"),
+    onSuccess: (data) => {
+      console.log(data);
+      setUserList([]);
+      data.data.users.map((user, index) => {
+        const newUserList = [];
+
+        newUserList["id"] = index;
+        newUserList["name"] = user.name;
+        newUserList["email"] = user.email;
+        newUserList["major"] = user.major;
+        newUserList["num"] = user.student_id;
+        newUserList["role"] = user.role;
+
+        setUserList((oldUserList) => [...oldUserList, newUserList]);
+      });
+    },
+  });
 
   const handleRowClick = (id) => {};
 
@@ -77,8 +93,8 @@ export default function User() {
     },
   ];
 
-  const studentList = dummy.filter((row) => row.role === "student");
-  const professorList = dummy.filter((row) => row.role === "professor");
+  const studentList = userList.filter((row) => row.role === "STUDENT");
+  const professorList = userList.filter((row) => row.role === "PROFESSOR");
 
   return (
     <Container>

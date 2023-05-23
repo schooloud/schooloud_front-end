@@ -30,8 +30,6 @@ export default function Instance() {
     onSuccess: (data) => {
       setInstanceList([]);
       setTableData([]);
-      console.log("fetch");
-
       data.data.instance_list.map((newInstance) => {
         const newTableObj = {};
         newTableObj["id"] = newInstance.instance_id;
@@ -40,7 +38,9 @@ export default function Instance() {
         newTableObj["ip"] = (
           <div>
             <div>{newInstance.ip_addresses[0]}</div>
-            <div>{newInstance.ip_addresses[1]}</div>
+            <div>
+              {newInstance.ip_addresses[1]}:{newInstance.port}
+            </div>
           </div>
         );
         newTableObj["flavor"] = newInstance.flavor;
@@ -340,7 +340,10 @@ export default function Instance() {
               <Line />
               <TextWrapper>
                 <BoldText>Domain</BoldText>
-                <Text>: {selectedInstance?.domain}.schooloud.cloud</Text>
+                <Text>
+                  : {selectedInstance?.domain}
+                  {selectedInstance?.domain && ".schooloud.cloud"}
+                </Text>
               </TextWrapper>
               <Line />
             </div>
