@@ -42,12 +42,11 @@ export default function Proposal() {
       setPropoosalTableData([]);
       data.data.proposals.map((proposal) => {
         const newProposalTableData = {};
-
         for (let key in proposal) {
           //키값 변경
           if (key === "proposal_id") {
             newProposalTableData["id"] = proposal[key];
-          } else if (key == "create_at") {
+          } else if (key === "create_at") {
             //날짜 형식 변경
             const result = new Date(proposal[key])
               .toLocaleDateString()
@@ -59,7 +58,7 @@ export default function Proposal() {
               "-" +
               result[2]
             ).replace(/\s/g, "");
-          } else if (key == "end_at") {
+          } else if (key === "end_at") {
             //날짜 형식 변경
             const result = new Date(proposal[key])
               .toLocaleDateString()
@@ -82,17 +81,19 @@ export default function Proposal() {
         ]);
       });
     },
+    retry: 1,
   });
 
   // 제안서 삭제 hook
   const proposalDelete = useMutation({
     mutationFn: (id) => usePostApi("proposal/delete", { proposal_id: id }),
     onSuccess: () => {
+      //삭제 후 제안서 목록 다시 가져오기
       queryClient.invalidateQueries({ queryKey: ["proposals"] });
-      alert("제안서 삭제 성공");
+      alert("제안서 삭제를 완료했습니다.");
     },
     onError: () => {
-      alert("제안서 삭제 실패");
+      alert("제안서 삭제를 실패했습니다.");
     },
   });
 
@@ -104,6 +105,7 @@ export default function Proposal() {
     setSelectedRow([]);
   };
 
+  //클릭한 제안서 이름
   const selectedRowName = proposalTableData.find(
     (row) => row.id === selectedRowId
   )?.project_name;
@@ -159,7 +161,7 @@ export default function Proposal() {
         <MainButton
           size="small"
           color="medium"
-          //selectedRow의 길이가 0이거나 proposalData의 id가 selectedRow인 데이터의 status가 APPROVED인 것이 포함돼있으면 disabled
+          //selectedRow의 길이가 0이거나 proposalData의 id가 selectedRow인 데이터의 status가 APPROVED인 것이 포함돼있으면 삭제 불가능
           disabled={
             selectedRow.length === 0 ||
             selectedRow.some((id) => {
@@ -194,9 +196,8 @@ export default function Proposal() {
         </LoadingOverlayWrapper>
       )}
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
-        <TitleText>{selectedRowName}</TitleText>
+        <TitleText className="modal">{selectedRowName}</TitleText>
         <ModalBody>
-          <Line />
           <TextWrapper>
             <BoldText>Project Name</BoldText>
             <Text>: {selectedRowName}</Text>
@@ -281,6 +282,9 @@ const Container = styled.div`
 `;
 
 const TitleText = styled.div`
+  &.modal {
+    margin-left: 2rem;
+  }
   font-weight: 600;
   font-size: 1.3rem;
   margin-bottom: 1rem;

@@ -81,10 +81,7 @@ export default function WriteProposal() {
   useQuery({
     queryKey: ["flavor"],
     queryFn: () => useGetApi("flavor/list"),
-    onSuccess: (data) => {
-      console.log("flavor 목록 가져오기 성공");
-      console.log(data);
-    },
+    onSuccess: () => {},
     onError: (error) => {
       alert("flavor 불러오기에 실패했습니다.", error);
     },

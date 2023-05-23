@@ -97,9 +97,9 @@ export default function Dashboard() {
   const [projectDescription, setProjectDescription] = useState("");
   const [selectedId, setSelectedId] = useState();
 
-  const params = useParams();
+  // const params = useParams();
 
-  console.log(params.projectId);
+  // console.log(params.projectId);
 
   const handleMemberClick = () => {
     setMemberModalOpen(true);

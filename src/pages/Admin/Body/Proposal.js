@@ -4,8 +4,9 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
-import { useQuery } from "@tanstack/react-query";
-import { useGetApi } from "../../../utils/http";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function Proposal() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -13,9 +14,16 @@ export default function Proposal() {
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
   const [popUpModalOpen, setPopUpModalOpen] = useState(false);
-  const [rejectPopUpModalOpen, setRejectPopUpModalOpen] = useState(false);
+  // const [rejectPopUpModalOpen, setRejectPopUpModalOpen] = useState(false);
   const [toggle, setToggle] = useState("Waiting");
   const [request, setRequest] = useState("");
+  const queryClient = useQueryClient();
+
+  //승인, 반려 시 보낼 Form
+  //승인, 반려 클릭시 is_approved추가되어 보내진다.
+  const approveForm = {
+    proposal_id: selectedRowId,
+  };
 
   //제안서 목록 가져오기
   const { isSuccess } = useQuery({
@@ -30,7 +38,7 @@ export default function Proposal() {
           //키값 변경
           if (key === "proposal_id") {
             newProposalTableData["id"] = proposal[key];
-          } else if (key == "create_at") {
+          } else if (key === "create_at") {
             //날짜 형식 변경
             const result = new Date(proposal[key])
               .toLocaleDateString()
@@ -42,7 +50,7 @@ export default function Proposal() {
               "-" +
               result[2]
             ).replace(/\s/g, "");
-          } else if (key == "end_at") {
+          } else if (key === "end_at") {
             //날짜 형식 변경
             const result = new Date(proposal[key])
               .toLocaleDateString()
@@ -91,9 +99,27 @@ export default function Proposal() {
     };
   });
 
+  //테이블 행 클릭 시 해당 행의 제안서 이름 가져오기
   const selectedRowName = proposalTableData.find(
     (row) => row.id === selectedRowId
   )?.project_name;
+
+  //제안서 승인, 반려 hook
+  const approveOrNot = useMutation({
+    mutationFn: (approveForm) => usePostApi("proposal/approve", approveForm),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["proposals"] });
+      if (data.data.project_id) {
+        alert("승인 완료 되었습니다.");
+      } else {
+        alert("반려 완료 되었습니다.");
+      }
+    },
+    onError: () => {
+      alert("승인/반려 중에 오류가 발생했습니다.");
+    },
+    isloading: true,
+  });
 
   //테이블 행 클릭
   const handleRowClick = (id) => {
@@ -117,25 +143,32 @@ export default function Proposal() {
 
   //승인, 반려 버튼 클릭 후 팝업 모달의 취소, 확인 버튼
   const handlePopUp = (popUpRequest) => {
+    //정말 ~ 하시겠습니까 모달 닫기
     setPopUpModalOpen(false);
 
+    //승인 API
     if (popUpRequest && request === "approved") {
+      //is_approved true 추가
+      approveForm.is_approved = true;
+      approveOrNot.mutate(approveForm);
       setBottomModalOpen(false);
-      //승인 API
     } else if (popUpRequest && request === "rejected") {
-      //반려 사유 적으라는 모달 open
-      setRejectPopUpModalOpen(true);
+      //반려 API
+      // is_approved false 추가
+      approveForm.is_approved = false;
+      approveOrNot.mutate(approveForm);
+      setBottomModalOpen(false);
     }
   };
 
   //반려 사유 적으라는 모달의 취소, 확인 버튼
-  const handleReject = (popUpRequest) => {
-    setRejectPopUpModalOpen(false);
-    if (popUpRequest) {
-      //반려 API, textarea 내용 가져와야함.
-      setBottomModalOpen(false);
-    }
-  };
+  // const handleReject = (popUpRequest) => {
+  //   setRejectPopUpModalOpen(false);
+  //   if (popUpRequest) {
+  //     //반려 API, textarea 내용 가져와야함.
+  //     setBottomModalOpen(false);
+  //   }
+  // };
 
   return (
     <Container>
@@ -160,35 +193,43 @@ export default function Proposal() {
         </MainButton>
       </ButtonContainer>
       <Line />
-      <Table
-        data={toggle === "Waiting" ? [waitingListData] : [processedListData]}
-        header={["Name", "Created At", "Status"]}
-        //행 클릭
-        onClick={handleRowClick}
-        checkBox={false}
-        pagination={true}
-        page={page}
-        setPage={setPage}
-      />
+      {isSuccess ? (
+        <Table
+          data={toggle === "Waiting" ? [waitingListData] : [processedListData]}
+          header={["Name", "Created At", "Status"]}
+          //행 클릭
+          onClick={handleRowClick}
+          checkBox={false}
+          pagination={true}
+          page={page}
+          setPage={setPage}
+        />
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      )}
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>
-        <ModalButtonContainer>
-          <MainButton
-            size="small"
-            color="semi-light"
-            onClick={() => handleRequest("rejected")}
-          >
-            반려
-          </MainButton>
-          <MainButton
-            size="small"
-            color="medium"
-            marginLeft={0.3}
-            onClick={() => handleRequest("approved")}
-          >
-            승인
-          </MainButton>
-        </ModalButtonContainer>
+        {toggle === "Waiting" && (
+          <ModalButtonContainer>
+            <MainButton
+              size="small"
+              color="semi-light"
+              onClick={() => handleRequest("rejected")}
+            >
+              반려
+            </MainButton>
+            <MainButton
+              size="small"
+              color="medium"
+              marginLeft={0.3}
+              onClick={() => handleRequest("approved")}
+            >
+              승인
+            </MainButton>
+          </ModalButtonContainer>
+        )}
         <ModalBody>
           <Div>
             <Label>Project Name</Label>
@@ -270,7 +311,9 @@ export default function Proposal() {
           확인
         </MainButton>
       </PopUpModal>
-      <PopUpModal
+
+      {/* 반려 사유 적으라는 모달 */}
+      {/* <PopUpModal
         width={40}
         darkBackground={false}
         onCancel={false}
@@ -298,7 +341,7 @@ export default function Proposal() {
         >
           확인
         </MainButton>
-      </PopUpModal>
+      </PopUpModal> */}
     </Container>
   );
 }
@@ -343,20 +386,20 @@ const Line = styled.div`
   width: 100%;
 `;
 
-const BodyWrapper = styled.div`
-  display: flex;
-  align-items: center;
+// const BodyWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
 
-  width: 100%;
-  height: 14rem;
-`;
-const Input = styled.textarea`
-  width: 100%;
-  height: 10rem;
-  border: 0.5px solid gray;
-  border-radius: 0.3rem;
-  padding: 0.8rem 0.8rem;
-`;
+//   width: 100%;
+//   height: 14rem;
+// `;
+// const Input = styled.textarea`
+//   width: 100%;
+//   height: 10rem;
+//   border: 0.5px solid gray;
+//   border-radius: 0.3rem;
+//   padding: 0.8rem 0.8rem;
+// `;
 
 const Div = styled.div`
   display: flex;
@@ -381,4 +424,12 @@ const Description = styled.div`
 const ProjectName = styled.div`
   display: flex;
   align-items: flex-start;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
