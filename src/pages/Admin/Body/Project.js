@@ -55,11 +55,11 @@ export default function Project() {
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
 
-  // const projectList = useQuery({
-  //   queryKey: ["projects"],
-  //   queryFn: () => useGetApi("project/list"),
-  //   onSuccess: (data) => console.log(data),
-  // });
+  const projectList = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => useGetApi("project/list"),
+    onSuccess: (data) => console.log(data),
+  });
 
   const handleRowClick = (id) => {
     setSelectedRowId(id);
