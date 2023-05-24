@@ -9,11 +9,12 @@ import styled from "styled-components";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import removeCookies from "../../../utils/removeCookies";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function Body() {
   const params = useParams();
   const navigate = useNavigate();
-  const [content, setContent] = useState(<Dashboard />);
+  const [content, setContent] = useState(<LoadingOverlay />);
 
   const projects = useQuery({
     queryKey: ["projects"],
