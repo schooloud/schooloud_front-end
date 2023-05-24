@@ -51,6 +51,7 @@ export default function Dashboard() {
   const projectDetailHook = useQuery({
     queryKey: ["projectDetail"],
     queryFn: () => useGetApi(`project/detail/${params.projectId}`),
+    enabled: !!params.projectId,
     onSuccess: (data) => {
       setQuataData([]);
       setMember([]);

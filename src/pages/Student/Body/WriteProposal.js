@@ -19,12 +19,11 @@ author = [String]
 */
 
 export default function WriteProposal() {
-  const [date, setDate] = useState(new Date());
-  const [selectedId, setSelectedId] = useState();
+  const [date, setDate] = useState();
   const [flavorList, setFlavorList] = useState([]);
   const cookies = new Cookies();
   //array that stores the selectedId and the number of instances selected by the user
-  const [num, setNum] = useState([]);
+  const [num, setNum] = useState({});
 
   //proposal form
   const [proposal, setProposal] = useState({
@@ -43,7 +42,6 @@ export default function WriteProposal() {
     mutationFn: (proposal) => usePostApi("proposal/create", proposal),
     onSuccess: (data) => {
       alert("제출 성공");
-      console.log(data);
     },
     onError: () => {
       alert("제출에 실패");
@@ -57,6 +55,31 @@ export default function WriteProposal() {
     return (result[0] + "-" + result[1] + "-" + result[2]).replace(/\s/g, "");
   };
 
+  const handleNumChange = (e) => {
+    //num 객체에 selectedId와 num을 추가
+    let { value, id } = e.target;
+    if (value.length >= 3) {
+      e.preventDefault();
+    }
+    //value가 10을 초과하면 처음에 누른 값만 저장되고 그 이후에는 저장되지 않음
+    if (value > 10) {
+      e.target.value = value.slice(0, 1);
+      value = value.slice(0, 1);
+    }
+    //value가 없으면, num에서 해당 id를 삭제
+    if (value === "" || value === "0") {
+      setNum((oldNum) => {
+        const newNum = { ...oldNum };
+        delete newNum[id];
+        return newNum;
+      });
+      return;
+    }
+    setNum((oldNum) => {
+      return { ...oldNum, [id]: Number(value) };
+    });
+  };
+
   // flavor list hook
   useQuery({
     queryKey: ["flavors"],
@@ -66,11 +89,28 @@ export default function WriteProposal() {
       data.data.flavors.map((newFlavor, index) => {
         const newFlavorObj = {};
 
-        newFlavorObj["id"] = index + 1;
+        newFlavorObj["id"] = index;
         newFlavorObj["flalvorName"] = newFlavor.name;
         newFlavorObj["flavorRam"] = newFlavor.ram;
         newFlavorObj["flavorDisk"] = newFlavor.disk;
         newFlavorObj["cpu"] = Number(newFlavor.cpu);
+
+        const numInput = (
+          //input should be positive integer
+          //updownkey unavailable
+          <Input
+            defaultValue={0}
+            type="number"
+            id={index}
+            onKeyDown={(e) =>
+              ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+            }
+            min="0"
+            onChange={handleNumChange}
+          ></Input>
+        );
+
+        newFlavorObj["numInput"] = numInput;
 
         setFlavorList((oldFlavor) => [...oldFlavor, newFlavorObj]);
       });
@@ -86,9 +126,7 @@ export default function WriteProposal() {
     });
   };
 
-  const handleRowClick = (id) => {
-    setSelectedId(id);
-  };
+  const handleRowClick = (id) => {};
 
   //제출 버튼 클릭 시
   const handleSubmmit = (e) => {
@@ -107,7 +145,6 @@ export default function WriteProposal() {
     proposal.end_at = modifyDate(date);
     //proposal 객체에 author_email 추가
     proposal.author_email = cookies.get("email");
-    console.log(proposal);
     proposalSubmmit.mutate(proposal);
   };
 
@@ -115,51 +152,15 @@ export default function WriteProposal() {
   let totalRAM = 0;
   let totalStorage = 0;
 
-  const handleNumChange = (e) => {
-    //num 객체에 selectedId와 num을 추가
-    let { value } = e.target;
-    if (value.length >= 3) {
-      e.preventDefault();
-    }
-    //value가 10을 초과하면 처음에 누른 값만 저장되고 그 이후에는 저장되지 않음
-    if (value > 10) {
-      e.target.value = value.slice(0, 1);
-      value = value.slice(0, 1);
-    }
-
-    setNum({
-      ...num,
-      [selectedId]: value,
-    });
-  };
-
   for (let i in num) {
-    if (flavorList[i - 1].flavorRam.includes("MB")) {
-      totalRAM += (parseInt(flavorList[i - 1].flavorRam) / 1024) * num[i];
+    if (flavorList[i].flavorRam.includes("MB")) {
+      totalRAM += (parseInt(flavorList[i].flavorRam) / 1024) * num[i];
     } else {
-      totalRAM += parseInt(flavorList[i - 1].flavorRam) * num[i];
+      totalRAM += parseInt(flavorList[i].flavorRam) * num[i];
     }
-    totalCPU += flavorList[i - 1].cpu * num[i];
-    totalStorage += parseInt(flavorList[i - 1].flavorDisk) * num[i];
+    totalCPU += flavorList[i].cpu * num[i];
+    totalStorage += parseInt(flavorList[i].flavorDisk) * num[i];
   }
-
-  const numInput = (
-    //input should be positive integer
-    //updownkey unavailable
-    <Input
-      type="number"
-      onKeyDown={(e) =>
-        ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
-      }
-      min="0"
-      onChange={handleNumChange}
-    ></Input>
-  );
-
-  flavorList.map((data) => {
-    data.numInput = numInput;
-  });
-
   return (
     <Wrapper>
       <WriteProposalWrapper>
@@ -221,15 +222,24 @@ export default function WriteProposal() {
             <Label>Period of use</Label>
             {/* Calendar that is written in English */}
             <Calendar
+              minDate={new Date()}
               onChange={setDate}
               value={date}
               locale={"en-US"}
               className="calendar"
             />
             {/* show clicked date */}
-            <p>selected Date: {date.toLocaleDateString()}</p>
+            <p>selected Date: {date?.toLocaleDateString()}</p>
           </CalendarDiv>
           <MainButton
+            disabled={
+              !proposal.name ||
+              !proposal.purpose ||
+              totalCPU === 0 ||
+              totalRAM === 0 ||
+              totalStorage === 0 ||
+              !date
+            }
             color={"semi-dark"}
             fullWidth={true}
             marginTop={2}
