@@ -4,6 +4,7 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
+import paginate from "../../../utils/paginate";
 
 export default function User() {
   const [toggle, setToggle] = useState("Student");
@@ -38,61 +39,6 @@ export default function User() {
     setToggle(to);
   };
 
-  //get user info
-  // const { data, isSuccess } = useQuery({
-  //   queryKey: "userInfo",
-  //   queryFn: () => useGetApi("user/list"),
-  // });
-  // console.log(data);
-
-  //로딩 중
-  // if(!isSuccess){
-  //   return <LoadingOverlay>
-  // }
-
-  const dummy = [
-    {
-      id: "1",
-      name: "정눌엉",
-      email: "jsb@naver.com",
-      major: "jungle",
-      num: "123131312",
-      role: "student",
-    },
-    {
-      id: "2",
-      name: "유동라재진",
-      email: "yjh@naver.com",
-      major: "adCarry",
-      num: "123423424",
-      role: "professor",
-    },
-    {
-      id: "3",
-      name: "예리미양",
-      email: "lyr@naver.com",
-      major: "supporter",
-      num: "132421342",
-      role: "student",
-    },
-    {
-      id: "4",
-      name: "석키스",
-      email: "ksh@naver.com",
-      major: "mangnani",
-      num: "12424124",
-      role: "student",
-    },
-    {
-      id: "5",
-      name: "리쉰",
-      email: "lsi@naver.com",
-      major: "faker",
-      num: "12423423",
-      role: "student",
-    },
-  ];
-
   const studentList = userList.filter((row) => row.role === "STUDENT");
   const professorList = userList.filter((row) => row.role === "PROFESSOR");
 
@@ -120,7 +66,11 @@ export default function User() {
       </ButtonContainer>
       <Line />
       <Table
-        data={toggle === "Student" ? [studentList] : [professorList]}
+        data={
+          toggle === "Student"
+            ? paginate(studentList, 5)
+            : paginate(professorList, 5)
+        }
         header={["Name", "Email", "Major", "Num", "Role"]}
         onClick={handleRowClick}
         checkBox={false}
