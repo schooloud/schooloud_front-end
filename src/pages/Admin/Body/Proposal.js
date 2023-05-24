@@ -100,6 +100,11 @@ export default function Proposal() {
     };
   });
 
+  //processedListData createdAt기준으로 내림차순
+  processedListData.sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
   //테이블 행 클릭 시 해당 행의 제안서 이름 가져오기
   const selectedRowName = proposalTableData.find(
     (row) => row.id === selectedRowId

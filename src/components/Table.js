@@ -358,7 +358,7 @@ export default function Table({
                     </CheckBoxWrapper>
                   </td>
                 )}
-                {Object.keys(row).map((field) => {
+                {Object.keys(row).map((field, index) => {
                   if (field !== "id") {
                     return (
                       <td key={field + row[field]} align="center">
@@ -400,7 +400,7 @@ export default function Table({
                 {Object.keys(row).map(
                   (field) =>
                     field === "id" || (
-                      <td key={row[field]} align="center">
+                      <td key={field + row[field]} align="center">
                         {row[field]}
                       </td>
                     )
