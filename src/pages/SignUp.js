@@ -45,6 +45,7 @@ const SignUp = () => {
       /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     const emailCurrent = e.target.value;
     const { name } = e.target;
+    setIsEmailAvailable(false);
     setForm({
       ...form,
       [name]: emailCurrent,
@@ -110,9 +111,11 @@ const SignUp = () => {
     mutationFn: (email) => usePostApi("user/email-check", email),
     onError: (error) => {
       setIsEmailAvailable(false);
+      setIsEmailDuplicateModalOpen(true);
     },
     onSuccess: () => {
       setIsEmailAvailable(true);
+      setIsEmailDuplicateModalOpen(true);
     },
   });
 
@@ -137,7 +140,6 @@ const SignUp = () => {
     emailForm.email = form.email;
 
     checkEmailDuplicateMutation.mutate(emailForm);
-    setIsEmailDuplicateModalOpen(true);
   };
 
   //이 이메일을 사용하시겠습니까?
@@ -148,6 +150,7 @@ const SignUp = () => {
 
   //이 이메일을 사용하지 않겠습니까?
   const onEmailAvailCancel = () => {
+    setIsEmailDuplicateChecked(false);
     setIsEmailDuplicateModalOpen(false);
   };
 
@@ -179,15 +182,22 @@ const SignUp = () => {
                   <MainButton
                     color="main"
                     // border={"dark"}
+                    disabled={!isEmailValid}
                     onClick={handleDuplicateCheck}
                   >
-                    중복확인
+                    중복 확인
                   </MainButton>
                 </EmailDiv>
                 {isEmailValid ? (
-                  <EmailCheckMessage color="#2D791E">
-                    이메일 형식이 맞습니다.
-                  </EmailCheckMessage>
+                  isEmailDuplicateChecked ? (
+                    <EmailCheckMessage color="#2D791E">
+                      중복 확인이 완료되었습니다.
+                    </EmailCheckMessage>
+                  ) : (
+                    <EmailCheckMessage color="#2D791E">
+                      이메일 형식이 맞습니다. 중복 확인을 해주세요.
+                    </EmailCheckMessage>
+                  )
                 ) : (
                   <EmailCheckMessage>
                     올바른 이메일 형식이 아닙니다.
