@@ -8,30 +8,6 @@ import Cookies from "universal-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 
-const flavorData = [
-  {
-    id: "1",
-    flalvorName: "u2.c1m1",
-    flavorRam: "1GB",
-    flavorDisk: "20GB",
-    cpu: 1,
-  },
-  {
-    id: "2",
-    flalvorName: "u2.c2m2",
-    flavorRam: "2GB",
-    flavorDisk: "40GB",
-    cpu: 2,
-  },
-  {
-    id: "3",
-    flalvorName: "u2.c2m2",
-    flavorRam: "2GB",
-    flavorDisk: "40GB",
-    cpu: 2,
-  },
-];
-
 /*
 name = [String] 
 purpose = [String]
@@ -45,8 +21,12 @@ author = [String]
 export default function WriteProposal() {
   const [date, setDate] = useState(new Date());
   const [selectedId, setSelectedId] = useState();
+  const [flavorList, setFlavorList] = useState([]);
   const cookies = new Cookies();
+  //array that stores the selectedId and the number of instances selected by the user
+  const [num, setNum] = useState([]);
 
+  //proposal form
   const [proposal, setProposal] = useState({
     name: "",
     purpose: "",
@@ -77,13 +57,23 @@ export default function WriteProposal() {
     return (result[0] + "-" + result[1] + "-" + result[2]).replace(/\s/g, "");
   };
 
-  //프로젝트 목록 가져오기
+  // flavor list hook
   useQuery({
-    queryKey: ["flavor"],
+    queryKey: ["flavors"],
     queryFn: () => useGetApi("flavor/list"),
-    onSuccess: () => {},
-    onError: (error) => {
-      alert("flavor 불러오기에 실패했습니다.", error);
+    onSuccess: (data) => {
+      setFlavorList([]);
+      data.data.flavors.map((newFlavor, index) => {
+        const newFlavorObj = {};
+
+        newFlavorObj["id"] = index + 1;
+        newFlavorObj["flalvorName"] = newFlavor.name;
+        newFlavorObj["flavorRam"] = newFlavor.ram;
+        newFlavorObj["flavorDisk"] = newFlavor.disk;
+        newFlavorObj["cpu"] = Number(newFlavor.cpu);
+
+        setFlavorList((oldFlavor) => [...oldFlavor, newFlavorObj]);
+      });
     },
   });
 
@@ -100,6 +90,7 @@ export default function WriteProposal() {
     setSelectedId(id);
   };
 
+  //제출 버튼 클릭 시
   const handleSubmmit = (e) => {
     e.preventDefault();
 
@@ -116,15 +107,13 @@ export default function WriteProposal() {
     proposal.end_at = modifyDate(date);
     //proposal 객체에 author_email 추가
     proposal.author_email = cookies.get("email");
+    console.log(proposal);
     proposalSubmmit.mutate(proposal);
   };
 
   let totalCPU = 0;
   let totalRAM = 0;
   let totalStorage = 0;
-
-  //array that stores the selectedId and the number of instances selected by the user
-  const [num, setNum] = useState([]);
 
   const handleNumChange = (e) => {
     //num 객체에 selectedId와 num을 추가
@@ -145,9 +134,13 @@ export default function WriteProposal() {
   };
 
   for (let i in num) {
-    totalCPU += flavorData[i - 1].cpu * num[i];
-    totalRAM += parseInt(flavorData[i - 1].flavorRam) * num[i];
-    totalStorage += parseInt(flavorData[i - 1].flavorDisk) * num[i];
+    if (flavorList[i - 1].flavorRam.includes("MB")) {
+      totalRAM += (parseInt(flavorList[i - 1].flavorRam) / 1024) * num[i];
+    } else {
+      totalRAM += parseInt(flavorList[i - 1].flavorRam) * num[i];
+    }
+    totalCPU += flavorList[i - 1].cpu * num[i];
+    totalStorage += parseInt(flavorList[i - 1].flavorDisk) * num[i];
   }
 
   const numInput = (
@@ -163,7 +156,7 @@ export default function WriteProposal() {
     ></Input>
   );
 
-  flavorData.map((data) => {
+  flavorList.map((data) => {
     data.numInput = numInput;
   });
 
@@ -203,7 +196,7 @@ export default function WriteProposal() {
               <TableDiv>
                 <Table
                   checkBox={false}
-                  data={flavorData}
+                  data={flavorList}
                   header={["Name", "RAM", "DISK", "vCPU", "Num"]}
                   onClick={handleRowClick}
                 />
@@ -239,7 +232,7 @@ export default function WriteProposal() {
           <MainButton
             color={"semi-dark"}
             fullWidth={true}
-            marginTop={8}
+            marginTop={2}
             onClick={handleSubmmit}
           >
             제출
@@ -299,8 +292,6 @@ const CalendarDiv = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 70%;
-  margin-bottom: 2rem;
 `;
 
 const Label = styled.div`

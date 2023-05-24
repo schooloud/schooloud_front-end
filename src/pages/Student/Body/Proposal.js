@@ -6,7 +6,6 @@ import BottomModal from "../../../components/BottomModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
-
 export default function Proposal() {
   const queryClient = useQueryClient();
   //check box 선택된 행

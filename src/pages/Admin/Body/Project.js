@@ -55,11 +55,50 @@ export default function Project() {
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
 
+  //프로젝트 리스트 hook
   const projectList = useQuery({
     queryKey: ["projects"],
     queryFn: () => useGetApi("project/list"),
     onSuccess: (data) => console.log(data),
   });
+
+  // 프로젝트 상세 조회 hook
+  // const projectDetailHook = useQuery({
+  //   queryKey: ["projectDetail"],
+  //   queryFn: () => useGetApi(`project/detail/${params.projectId}`),
+  //   onSuccess: (data) => {
+  //     setQuataData([]);
+  //     setMember([]);
+
+  //     //멤버 정보를 member에 저장
+  //     data.data.members.map((newMember, index) => {
+  //       const newMemberObj = {};
+  //       newMemberObj["id"] = index + 1;
+  //       newMemberObj["No"] = index + 1;
+  //       newMemberObj["name"] = newMember.name;
+  //       newMemberObj["email"] = newMember.email;
+  //       setMember((oldMember) => [...oldMember, newMemberObj]);
+  //     });
+  //     //쿼터 정보를 quotaData에 저장
+  //     const newQuotaData = [];
+  //     const newQuotaObj = {};
+  //     newQuotaObj["name"] = "CPU";
+  //     newQuotaObj["total"] = data.data.cpu_limit;
+  //     newQuotaObj["usage"] = data.data.cpu_usage;
+  //     newQuotaData.push(newQuotaObj);
+  //     const newQuotaObj2 = {};
+  //     newQuotaObj2["name"] = "RAM";
+  //     newQuotaObj2["total"] = data.data.memory_limit;
+  //     newQuotaObj2["usage"] = data.data.memory_usage;
+  //     newQuotaData.push(newQuotaObj2);
+  //     const newQuotaObj3 = {};
+  //     newQuotaObj3["name"] = "STORAGE";
+  //     newQuotaObj3["total"] = data.data.storage_limit;
+  //     newQuotaObj3["usage"] = data.data.storage_usage;
+  //     newQuotaData.push(newQuotaObj3);
+  //     setQuataData(newQuotaData);
+  //   },
+  // });
 
   const handleRowClick = (id) => {
     setSelectedRowId(id);

@@ -5,6 +5,8 @@ import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
 import Paper from "../../../components/Paper";
+import { useQuery } from "@tanstack/react-query";
+import { useGetApi } from "../../../utils/http";
 
 const USAGE = {
   cpu: 11,
@@ -54,12 +56,76 @@ export default function Quota() {
   const [rejectPopUpModalOpen, setRejectPopUpModalOpen] = useState(false);
   const [toggle, setToggle] = useState("Waiting");
   const [request, setRequest] = useState("");
+  const [quotaRequestTableData, setQuotaRequestTableData] = useState([]);
 
+  // 관리자 쿼터 전체 사용량 조회 hook
+  const quotaRequest = useQuery({
+    queryKey: ["quotaRequestList"],
+    queryFn: () => useGetApi("quota/list"),
+    onSuccess: (data) => {
+      console.log(data);
+      setQuotaRequestTableData([]);
+      data.data.quota_requests.map((quotaRequest) => {
+        //Table에 넣을 데이터
+        const newQuotaRequestTableData = {};
+
+        for (let key in quotaRequest) {
+          //키값 변경
+          if (key === "quota_request_id") {
+            newQuotaRequestTableData["id"] = quotaRequest[key];
+          } else if (key === "project_name") {
+            newQuotaRequestTableData["name"] = quotaRequest[key];
+          } else if (key === "status") {
+            newQuotaRequestTableData["status"] = quotaRequest[key];
+          }
+        }
+
+        setQuotaRequestTableData((oldQuotaRequestData) => [
+          ...oldQuotaRequestData,
+          newQuotaRequestTableData,
+        ]);
+      });
+    },
+  });
+
+  // 쿼터 변경요청 상세 Hook
+  const quotaRequestDetail = useQuery({
+    queryKey: ["quotaRequestDetailList"],
+    queryFn: () => useGetApi(`quota/detail/${selectedRowId}`),
+    enabled: !!selectedRowId,
+    onSuccess: (data) => {
+      console.log(data);
+      // setQuotaRequestTableData([]);
+      // data.data.quota_requests.map((quotaRequest) => {
+      //   //Table에 넣을 데이터
+      //   const newQuotaRequestTableData = {};
+
+      //   for (let key in quotaRequest) {
+      //     //키값 변경
+      //     if (key === "quota_request_id") {
+      //       newQuotaRequestTableData["id"] = quotaRequest[key];
+      //     } else if (key === "project_name") {
+      //       newQuotaRequestTableData["name"] = quotaRequest[key];
+      //     } else if (key === "status") {
+      //       newQuotaRequestTableData["status"] = quotaRequest[key];
+      //     }
+      //   }
+
+      //   setQuotaRequestTableData((oldQuotaRequestData) => [
+      //     ...oldQuotaRequestData,
+      //     newQuotaRequestTableData,
+      //   ]);
+      // });
+    },
+  });
+
+  //table 행 클릭
   const handleRowClick = (id) => {
     setSelectedRowId(id);
     setBottomModalOpen(true);
   };
 
+  //waiting, processed 버튼 클릭
   const handleToggleClick = (to) => {
     setPage(0);
     setBottomModalOpen(false);
@@ -67,11 +133,13 @@ export default function Quota() {
     setSelectedRowId();
   };
 
+  //승인, 반려 버튼 클릭
   const handleRequest = (popUpRequest) => {
     setPopUpModalOpen(true);
     setRequest(popUpRequest);
   };
 
+  //승인, 반려 팝업창에서 확인 버튼 클릭
   const handlePopUp = (popUpRequest) => {
     setPopUpModalOpen(false);
 
@@ -83,32 +151,6 @@ export default function Quota() {
     }
   };
 
-  const handleReject = (popUpRequest) => {
-    setRejectPopUpModalOpen(false);
-    if (popUpRequest) {
-      //반려 API, textarea 내용 가져와야함.
-      setBottomModalOpen(false);
-    }
-  };
-
-  const dummy = [
-    {
-      id: "1",
-      name: "project3",
-      status: "waiting",
-    },
-    {
-      id: "2",
-      name: "project2",
-      status: "rejected",
-    },
-    {
-      id: "3",
-      name: "project1",
-      status: "approved",
-    },
-  ];
-
   const description =
     "요청합니다 내가 이게 필요하니까 꼭 해달란 말이야 교수야 진짜 대학생이 돈이 어딨다고 aws를 결제하겠어";
 
@@ -116,9 +158,15 @@ export default function Quota() {
   const totalRAM = 14;
   const totalStorage = 70;
 
-  const selectedRowName = dummy.find((row) => row.id === selectedRowId)?.name;
-  const waitingList = dummy.filter((row) => row.status === "waiting");
-  const processedList = dummy.filter((row) => row.status !== "waiting");
+  const selectedRowName = quotaRequestTableData.find(
+    (row) => row.id === selectedRowId
+  )?.name;
+  const waitingList = quotaRequestTableData.filter(
+    (row) => row.status === "WAIT"
+  );
+  const processedList = quotaRequestTableData.filter(
+    (row) => row.status !== "WAIT"
+  );
 
   const handleOnClick = (id) => {
     console.log(id);
