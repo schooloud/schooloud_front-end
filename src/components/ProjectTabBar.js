@@ -36,6 +36,7 @@ export default function ProjectTabBar() {
     } else {
       navigate(`/projectId/${newProjectId}/${selectedDrawer}`);
       queryClient.removeQueries({ queryKey: ["instances"] });
+      queryClient.removeQueries({ queryKey: ["projectDetail"] });
     }
   };
 

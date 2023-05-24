@@ -6,69 +6,45 @@ import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 
-const USAGE = {
-  cpu: 11,
-  ram: 24,
-  storage: 101,
-  user: 10,
-};
-
-const TOTAL = {
-  cpu: 100,
-  ram: 200,
-  storage: 100,
-};
-
-const quataDummy = [
-  {
-    id: "1",
-    name: "project3",
-    status: "waiting",
-    createAt: "2011-07-09",
-  },
-  {
-    id: "2",
-    name: "project2",
-    status: "rejected",
-    createAt: "2023-01-01",
-  },
-  {
-    id: "3",
-    name: "project1",
-    status: "approved",
-    createAt: "2021-09-01",
-  },
-  {
-    id: "4",
-    name: "project1",
-    status: "approved",
-    createAt: "2021-12-01",
-  },
-  {
-    id: "5",
-    name: "project1",
-    status: "approved",
-    createAt: "2021-07-01",
-  },
-  {
-    id: "6",
-    name: "project1",
-    status: "approved",
-    createAt: "2022-08-01",
-  },
-  {
-    id: "7",
-    name: "project1",
-    status: "approved",
-    createAt: "2021-12-25",
-  },
-];
-
 export default function Dashboard() {
   const [selectedRowId, setSelectedRowId] = useState("");
   const [proposalTableData, setPropoosalTableData] = useState([]);
+  const [quotaRequestTableData, setQuotaRequestTableData] = useState([]);
 
-  //제안서 목록 가져오기
+  //quata 사용량
+  const [quotaUsage, setQuotaUsage] = useState({
+    cpu: { currentCPU: "", totalCPU: "" },
+    ram: { currentRAM: "", totalRAM: "" },
+    storage: { currentStorage: "", totalStorage: "" },
+    totalUser: "",
+  });
+
+  // 관리자 쿼터 전체 사용량 조회 hook
+  const usageQuery = useQuery({
+    queryKey: ["adminQuotaUsage"],
+    queryFn: () => useGetApi("quota/usage"),
+    onSuccess: (data) => {
+      console.log(data);
+      const newQuotaUsage = {
+        cpu: {
+          currentCPU: data.data.cpu_usage,
+          totalCPU: data.data.cpu_limit,
+        },
+        ram: {
+          currentRAM: data.data.memory_usage,
+          totalRAM: data.data.memory_limit,
+        },
+        storage: {
+          currentStorage: data.data.storage_usage,
+          totalStorage: data.data.storage_limit,
+        },
+        totalUser: data.data.user_count,
+      };
+      setQuotaUsage(newQuotaUsage);
+    },
+  });
+
+  //제안서 목록 가져오기 hook
   const { isSuccess } = useQuery({
     queryKey: ["adminProposals"],
     queryFn: () => useGetApi("proposal/list"),
@@ -101,6 +77,36 @@ export default function Dashboard() {
     },
   });
 
+  // 관리자 쿼터 전체 사용량 조회 hook
+  const quotaRequest = useQuery({
+    queryKey: ["quotaRequestList"],
+    queryFn: () => useGetApi("quota/list"),
+    onSuccess: (data) => {
+      console.log(data);
+      setQuotaRequestTableData([]);
+      data.data.quota_requests.map((quotaRequest) => {
+        //Table에 넣을 데이터
+        const newQuotaRequestTableData = {};
+
+        for (let key in quotaRequest) {
+          //키값 변경
+          if (key === "quota_request_id") {
+            newQuotaRequestTableData["id"] = quotaRequest[key];
+          } else if (key === "project_name") {
+            newQuotaRequestTableData["name"] = quotaRequest[key];
+          } else if (key === "status") {
+            newQuotaRequestTableData["status"] = quotaRequest[key];
+          }
+        }
+
+        setQuotaRequestTableData((oldQuotaRequestData) => [
+          ...oldQuotaRequestData,
+          newQuotaRequestTableData,
+        ]);
+      });
+    },
+  });
+
   // 최근 5개만 보여주기
   const proposalData = proposalTableData
     .sort((a, b) => new Date(b.create_at) - new Date(a.create_at))
@@ -111,16 +117,6 @@ export default function Dashboard() {
     delete element.create_at;
   });
 
-  // 최근 5개만 보여주기
-  const quataData = quataDummy
-    .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
-    .slice(0, 5);
-
-  //data 에서 createdAt 빼기
-  quataData.forEach((element) => {
-    delete element.createAt;
-  });
-
   const handleRowClick = (id) => {
     setSelectedRowId(id);
   };
@@ -128,42 +124,48 @@ export default function Dashboard() {
   return (
     <Container>
       <TitleText>DashBoard</TitleText>
-      <PaperGroup>
-        <Paper
-          title={"current usage / total CPU"}
-          usage={USAGE.cpu}
-          total={TOTAL.cpu}
-          width={17}
-          height={10}
-          textSize="medium"
-          unit={"core"}
-        ></Paper>
-        <Paper
-          title={"current usage / total RAM"}
-          usage={USAGE.ram}
-          total={TOTAL.ram}
-          width={17}
-          height={10}
-          textSize="medium"
-          unit={"GB"}
-        ></Paper>
-        <Paper
-          title={"current usage / total STORAGE"}
-          usage={USAGE.storage}
-          total={TOTAL.storage}
-          width={17}
-          height={10}
-          textSize="medium"
-          unit={"GB"}
-        ></Paper>
-        <Paper
-          title={"total USER"}
-          usage={USAGE.user}
-          width={17}
-          height={10}
-          textSize="medium"
-        ></Paper>
-      </PaperGroup>
+      {usageQuery.isLoading ? (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      ) : (
+        <PaperGroup>
+          <Paper
+            title={"current usage / total CPU"}
+            usage={quotaUsage.cpu.currentCPU}
+            total={quotaUsage.cpu.totalCPU}
+            width={17}
+            height={10}
+            textSize="medium"
+            unit={"core"}
+          ></Paper>
+          <Paper
+            title={"current usage / total RAM"}
+            usage={quotaUsage.ram.currentRAM}
+            total={quotaUsage.ram.totalRAM}
+            width={17}
+            height={10}
+            textSize="medium"
+            unit={"GB"}
+          ></Paper>
+          <Paper
+            title={"current usage / total STORAGE"}
+            usage={quotaUsage.storage.currentStorage}
+            total={quotaUsage.storage.totalStorage}
+            width={17}
+            height={10}
+            textSize="medium"
+            unit={"GB"}
+          ></Paper>
+          <Paper
+            title={"total USER"}
+            usage={quotaUsage.totalUser}
+            width={17}
+            height={10}
+            textSize="medium"
+          ></Paper>
+        </PaperGroup>
+      )}
       <TitleText2>Proposal Request</TitleText2>
       {isSuccess ? (
         <Table
@@ -179,7 +181,7 @@ export default function Dashboard() {
       )}
       <TitleText2>Quata Request</TitleText2>
       <Table
-        data={quataData}
+        data={quotaRequestTableData}
         header={["Name", "Status"]}
         onClick={() => {}}
         checkBox={false}

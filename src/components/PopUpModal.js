@@ -107,7 +107,7 @@ const slideDown = keyframes`
 
 const DarkBackground = styled.div`
   position: fixed;
-  z-index: 200;
+  z-index: 201;
   left: 0;
   top: 0;
   width: 100%;

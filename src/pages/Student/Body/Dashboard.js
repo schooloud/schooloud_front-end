@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import Table from "../../../components/Table";
 import MainButton from "../../../components/MainButton";
 import PopUpModal from "../../../components/PopUpModal";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-
+import { useGetApi, usePostApi } from "../../../utils/http";
 import {
   BarChart,
   Bar,
@@ -14,81 +15,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-
-const instanceData = [
-  {
-    id: "1",
-    no: "1",
-    name: "이예림",
-    e_mail: "dPfla@naver.com",
-  },
-  {
-    id: "2",
-    no: "2",
-
-    name: "정세벽",
-    e_mail: "dPfla@naver.com",
-  },
-  {
-    id: "3",
-    no: "3",
-    name: "유준호",
-    e_mail: "dPfla@naver.com",
-  },
-  {
-    id: "4",
-    no: "4",
-    name: "이수인",
-    e_mail: "dPfla@naver.com",
-  },
-  {
-    id: "5",
-    no: "5",
-    name: "김석희",
-    e_mail: "cat1181123@naver.com",
-  },
-];
-const data = [
-  {
-    name: "CPU",
-    total: 4000,
-    usage: 2400,
-  },
-  {
-    name: "RAM",
-    total: 3000,
-    usage: 1398,
-  },
-  {
-    name: "STORAGE",
-    total: 9800,
-    usage: 8000,
-  },
-];
-
-const flavorData = [
-  {
-    id: "1",
-    flalvorName: "u2.c1m1",
-    flavorRam: "1GB",
-    flavorDisk: "20GB",
-    cpu: 1,
-  },
-  {
-    id: "2",
-    flalvorName: "u2.c2m2",
-    flavorRam: "2GB",
-    flavorDisk: "40GB",
-    cpu: 2,
-  },
-  {
-    id: "3",
-    flalvorName: "u2.c2m2",
-    flavorRam: "2GB",
-    flavorDisk: "40GB",
-    cpu: 2,
-  },
-];
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function Dashboard() {
   const [memberModalopen, setMemberModalOpen] = useState(false);
@@ -96,22 +23,128 @@ export default function Dashboard() {
   const [addingMemberEmail, setAddingMemberEmail] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [selectedId, setSelectedId] = useState();
+  const [flavorList, setFlavorList] = useState([]);
+  //array that stores the selectedId and the number of instances selected by the user
+  const [num, setNum] = useState([]);
+  // charData
+  const [quotaData, setQuataData] = useState([]);
+  // memberData
+  const [member, setMember] = useState([]);
+  const params = useParams();
 
-  // const params = useParams();
+  //쿼터 변경 요청 form
+  const quotaChangeForm = {
+    project_id: params.projectId,
+    purpose: "",
+    memory: "",
+    cpu: "",
+    storage: "",
+  };
 
-  // console.log(params.projectId);
+  // 멤버 추가 form
+  const addMemberForm = {
+    project_id: params.projectId,
+    email: "",
+  };
 
+  // 프로젝트 상세 조회 hook
+  const projectDetailHook = useQuery({
+    queryKey: ["projectDetail"],
+    queryFn: () => useGetApi(`project/detail/${params.projectId}`),
+    onSuccess: (data) => {
+      setQuataData([]);
+      setMember([]);
+
+      //멤버 정보를 member에 저장
+      data.data.members.map((newMember, index) => {
+        const newMemberObj = {};
+        newMemberObj["id"] = index + 1;
+        newMemberObj["No"] = index + 1;
+        newMemberObj["name"] = newMember.name;
+        newMemberObj["email"] = newMember.email;
+        setMember((oldMember) => [...oldMember, newMemberObj]);
+      });
+      //쿼터 정보를 quotaData에 저장
+      const newQuotaData = [];
+      const newQuotaObj = {};
+      newQuotaObj["name"] = "CPU";
+      newQuotaObj["total"] = data.data.cpu_limit;
+      newQuotaObj["usage"] = data.data.cpu_usage;
+      newQuotaData.push(newQuotaObj);
+      const newQuotaObj2 = {};
+      newQuotaObj2["name"] = "RAM";
+      newQuotaObj2["total"] = data.data.memory_limit;
+      newQuotaObj2["usage"] = data.data.memory_usage;
+      newQuotaData.push(newQuotaObj2);
+      const newQuotaObj3 = {};
+      newQuotaObj3["name"] = "STORAGE";
+      newQuotaObj3["total"] = data.data.storage_limit;
+      newQuotaObj3["usage"] = data.data.storage_usage;
+      newQuotaData.push(newQuotaObj3);
+      setQuataData(newQuotaData);
+    },
+  });
+
+  // flavor list hook
+  const flavorListHook = useQuery({
+    queryKey: ["flavors"],
+    queryFn: () => useGetApi("flavor/list"),
+    onSuccess: (data) => {
+      setFlavorList([]);
+      data.data.flavors.map((newFlavor, index) => {
+        const newFlavorObj = {};
+
+        newFlavorObj["id"] = index + 1;
+        newFlavorObj["flalvorName"] = newFlavor.name;
+        newFlavorObj["flavorRam"] = newFlavor.ram;
+        newFlavorObj["flavorDisk"] = newFlavor.disk;
+        newFlavorObj["cpu"] = Number(newFlavor.cpu);
+
+        setFlavorList((oldFlavor) => [...oldFlavor, newFlavorObj]);
+      });
+    },
+  });
+
+  // 쿼터 변경 요청 hook
+  const changeQuataHook = useMutation({
+    mutationFn: (form) => usePostApi("quota/request", form),
+    onSuccess: () => {
+      alert("변경 요청 성공");
+      setQuataModalOpen(false);
+    },
+    onError: () => {
+      alert("변경 요청 실패.");
+      setQuataModalOpen(false);
+    },
+  });
+
+  // 멤버 추가 hook
+  const addMemberHook = useMutation({
+    mutationFn: (form) => usePostApi("project/add-member", form),
+    onSuccess: () => {
+      alert("멤버 추가 성공!");
+    },
+    onError: () => {
+      alert("멤버 추가 실패!");
+    },
+  });
+
+  //멤버 초대 버튼
   const handleMemberClick = () => {
     setMemberModalOpen(true);
   };
 
-  const handleQuataClick = () => {
-    setQuataModalOpen(true);
+  //쿼터 변경 취소 버튼
+  const handleQuataCancel = () => {
+    setQuataModalOpen(false);
   };
 
   //멤버 추가 확인 버튼
   const handleMemberConfirm = () => {
+    addMemberForm.email = addingMemberEmail;
+    addMemberHook.mutate(addMemberForm);
     setMemberModalOpen(false);
+    setAddingMemberEmail("");
   };
 
   //멤버 추가 취소 버튼
@@ -119,22 +152,32 @@ export default function Dashboard() {
     setMemberModalOpen(false);
   };
 
+  //멤버 추가 input
+  const handleAddingMember = (e) => {
+    e.preventDefault();
+    setAddingMemberEmail(e.target.value);
+  };
+
+  //쿼터 변경 버튼
+  const handleQuataClick = () => {
+    setQuataModalOpen(true);
+  };
+
   //쿼터 변경 확인 버튼
   const handleQuataConfirm = () => {
-    console.log("확인");
-    setQuataModalOpen(false);
+    quotaChangeForm.cpu = String(totalCPU);
+    quotaChangeForm.memory = String(totalRAM);
+    quotaChangeForm.storage = String(totalStorage);
+    quotaChangeForm.purpose = projectDescription;
+    changeQuataHook.mutate(quotaChangeForm);
   };
 
-  //쿼터 변경 취소 버튼
-  const handleQuataCancel = () => {
-    console.log("취소");
-    setQuataModalOpen(false);
-  };
-
-  const handleInputDescriptionChange = useCallback((e) => {
+  //쿼터 변경 목적 input
+  const handleInputDescriptionChange = (e) => {
     setProjectDescription(e.target.value);
-  }, []);
+  };
 
+  //Table row 클릭 시 해당 row의 id를 selectedId에 저장
   const handleRowClick = (id) => {
     setSelectedId(id);
   };
@@ -142,9 +185,6 @@ export default function Dashboard() {
   let totalCPU = 0;
   let totalRAM = 0;
   let totalStorage = 0;
-
-  //array that stores the selectedId and the number of instances selected by the user
-  const [num, setNum] = useState([]);
 
   const handleNumChange = (e) => {
     //num 객체에 selectedId와 num을 추가
@@ -164,18 +204,8 @@ export default function Dashboard() {
     });
   };
 
-  // const table = document.querySelector("table");
-  // const tableWidth = table.offsetWidth;
-  // console.log(tableWidth + "px");
-
   const chartWidth =
     window.screen.width - 16 * (window.screen.width / 1440) * 18;
-
-  for (let i in num) {
-    totalCPU += flavorData[i - 1].cpu * num[i];
-    totalRAM += parseInt(flavorData[i - 1].flavorRam) * num[i];
-    totalStorage += parseInt(flavorData[i - 1].flavorDisk) * num[i];
-  }
 
   const numInput = (
     //input should be positive integer
@@ -190,9 +220,20 @@ export default function Dashboard() {
     ></InputNum>
   );
 
-  flavorData.map((data) => {
+  flavorList.map((data) => {
     data.numInput = numInput;
   });
+
+  for (let i in num) {
+    //ram이 MB인 것은 1024로 나눠줘야함
+    if (flavorList[i - 1].flavorRam.includes("MB")) {
+      totalRAM += (parseInt(flavorList[i - 1].flavorRam) / 1024) * num[i];
+    } else {
+      totalRAM += parseInt(flavorList[i - 1].flavorRam) * num[i];
+    }
+    totalCPU += flavorList[i - 1].cpu * num[i];
+    totalStorage += parseInt(flavorList[i - 1].flavorDisk) * num[i];
+  }
 
   return (
     <Container>
@@ -208,14 +249,20 @@ export default function Dashboard() {
           멤버 초대
         </MainButton>
       </MainButtonDiv>
-      <Table
-        id="thisTable"
-        checkBox={false}
-        data={instanceData}
-        header={["No", "Name", "e-mail"]}
-        onClick={() => console.log("click")}
-      />
-      <TitleText3>Quata Usage</TitleText3>
+      {projectDetailHook.isLoading ? (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      ) : (
+        <Table
+          id="thisTable"
+          checkBox={false}
+          data={member}
+          header={["No", "Name", "e-mail"]}
+          onClick={() => {}}
+        />
+      )}
+      <TitleText3>Quota Usage</TitleText3>
       <MainButtonDiv>
         <MainButton
           size="small"
@@ -226,29 +273,35 @@ export default function Dashboard() {
           쿼터 변경
         </MainButton>
       </MainButtonDiv>
-      <ChartContainer>
-        <BarChart
-          barGap={15}
-          barSize={35}
-          width={chartWidth}
-          height={500}
-          data={data}
-          margin={{
-            top: 20,
-            right: 0,
-            left: 0,
-            bottom: 20,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend align="left" />
-          <Bar dataKey="usage" fill="#AAD8A1" />
-          <Bar dataKey="total" fill="#2D791E" />
-        </BarChart>
-      </ChartContainer>
+      {projectDetailHook.isLoading ? (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      ) : (
+        <ChartContainer>
+          <BarChart
+            barGap={15}
+            barSize={35}
+            width={chartWidth}
+            height={500}
+            data={quotaData}
+            margin={{
+              top: 20,
+              right: 0,
+              left: 0,
+              bottom: 20,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend align="left" />
+            <Bar dataKey="usage" fill="#AAD8A1" />
+            <Bar dataKey="total" fill="#2D791E" />
+          </BarChart>
+        </ChartContainer>
+      )}
       <PopUpModal
         width={35}
         height={14}
@@ -258,12 +311,12 @@ export default function Dashboard() {
         onCancel={handleMemberCancel}
         visible={memberModalopen}
       >
-        추가할 멤버의 이메일을 입력하세요.
+        추가할 멤버의 이메일을 입력하세요.<br></br>
         <InputMember
           type="text"
           name="name"
           value={addingMemberEmail}
-          onChange={(e) => setAddingMemberEmail(e.target.value)}
+          onChange={handleAddingMember}
         />
       </PopUpModal>
       <PopUpModal
@@ -297,7 +350,7 @@ export default function Dashboard() {
           <TableDiv>
             <Table
               checkBox={false}
-              data={flavorData}
+              data={flavorList}
               header={["Name", "RAM", "DISK", "vCPU", "Num"]}
               onClick={handleRowClick}
             />
@@ -360,7 +413,7 @@ const MainButtonDiv = styled.div`
 `;
 
 const InputMember = styled.input`
-  margin-top: 0.4rem;
+  margin-top: 1rem;
   width: 18rem;
   height: 2rem;
   border: 0.5px solid var(--dark);
@@ -437,4 +490,12 @@ const ButtonGroup = styled.div`
 
 const ChartContainer = styled.div`
   width: 100%;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
