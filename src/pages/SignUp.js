@@ -102,7 +102,11 @@ const SignUp = () => {
   const signUpMutation = useMutation({
     mutationFn: (form) => usePostApi("user/register", form),
     onSuccess: () => {
+      alert("회원가입이 완료되었습니다.");
       navigate("/");
+    },
+    onError: (error) => {
+      console.log("서버에 문제가 있습니다.");
     },
   });
 

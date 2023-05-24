@@ -7,7 +7,7 @@ import Table from "../../../components/Table";
 import Cookies from "universal-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
-import paginate from "../../../utils/paginate";
+import { useNavigate } from "react-router-dom";
 
 /*
 name = [String] 
@@ -25,6 +25,7 @@ export default function WriteProposal() {
   const cookies = new Cookies();
   //array that stores the selectedId and the number of instances selected by the user
   const [num, setNum] = useState({});
+  const navigate = useNavigate();
 
   //proposal form
   const [proposal, setProposal] = useState({
@@ -43,6 +44,7 @@ export default function WriteProposal() {
     mutationFn: (proposal) => usePostApi("proposal/create", proposal),
     onSuccess: (data) => {
       alert("제출 성공");
+      navigate("/proposal");
     },
     onError: () => {
       alert("제출에 실패");
