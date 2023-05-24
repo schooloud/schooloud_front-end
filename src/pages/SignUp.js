@@ -21,8 +21,11 @@ const SignUp = () => {
   const [isEmailAvailable, setIsEmailAvailable] = useState(false);
   //비밀번호 일치 검사
   const [isPasswordSame, setIsPasswordSame] = useState(false);
+  //비밀번호 유효성 검사
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [passwordCheck, setPasswordCheck] = useState("");
 
-  // //현재 input창에 캐시 때문에 들어가있는 값을 form에 넣어주기
+  //현재 input창에 캐시 때문에 들어가있는 값을 form에 넣어주기
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
@@ -42,6 +45,7 @@ const SignUp = () => {
       /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     const emailCurrent = e.target.value;
     const { name } = e.target;
+    setIsEmailAvailable(false);
     setForm({
       ...form,
       [name]: emailCurrent,
@@ -54,9 +58,40 @@ const SignUp = () => {
     }
   };
 
+  //password 값 변경 시
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    let regPass = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+    regPass.test(value) ? setIsPasswordValid(true) : setIsPasswordValid(false);
+
+    if (value === passwordCheck) {
+      setIsPasswordSame(true);
+    } else {
+      setIsPasswordSame(false);
+    }
+
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  //비밀번호 재확인
+  const handlePasswordCheck = (e) => {
+    const { value } = e.target;
+    setPasswordCheck(value);
+
+    if (form.password === value) {
+      setIsPasswordSame(true);
+    } else {
+      setIsPasswordSame(false);
+    }
+  };
+
   //input 값 변경 시
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setForm({
       ...form,
       [name]: value,
@@ -76,9 +111,11 @@ const SignUp = () => {
     mutationFn: (email) => usePostApi("user/email-check", email),
     onError: (error) => {
       setIsEmailAvailable(false);
+      setIsEmailDuplicateModalOpen(true);
     },
     onSuccess: () => {
       setIsEmailAvailable(true);
+      setIsEmailDuplicateModalOpen(true);
     },
   });
 
@@ -87,6 +124,11 @@ const SignUp = () => {
     e.preventDefault();
     //가입 api
     signUpMutation.mutate(form);
+  };
+
+  //로그인으로 돌아가기 버튼 클릭 시
+  const handleBackClick = () => {
+    navigate("/");
   };
 
   //중복확인 클릭 시
@@ -98,7 +140,6 @@ const SignUp = () => {
     emailForm.email = form.email;
 
     checkEmailDuplicateMutation.mutate(emailForm);
-    setIsEmailDuplicateModalOpen(true);
   };
 
   //이 이메일을 사용하시겠습니까?
@@ -109,22 +150,13 @@ const SignUp = () => {
 
   //이 이메일을 사용하지 않겠습니까?
   const onEmailAvailCancel = () => {
+    setIsEmailDuplicateChecked(false);
     setIsEmailDuplicateModalOpen(false);
   };
 
   //이메일 중복 : 이메일을 다시 입력해주세요.
   const onEmailNotAvailConfirm = () => {
     setIsEmailDuplicateModalOpen(false);
-  };
-
-  //비밀번호 재확인
-  const handlePasswordCheck = (e) => {
-    const { value } = e.target;
-    if (form.password === value) {
-      setIsPasswordSame(true);
-    } else {
-      setIsPasswordSame(false);
-    }
   };
 
   return (
@@ -150,15 +182,22 @@ const SignUp = () => {
                   <MainButton
                     color="main"
                     // border={"dark"}
+                    disabled={!isEmailValid}
                     onClick={handleDuplicateCheck}
                   >
-                    중복확인
+                    중복 확인
                   </MainButton>
                 </EmailDiv>
                 {isEmailValid ? (
-                  <EmailCheckMessage color="#2D791E">
-                    이메일 형식이 맞습니다.
-                  </EmailCheckMessage>
+                  isEmailDuplicateChecked ? (
+                    <EmailCheckMessage color="#2D791E">
+                      중복 확인이 완료되었습니다.
+                    </EmailCheckMessage>
+                  ) : (
+                    <EmailCheckMessage color="#2D791E">
+                      이메일 형식이 맞습니다. 중복 확인을 해주세요.
+                    </EmailCheckMessage>
+                  )
                 ) : (
                   <EmailCheckMessage>
                     올바른 이메일 형식이 아닙니다.
@@ -169,9 +208,18 @@ const SignUp = () => {
                   ref={passwordInputRef}
                   type="password"
                   name="password"
-                  onChange={handleInputChange}
+                  onChange={handlePasswordChange}
                   required
                 />
+                {isPasswordValid ? (
+                  <PasswordCheckMessage color="#2D791E">
+                    비밀번호가 유효합니다.
+                  </PasswordCheckMessage>
+                ) : (
+                  <PasswordCheckMessage>
+                    영문, 숫자, 특수문자를 포함한 8~25자리 숫자를 입력하세요.
+                  </PasswordCheckMessage>
+                )}
                 <Label>비밀번호 재확인</Label>
                 <Input
                   type="password"
@@ -219,6 +267,7 @@ const SignUp = () => {
                     isEmailValid &&
                     isEmailDuplicateChecked &&
                     isPasswordSame &&
+                    isPasswordValid &&
                     form.email &&
                     form.major &&
                     form.name &&
@@ -234,6 +283,7 @@ const SignUp = () => {
             </BoxWrapper>
           </Box>
         </BoxContainer>
+        <BackButton onClick={handleBackClick}>로그인으로 돌아가기</BackButton>
         {/* 이메일 중복 확인 모달 */}
         {/* 중복확인 mutation이 성공이라면 */}
         {isEmailAvailable && (
@@ -275,6 +325,7 @@ const SignupContainer = styled.div`
 
 const SignUpWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center; /* 수직 중앙 정렬 */
   align-items: center; /* 수평 중앙 정렬 */
   width: 100%;
@@ -382,6 +433,17 @@ const Label = styled.div`
   width: 100%;
   margin-bottom: 0.3rem;
   font-size: 0.8rem;
+`;
+
+const BackButton = styled.div`
+  margin-top: 10px;
+  color: grey;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
 `;
 
 export default SignUp;

@@ -301,7 +301,7 @@ export default function Table({
   };
 
   return (
-    <TableWrapper id={id}>
+    <TableWrapper>
       <table>
         <thead>
           <tr>

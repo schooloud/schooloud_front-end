@@ -6,6 +6,7 @@ import BottomModal from "../../../components/BottomModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 export default function Proposal() {
   const queryClient = useQueryClient();
   //check box 선택된 행
@@ -156,29 +157,27 @@ export default function Proposal() {
         </MainButton>
       </ButtonContainer>
       <Line />
-      <ButtonContainer>
-        <MainButton
-          size="small"
-          color="medium"
-          //selectedRow의 길이가 0이거나 proposalData의 id가 selectedRow인 데이터의 status가 APPROVED인 것이 포함돼있으면 삭제 불가능
-          disabled={
-            selectedRow.length === 0 ||
-            selectedRow.some((id) => {
-              return (
-                proposalTableData.find((row) => row.id === id)?.status ===
-                "APPROVED"
-              );
-            })
-          }
-          onClick={() => handleProposalDelete()}
-          marginBottom={1}
-        >
-          제안서 삭제
-        </MainButton>
-      </ButtonContainer>
+      {toggle === "Waiting" && (
+        <ButtonContainer>
+          <MainButton
+            size="small"
+            color="medium"
+            //selectedRow의 길이가 0이거나 proposalData의 id가 selectedRow인 데이터의 status가 APPROVED인 것이 포함돼있으면 삭제 불가능
+            disabled={selectedRow.length === 0}
+            onClick={() => handleProposalDelete()}
+            marginBottom={1}
+          >
+            제안서 삭제
+          </MainButton>
+        </ButtonContainer>
+      )}
       {isSuccess ? (
         <Table
-          data={toggle === "Waiting" ? [waitingListData] : [processedListData]}
+          data={
+            toggle === "Waiting"
+              ? paginate(waitingListData, 3)
+              : paginate(processedListData, 3)
+          }
           header={["Name", "Created At", "Status"]}
           //행 클릭 했을 때
           onClick={handleRowClick}
