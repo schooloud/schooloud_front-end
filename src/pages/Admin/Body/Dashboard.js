@@ -24,7 +24,6 @@ export default function Dashboard() {
     queryKey: ["adminQuotaUsage"],
     queryFn: () => useGetApi("quota/usage"),
     onSuccess: (data) => {
-      console.log(data);
       const newQuotaUsage = {
         cpu: {
           currentCPU: data.data.cpu_usage,
@@ -45,7 +44,7 @@ export default function Dashboard() {
   });
 
   //제안서 목록 가져오기 hook
-  const { isSuccess } = useQuery({
+  const proposalList = useQuery({
     queryKey: ["adminProposals"],
     queryFn: () => useGetApi("proposal/list"),
     onSuccess: (data) => {
@@ -68,7 +67,6 @@ export default function Dashboard() {
             newProposalTableData[key] = proposal[key];
           }
         }
-
         setPropoosalTableData((oldProposalData) => [
           ...oldProposalData,
           newProposalTableData,
@@ -77,17 +75,17 @@ export default function Dashboard() {
     },
   });
 
-  // 관리자 쿼터 전체 사용량 조회 hook
+  // 쿼터 리퀘스트 목록 가져오기 hook
   const quotaRequest = useQuery({
     queryKey: ["quotaRequestList"],
     queryFn: () => useGetApi("quota/list"),
     onSuccess: (data) => {
-      console.log(data);
       setQuotaRequestTableData([]);
       data.data.quota_requests.map((quotaRequest) => {
         //Table에 넣을 데이터
         const newQuotaRequestTableData = {};
 
+        //status가 WAIT인 것만 가져오기
         for (let key in quotaRequest) {
           //키값 변경
           if (key === "quota_request_id") {
@@ -96,9 +94,10 @@ export default function Dashboard() {
             newQuotaRequestTableData["name"] = quotaRequest[key];
           } else if (key === "status") {
             newQuotaRequestTableData["status"] = quotaRequest[key];
+          } else if (key == "create_at") {
+            newQuotaRequestTableData["create_at"] = quotaRequest[key];
           }
         }
-
         setQuotaRequestTableData((oldQuotaRequestData) => [
           ...oldQuotaRequestData,
           newQuotaRequestTableData,
@@ -107,10 +106,30 @@ export default function Dashboard() {
     },
   });
 
+  //quotaRequestData의 WAIT상태만 보여주기
+  const FilterQuataData = quotaRequestTableData.filter((quotaRequest) => {
+    return quotaRequest.status === "WAIT";
+  });
+
   // 최근 5개만 보여주기
-  const proposalData = proposalTableData
-    .sort((a, b) => new Date(b.create_at) - new Date(a.create_at))
-    .slice(0, 5);
+  const quotaRequestData = FilterQuataData.sort(
+    (a, b) => new Date(b.create_at) - new Date(a.create_at)
+  ).slice(0, 5);
+
+  //data 에서 createdAt 빼기
+  quotaRequestData.forEach((element) => {
+    delete element.create_at;
+  });
+
+  //proposalData의 WAIT상태만 보여주기
+  const FilterproposalTableData = proposalTableData.filter((proposal) => {
+    return proposal.status === "WAIT";
+  });
+
+  // 최근 5개만 보여주기
+  const proposalData = FilterproposalTableData.sort(
+    (a, b) => new Date(b.create_at) - new Date(a.create_at)
+  ).slice(0, 5);
 
   //data 에서 createdAt 빼기
   proposalData.forEach((element) => {
@@ -124,11 +143,7 @@ export default function Dashboard() {
   return (
     <Container>
       <TitleText>DashBoard</TitleText>
-      {usageQuery.isLoading ? (
-        <LoadingOverlayWrapper>
-          <LoadingOverlay />
-        </LoadingOverlayWrapper>
-      ) : (
+      {usageQuery.isSuccess ? (
         <PaperGroup>
           <Paper
             title={"current usage / total CPU"}
@@ -165,9 +180,13 @@ export default function Dashboard() {
             textSize="medium"
           ></Paper>
         </PaperGroup>
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
       )}
       <TitleText2>Proposal Request</TitleText2>
-      {isSuccess ? (
+      {proposalList.isSuccess ? (
         <Table
           data={proposalData}
           header={["Name", "Status"]}
@@ -180,12 +199,18 @@ export default function Dashboard() {
         </LoadingOverlayWrapper>
       )}
       <TitleText2>Quata Request</TitleText2>
-      <Table
-        data={quotaRequestTableData}
-        header={["Name", "Status"]}
-        onClick={() => {}}
-        checkBox={false}
-      />
+      {quotaRequest.isSuccess ? (
+        <Table
+          data={quotaRequestData}
+          header={["Name", "Status"]}
+          onClick={() => {}}
+          checkBox={false}
+        />
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      )}
       <SpaceDiv></SpaceDiv>
     </Container>
   );

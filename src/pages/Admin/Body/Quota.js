@@ -5,48 +5,9 @@ import Table from "../../../components/Table";
 import PopUpModal from "../../../components/PopUpModal";
 import BottomModal from "../../../components/BottomModal";
 import Paper from "../../../components/Paper";
-import { useQuery } from "@tanstack/react-query";
-import { useGetApi } from "../../../utils/http";
-
-const USAGE = {
-  cpu: 11,
-  ram: 24,
-  storage: 101,
-  user: 10,
-};
-
-const TOTAL = {
-  cpu: 100,
-  ram: 200,
-  storage: 100,
-};
-
-const flavorData = [
-  {
-    id: "1",
-    flalvorName: "u2.c1m1",
-    flavorRam: "1GB",
-    flavorDisk: "20GB",
-    cpu: 1,
-    num: 1,
-  },
-  {
-    id: "2",
-    flalvorName: "u2.c2m2",
-    flavorRam: "2GB",
-    flavorDisk: "40GB",
-    cpu: 2,
-    num: 2,
-  },
-  {
-    id: "3",
-    flalvorName: "u2.c2m2",
-    flavorRam: "2GB",
-    flavorDisk: "40GB",
-    cpu: 2,
-    num: 3,
-  },
-];
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 export default function Quota() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -57,13 +18,14 @@ export default function Quota() {
   const [toggle, setToggle] = useState("Waiting");
   const [request, setRequest] = useState("");
   const [quotaRequestTableData, setQuotaRequestTableData] = useState([]);
+  const [quotaRequestDetailData, setQuotaRequestDetailData] = useState([]);
+  const queryClient = useQueryClient();
 
-  // 관리자 쿼터 전체 사용량 조회 hook
+  // 쿼터 변경요청 목록 hook
   const quotaRequest = useQuery({
     queryKey: ["quotaRequestList"],
     queryFn: () => useGetApi("quota/list"),
     onSuccess: (data) => {
-      console.log(data);
       setQuotaRequestTableData([]);
       data.data.quota_requests.map((quotaRequest) => {
         //Table에 넣을 데이터
@@ -88,39 +50,69 @@ export default function Quota() {
     },
   });
 
-  // 쿼터 변경요청 상세 Hook
+  // 쿼터 변경요청 상세 hook
   const quotaRequestDetail = useQuery({
     queryKey: ["quotaRequestDetailList"],
     queryFn: () => useGetApi(`quota/detail/${selectedRowId}`),
     enabled: !!selectedRowId,
     onSuccess: (data) => {
-      console.log(data);
-      // setQuotaRequestTableData([]);
-      // data.data.quota_requests.map((quotaRequest) => {
-      //   //Table에 넣을 데이터
-      //   const newQuotaRequestTableData = {};
-
-      //   for (let key in quotaRequest) {
-      //     //키값 변경
-      //     if (key === "quota_request_id") {
-      //       newQuotaRequestTableData["id"] = quotaRequest[key];
-      //     } else if (key === "project_name") {
-      //       newQuotaRequestTableData["name"] = quotaRequest[key];
-      //     } else if (key === "status") {
-      //       newQuotaRequestTableData["status"] = quotaRequest[key];
-      //     }
-      //   }
-
-      //   setQuotaRequestTableData((oldQuotaRequestData) => [
-      //     ...oldQuotaRequestData,
-      //     newQuotaRequestTableData,
-      //   ]);
-      // });
+      setQuotaRequestDetailData([]);
+      for (let key in data.data) {
+        if (key === "purpose") {
+          quotaRequestDetailData["purpose"] = data.data[key];
+        } else if (key === "cpu") {
+          quotaRequestDetailData["requestCpu"] = data.data[key];
+        } else if (key === "memory") {
+          quotaRequestDetailData["requestMemory"] = data.data[key];
+        } else if (key === "storage") {
+          quotaRequestDetailData["requestStorage"] = data.data[key];
+        } else if (key === "project_detail") {
+          quotaRequestDetailData["cpuUsage"] = data.data[key].cpu_usage;
+          quotaRequestDetailData["memoryUsage"] = data.data[key].memory_usage;
+          quotaRequestDetailData["storageUsage"] = data.data[key].storage_usage;
+          quotaRequestDetailData["cpuLimit"] = data.data[key].cpu_limit;
+          quotaRequestDetailData["memoryLimit"] = data.data[key].memory_limit;
+          quotaRequestDetailData["storageLimit"] = data.data[key].storage_limit;
+          quotaRequestDetailData["userNum"] = data.data[key].members.length;
+        }
+      }
+      setQuotaRequestDetailData(quotaRequestDetailData);
     },
+  });
+
+  //쿼타 승인, 반려 form
+  const approveForm = {
+    quota_request_id: selectedRowId,
+  };
+
+  //쿼타 승인, 반려 hook
+  const approveReject = useMutation({
+    mutationFn: (approveForm) => usePostApi("quota/approval", approveForm),
+    onSuccess: (data) => {
+      //승인요청 보냈고, 승인 완료 됐을 때
+      if (
+        request == "approved" &&
+        data.data.message === "quota_request APPROVED"
+      ) {
+        alert("승인 완료 되었습니다.");
+        //반려요청 보냈고, 반려 완료 됐을 때
+      } else if (
+        request == "rejected" &&
+        data.data.message === "quota_request REJECTED"
+      ) {
+        alert("반려 완료 되었습니다.");
+      }
+      queryClient.invalidateQueries({ queryKey: ["quotaRequestList"] });
+    },
+    onError: () => {
+      alert("승인/반려 중에 오류가 발생했습니다.");
+    },
+    isloading: true,
   });
 
   //table 행 클릭
   const handleRowClick = (id) => {
+    queryClient.removeQueries({ queryKey: ["quotaRequestDetailList"] });
     setSelectedRowId(id);
     setBottomModalOpen(true);
   };
@@ -144,19 +136,18 @@ export default function Quota() {
     setPopUpModalOpen(false);
 
     if (popUpRequest && request === "approved") {
+      //is_approved true 추가
+      approveForm.approval = true;
+      approveReject.mutate(approveForm);
       setBottomModalOpen(false);
       //승인 API
     } else if (popUpRequest && request === "rejected") {
-      setRejectPopUpModalOpen(true);
+      //is_approved true 추가
+      approveForm.approval = false;
+      approveReject.mutate(approveForm);
+      setBottomModalOpen(false);
     }
   };
-
-  const description =
-    "요청합니다 내가 이게 필요하니까 꼭 해달란 말이야 교수야 진짜 대학생이 돈이 어딨다고 aws를 결제하겠어";
-
-  const totalCPU = 7;
-  const totalRAM = 14;
-  const totalStorage = 70;
 
   const selectedRowName = quotaRequestTableData.find(
     (row) => row.id === selectedRowId
@@ -168,9 +159,7 @@ export default function Quota() {
     (row) => row.status !== "WAIT"
   );
 
-  const handleOnClick = (id) => {
-    console.log(id);
-  };
+  const handleOnClick = (id) => {};
 
   return (
     <Container>
@@ -195,15 +184,22 @@ export default function Quota() {
         </MainButton>
       </ButtonContainer>
       <Line />
-      <Table
-        data={toggle === "Waiting" ? [waitingList] : [processedList]}
-        header={["Name", "Status"]}
-        onClick={handleRowClick}
-        checkBox={false}
-        pagination={true}
-        page={page}
-        setPage={setPage}
-      />
+      {quotaRequest.isSuccess ? (
+        <Table
+          data={toggle === "Waiting" ? [waitingList] : [processedList]}
+          header={["Name", "Status"]}
+          onClick={handleRowClick}
+          checkBox={false}
+          pagination={true}
+          page={page}
+          setPage={setPage}
+        />
+      ) : (
+        <LoadingOverlayWrapper>
+          <LoadingOverlay />
+        </LoadingOverlayWrapper>
+      )}
+
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>
         <ModalButtonContainer>
@@ -223,62 +219,65 @@ export default function Quota() {
             승인
           </MainButton>
         </ModalButtonContainer>
+
         <ModalBody>
-          <BodyContainer>
-            <LeftBody>
-              <Title>current usage</Title>
-              <PaperContainer>
-                <Paper
-                  title={"current usage / total CPU"}
-                  usage={USAGE.cpu}
-                  total={TOTAL.cpu}
-                  width={7.5}
-                  height={10}
-                  textSize="small"
-                  unit={"core"}
-                ></Paper>
-                <Paper
-                  title={"current usage / total RAM"}
-                  usage={USAGE.ram}
-                  total={TOTAL.ram}
-                  width={7.5}
-                  height={10}
-                  textSize="small"
-                  unit={"GB"}
-                ></Paper>
-                <Paper
-                  title={"current usage / total STORAGE"}
-                  usage={USAGE.storage}
-                  total={TOTAL.storage}
-                  width={7.5}
-                  height={10}
-                  textSize="small"
-                  unit={"GB"}
-                ></Paper>
-                <Paper
-                  title={"total USER"}
-                  usage={USAGE.cpu}
-                  total={TOTAL.cpu}
-                  width={7.5}
-                  height={10}
-                  textSize="small"
-                  unit={""}
-                ></Paper>
-              </PaperContainer>
-            </LeftBody>
-            <RightBody>
-              <Title>request</Title>
-              <RightBodyContainer>
-                <Line className="modal" />
+          {quotaRequestDetail.isSuccess ? (
+            <BodyContainer>
+              <LeftBody>
+                <Title>current usage</Title>
+                <PaperContainer>
+                  <Paper
+                    title={"current usage / total CPU"}
+                    usage={quotaRequestDetailData.cpuUsage}
+                    total={quotaRequestDetailData.cpuLimit}
+                    width={7.5}
+                    height={10}
+                    textSize="small"
+                    unit={"core"}
+                  ></Paper>
+                  <Paper
+                    title={"current usage / total RAM"}
+                    usage={quotaRequestDetailData.memoryUsage}
+                    total={quotaRequestDetailData.memoryLimit}
+                    width={7.5}
+                    height={10}
+                    textSize="small"
+                    unit={"GB"}
+                  ></Paper>
+                  <Paper
+                    title={"current usage / total STORAGE"}
+                    usage={quotaRequestDetailData.storageUsage}
+                    total={quotaRequestDetailData.storageLimit}
+                    width={7.5}
+                    height={10}
+                    textSize="small"
+                    unit={"GB"}
+                  ></Paper>
+                  <Paper
+                    title={"total USER"}
+                    usage={quotaRequestDetailData.userNum}
+                    width={7.5}
+                    height={10}
+                    textSize="small"
+                    unit={""}
+                  ></Paper>
+                </PaperContainer>
+              </LeftBody>
+              <RightBody>
+                <Title>request</Title>
+                <RightBodyContainer>
+                  <Line className="modal" />
 
-                <Div>
-                  <Label>Project Purpose</Label>
-                  <InputContainer>{description}</InputContainer>
-                </Div>
-                <Line className="modal" />
+                  <Div>
+                    <Label>Project Purpose</Label>
+                    <InputContainer>
+                      {quotaRequestDetailData.purpose}
+                    </InputContainer>
+                  </Div>
+                  <Line className="modal" />
 
-                {/* flavor 별로 instance 몇 개가 필요한지 상세하게 보여주는 Table */}
-                {/* <Div>
+                  {/* flavor 별로 instance 몇 개가 필요한지 상세하게 보여주는 Table */}
+                  {/* <Div>
                   <Label>Quota request</Label>
                   <Table
                     checkBox={false}
@@ -289,25 +288,30 @@ export default function Quota() {
                 </Div>
                 <Line className="modal" /> */}
 
-                <Div>
-                  <Label>total CPU</Label>
-                  {totalCPU}
-                </Div>
-                <Line className="modal" />
+                  <Div>
+                    <Label>total CPU</Label>
+                    {quotaRequestDetailData.requestCpu}
+                  </Div>
+                  <Line className="modal" />
 
-                <Div>
-                  <Label>total RAM</Label>
-                  {totalRAM}
-                </Div>
-                <Line className="modal" />
+                  <Div>
+                    <Label>total RAM</Label>
+                    {quotaRequestDetailData.requestMemory}
+                  </Div>
+                  <Line className="modal" />
 
-                <Div>
-                  <Label>total STORAGE</Label>
-                  {totalStorage}
-                </Div>
-              </RightBodyContainer>
-            </RightBody>
-          </BodyContainer>
+                  <Div>
+                    <Label>total STORAGE</Label>
+                    {quotaRequestDetailData.requestStorage}
+                  </Div>
+                </RightBodyContainer>
+              </RightBody>
+            </BodyContainer>
+          ) : (
+            <LoadingOverlayWrapper>
+              <LoadingOverlay />
+            </LoadingOverlayWrapper>
+          )}
         </ModalBody>
       </BottomModal>
       <PopUpModal
@@ -331,33 +335,6 @@ export default function Quota() {
           color="medium"
           marginLeft={0.3}
           onClick={() => handlePopUp(true)}
-        >
-          확인
-        </MainButton>
-      </PopUpModal>
-      <PopUpModal
-        width={40}
-        darkBackground={false}
-        visible={rejectPopUpModalOpen}
-        title="반려 사유를 작성해주세요."
-      >
-        <BodyWrapper>
-          <Input type="textarea" name="desc" wrap="physical" />
-        </BodyWrapper>
-
-        <MainButton
-          size="small"
-          color="light"
-          marginTop="1"
-          onClick={() => handleReject(false)}
-        >
-          취소
-        </MainButton>
-        <MainButton
-          size="small"
-          color="medium"
-          marginLeft={0.3}
-          onClick={() => handleReject(true)}
         >
           확인
         </MainButton>
@@ -481,4 +458,12 @@ const Label = styled.div`
 const InputContainer = styled.div`
   display: flex;
   align-items: flex-start;
+`;
+
+const LoadingOverlayWrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
