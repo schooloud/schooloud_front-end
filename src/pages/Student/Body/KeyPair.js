@@ -6,6 +6,7 @@ import PopUpModal from "../../../components/PopUpModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 
 export default function KeyPair() {
   const queryClient = useQueryClient();
@@ -133,7 +134,7 @@ export default function KeyPair() {
       </ButtonContainer>
       {isSuccess ? (
         <Table
-          data={[tableData]}
+          data={paginate(tableData, 5)}
           header={["Name", "Fingerprint", "Public Key"]}
           selectedRow={selectedRow}
           setSelectedRow={setSelectedRow}

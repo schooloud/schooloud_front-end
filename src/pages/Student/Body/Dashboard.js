@@ -16,6 +16,7 @@ import {
   Legend,
 } from "recharts";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 
 export default function Dashboard() {
   const [memberModalopen, setMemberModalOpen] = useState(false);
@@ -24,6 +25,7 @@ export default function Dashboard() {
   const [projectDescription, setProjectDescription] = useState("");
   const [selectedId, setSelectedId] = useState();
   const [flavorList, setFlavorList] = useState([]);
+  const [page, setPage] = useState(0);
   //array that stores the selectedId and the number of instances selected by the user
   const [num, setNum] = useState([]);
   // charData
@@ -255,11 +257,13 @@ export default function Dashboard() {
         </LoadingOverlayWrapper>
       ) : (
         <Table
-          id="thisTable"
           checkBox={false}
-          data={member}
+          data={paginate(member, 3)}
           header={["No", "Name", "e-mail"]}
           onClick={() => {}}
+          page={page}
+          setPage={setPage}
+          pagination={true}
         />
       )}
       <TitleText3>Quota Usage</TitleText3>

@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import PopUpModal from "../../../components/PopUpModal";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 
 export default function Instance() {
   const queryClient = useQueryClient();
@@ -53,6 +54,7 @@ export default function Instance() {
           ...newTableObj,
           domain: newInstance.domain,
           ipPort: newInstance.ip_addresses[1],
+          port: newInstance.port,
         };
 
         setInstanceList((oldinstance) => [...oldinstance, newInstanceObj]);
@@ -170,7 +172,6 @@ export default function Instance() {
           size="small"
           color="medium"
           onClick={() => {
-            console.log("인스턴스 생성");
             navigate(`/projectId/${params.projectId}/instance/create`);
           }}
         >
@@ -240,7 +241,7 @@ export default function Instance() {
       <TableWrapper>
         {isSuccess ? (
           <Table
-            data={[tableData]}
+            data={paginate(tableData, 5)}
             header={[
               "Name",
               "Image",
@@ -252,9 +253,9 @@ export default function Instance() {
             selectedRow={selectedRow}
             setSelectedRow={setSelectedRow}
             onClick={handleRowClick}
-            pagination={true}
             page={page}
             setPage={setPage}
+            pagination={true}
           />
         ) : (
           <LoadingOverlayWrapper>
@@ -357,7 +358,7 @@ export default function Instance() {
                   {selectedInstance.image === "cirros-0.5.2-x86_64-disk"
                     ? "cirros"
                     : "ubuntu"}
-                  @{selectedInstance.ipPort}
+                  @{selectedInstance.ipPort} -p {selectedInstance.port}
                 </Text>
               </TextWrapper>
               <Line />
