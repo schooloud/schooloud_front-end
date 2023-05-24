@@ -6,6 +6,7 @@ import Paper from "../../../components/Paper";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 
 export default function Project() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -111,7 +112,7 @@ export default function Project() {
       <TitleText>Project List</TitleText>
       {projectList.isSuccess ? (
         <Table
-          data={[projectTableData]}
+          data={paginate(projectTableData, 5)}
           header={["Name", "Member Num"]}
           onClick={handleRowClick}
           checkBox={false}

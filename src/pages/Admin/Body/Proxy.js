@@ -4,6 +4,8 @@ import { useState } from "react";
 import MainButton from "../../../components/MainButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
+import paginate from "../../../utils/paginate";
+
 export default function Proxy() {
   const [toggle, setToggle] = useState("SSH");
   const [page, setPage] = useState(0);
@@ -65,7 +67,7 @@ export default function Proxy() {
       </ButtonContainer>
       <Line />
       <Table
-        data={toggle === "SSH" ? [sshList] : [domainList]}
+        data={toggle === "SSH" ? paginate(sshList, 5) : paginate(domainList, 5)}
         header={
           toggle === "SSH"
             ? ["Project Name", "Instance Id", "Instance Name", "Port"]

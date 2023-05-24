@@ -7,6 +7,7 @@ import Table from "../../../components/Table";
 import Cookies from "universal-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
+import paginate from "../../../utils/paginate";
 
 /*
 name = [String] 
@@ -161,6 +162,7 @@ export default function WriteProposal() {
     totalCPU += flavorList[i].cpu * num[i];
     totalStorage += parseInt(flavorList[i].flavorDisk) * num[i];
   }
+
   return (
     <Wrapper>
       <WriteProposalWrapper>
@@ -203,18 +205,6 @@ export default function WriteProposal() {
                 />
               </TableDiv>
             </Div>
-            <Div>
-              <Label>total CPU</Label>
-              {totalCPU}
-            </Div>
-            <Div>
-              <Label>total RAM</Label>
-              {totalRAM}
-            </Div>
-            <Div>
-              <Label>total STORAGE</Label>
-              {totalStorage}
-            </Div>
           </Form>
         </LeftContainer>
         <RightContainer>
@@ -231,6 +221,18 @@ export default function WriteProposal() {
             {/* show clicked date */}
             <p>selected Date: {date?.toLocaleDateString()}</p>
           </CalendarDiv>
+          <Div>
+            <Label>total CPU</Label>
+            {totalCPU}
+          </Div>
+          <Div>
+            <Label>total RAM</Label>
+            {totalRAM}
+          </Div>
+          <Div>
+            <Label>total STORAGE</Label>
+            {totalStorage}
+          </Div>
           <MainButton
             disabled={
               !proposal.name ||
@@ -242,7 +244,7 @@ export default function WriteProposal() {
             }
             color={"semi-dark"}
             fullWidth={true}
-            marginTop={2}
+            marginTop={3.4}
             onClick={handleSubmmit}
           >
             제출
@@ -302,6 +304,7 @@ const CalendarDiv = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 2rem;
 `;
 
 const Label = styled.div`
@@ -324,12 +327,14 @@ const Label2 = styled.div`
 const InputProjectName = styled.input`
   width: 90%;
   height: 2.5rem;
+  font-size: 1rem;
   border: 0.7px solid var(--dark);
   border-radius: 5px;
   padding: 0.5rem;
 `;
 
 const InputDescription = styled.textarea`
+  font-size: 1rem;
   width: 90%;
   height: 7rem;
   border: 0.7px solid var(--dark);

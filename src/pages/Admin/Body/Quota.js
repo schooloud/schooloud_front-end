@@ -8,6 +8,7 @@ import Paper from "../../../components/Paper";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 
 export default function Quota() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -186,7 +187,11 @@ export default function Quota() {
       <Line />
       {quotaRequest.isSuccess ? (
         <Table
-          data={toggle === "Waiting" ? [waitingList] : [processedList]}
+          data={
+            toggle === "Waiting"
+              ? paginate(waitingList, 5)
+              : paginate(processedList, 5)
+          }
           header={["Name", "Status"]}
           onClick={handleRowClick}
           checkBox={false}
