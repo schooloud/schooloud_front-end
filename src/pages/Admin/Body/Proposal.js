@@ -109,12 +109,15 @@ export default function Proposal() {
   const approveOrNot = useMutation({
     mutationFn: (approveForm) => usePostApi("proposal/approve", approveForm),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["proposals"] });
-      if (data.data.project_id) {
+      console.log(data);
+      //승인요청 보냈고, 승인 완료 됐을 때
+      if (approveForm.is_approved === true && data.data.project_id) {
         alert("승인 완료 되었습니다.");
-      } else {
+        //반려요청 보냈고, 반려 완료 됐을 때
+      } else if (approveForm.is_approved === false && !data.data.project_id) {
         alert("반려 완료 되었습니다.");
       }
+      queryClient.invalidateQueries({ queryKey: ["proposals"] });
     },
     onError: () => {
       alert("승인/반려 중에 오류가 발생했습니다.");
@@ -151,6 +154,7 @@ export default function Proposal() {
     if (popUpRequest && request === "approved") {
       //is_approved true 추가
       approveForm.is_approved = true;
+      console.log(approveForm);
       approveOrNot.mutate(approveForm);
       setBottomModalOpen(false);
     } else if (popUpRequest && request === "rejected") {

@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import removeCookies from "../utils/removeCookies";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usePostApi } from "../utils/http";
 
 /*
@@ -19,6 +19,7 @@ const ExpiredCheck = (props) => {
   const [first, setFirst] = useState(true);
   const cookies = new Cookies();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   //쿠키를 지우고 메인 페이지로 이동
   async function removeAndNavigate() {
@@ -76,6 +77,10 @@ const ExpiredCheck = (props) => {
   const logoutMutation = useMutation({
     mutationFn: () => usePostApi("user/logout"),
     onSuccess: () => {
+      removeAndNavigate();
+      queryClient.removeQueries();
+    },
+    onError: () => {
       removeAndNavigate();
     },
   });
