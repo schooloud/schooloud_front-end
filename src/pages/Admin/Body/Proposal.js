@@ -7,6 +7,7 @@ import BottomModal from "../../../components/BottomModal";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import paginate from "../../../utils/paginate";
 
 export default function Proposal() {
   const [selectedRowId, setSelectedRowId] = useState("");
@@ -195,7 +196,11 @@ export default function Proposal() {
       <Line />
       {isSuccess ? (
         <Table
-          data={toggle === "Waiting" ? [waitingListData] : [processedListData]}
+          data={
+            toggle === "Waiting"
+              ? paginate(waitingListData, 5)
+              : paginate(processedListData, 5)
+          }
           header={["Name", "Created At", "Status"]}
           //행 클릭
           onClick={handleRowClick}
