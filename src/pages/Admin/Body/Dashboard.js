@@ -126,15 +126,15 @@ export default function Dashboard() {
     return proposal.status === "WAIT";
   });
 
+  //data 에서 createdAt 빼기
+  FilterproposalTableData.forEach((element) => {
+    delete element.create_at;
+  });
+
   // 최근 5개만 보여주기
   const proposalData = FilterproposalTableData.sort(
     (a, b) => new Date(b.create_at) - new Date(a.create_at)
   ).slice(0, 5);
-
-  //data 에서 createdAt 빼기
-  proposalData.forEach((element) => {
-    delete element.create_at;
-  });
 
   const handleRowClick = (id) => {
     setSelectedRowId(id);
