@@ -6,6 +6,8 @@ import PopUpModal from "../../../components/PopUpModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 
 export default function InstanceCreate({ params, navigate }) {
   const queryClient = useQueryClient();
@@ -33,6 +35,11 @@ export default function InstanceCreate({ params, navigate }) {
         setKeypairList((oldKeypair) => [...oldKeypair, newKeypair.keypair_name])
       );
     },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
+    },
   });
 
   const { isSuccess } = useQuery({
@@ -50,6 +57,11 @@ export default function InstanceCreate({ params, navigate }) {
 
         setImageList((oldImage) => [...oldImage, newImageObj]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

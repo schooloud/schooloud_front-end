@@ -92,6 +92,11 @@ export default function Dashboard() {
       newQuotaData.push(newQuotaObj3);
       setQuataData(newQuotaData);
     },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
+    },
   });
 
   // flavor list hook

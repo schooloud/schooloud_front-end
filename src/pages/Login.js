@@ -39,7 +39,9 @@ const Login = (props) => {
       // console.log("로그인 성공");
     },
     onError: () => {
-      alert("로그인에 실패했습니다.");
+      if (error.response.status === 404) {
+        alert("로그인에 실패했습니다.", error);
+      }
     },
   });
 
@@ -87,7 +89,9 @@ const Login = (props) => {
       }
     },
     onError: (error) => {
-      alert("로그인에 실패했습니다.", error);
+      if (error.response.status === 404) {
+        alert("로그인에 실패했습니다.", error);
+      }
     },
   });
 

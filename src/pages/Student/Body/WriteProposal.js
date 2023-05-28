@@ -8,6 +8,7 @@ import Cookies from "universal-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import { useNavigate } from "react-router-dom";
+import removeCookies from "../../../utils/removeCookies";
 
 /*
 name = [String] 
@@ -117,6 +118,11 @@ export default function WriteProposal() {
 
         setFlavorList((oldFlavor) => [...oldFlavor, newFlavorObj]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 
