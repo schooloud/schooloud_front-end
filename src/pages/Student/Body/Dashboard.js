@@ -265,8 +265,10 @@ export default function Dashboard() {
     });
   };
 
+  // 16 * (window.screen.width / 1440) = 1rem
   const chartWidth =
     window.screen.width - 16 * (window.screen.width / 1440) * 18;
+  const chartHeight = 16 * (window.screen.width / 1440) * 25;
 
   const numInput = (
     //input should be positive integer
@@ -355,7 +357,7 @@ export default function Dashboard() {
             barGap={15}
             barSize={35}
             width={chartWidth}
-            height={500}
+            height={chartHeight}
             data={quotaData}
             margin={{
               top: 20,
