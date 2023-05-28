@@ -24,6 +24,7 @@ export default function Instance() {
   const [tableData, setTableData] = useState([]);
   const [domainName, setDomainName] = useState("");
   const [domainModal, setDomainModal] = useState(false);
+  const [domainDeleteModal, setDomainDeleteModal] = useState(false);
 
   const { isSuccess } = useQuery({
     queryKey: ["instances"],
@@ -151,6 +152,20 @@ export default function Instance() {
       !!data?.data?.message
         ? alert(data.data.message)
         : alert("도메인이 할당되었습니다.");
+    },
+  });
+
+  const domainDelete = useMutation({
+    mutationFn: (domain) =>
+      usePostApi("domain/delete", {
+        project_id: params.projectId,
+        instance_id: selectedId,
+      }),
+    onSuccess: (data) => {
+      queryClient.removeQueries({ queryKey: ["instances"] });
+      !!data?.data?.message
+        ? alert(data.data.message)
+        : alert("도메인이 제거되었습니다.");
     },
   });
 
@@ -337,6 +352,15 @@ export default function Instance() {
                 >
                   도메인 할당
                 </MainButton>
+                <MainButton
+                  color="medium"
+                  size="small"
+                  marginLeft={0.5}
+                  onClick={() => setDomainDeleteModal(true)}
+                  disabled={!!!selectedInstance?.domain}
+                >
+                  도메인 제거
+                </MainButton>
               </FlexContainer>
               <Line />
               <TextWrapper>
@@ -420,6 +444,35 @@ export default function Instance() {
           disabled={!domainName}
         >
           할당
+        </MainButton>
+      </PopUpModal>
+      <PopUpModal
+        width={30}
+        darkBackground={false}
+        visible={domainDeleteModal}
+        title="정말 제거하시겠습니까?"
+      >
+        <MainButton
+          size="small"
+          color="light"
+          fontColor="var(--dark)"
+          marginTop="1"
+          onClick={() => {
+            setDomainDeleteModal(false);
+          }}
+        >
+          취소
+        </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={1}
+          onClick={() => {
+            domainDelete.mutate();
+            setDomainDeleteModal(false);
+          }}
+        >
+          제거
         </MainButton>
       </PopUpModal>
     </Container>
