@@ -17,15 +17,21 @@ import {
 } from "recharts";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
+import BottomModal from "../../../components/BottomModal";
 
 export default function Dashboard() {
   const [memberModalopen, setMemberModalOpen] = useState(false);
   const [quataModalopen, setQuataModalOpen] = useState(false);
   const [addingMemberEmail, setAddingMemberEmail] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [quotaRequestTableData, setQuotaRequestTableData] = useState([]);
+  const [quotaRequestDetailData, setQuotaRequestDetailData] = useState({});
+  const [quotaRequestListModal, setQuotaRequestListModal] = useState(false);
+  const [quotaDetail, setQuotaDetail] = useState("");
   const [selectedId, setSelectedId] = useState();
   const [flavorList, setFlavorList] = useState([]);
   const [page, setPage] = useState(0);
+  const [quotaPage, setQuotaPage] = useState(0);
   //array that stores the selectedId and the number of instances selected by the user
   const [num, setNum] = useState([]);
   // charData
@@ -108,7 +114,55 @@ export default function Dashboard() {
     },
   });
 
-  // 쿼터 변경 요청 hook
+  // 쿼터 변경요청 목록 hook
+  const quotaRequest = useQuery({
+    queryKey: ["quotaRequestList"],
+    queryFn: () => useGetApi("quota/list"),
+    onSuccess: (data) => {
+      setQuotaRequestTableData([]);
+      data.data.quota_requests.map((quotaRequest, index) => {
+        //Table에 넣을 데이터
+        const newQuotaRequestTableData = {};
+
+        const date = new Date(quotaRequest.create_at);
+
+        newQuotaRequestTableData["id"] = quotaRequest.quota_request_id;
+        newQuotaRequestTableData["no"] = index + 1;
+        newQuotaRequestTableData["create_at"] = `${date.getFullYear()}-${
+          date.getMonth() + 1
+        }-${date.getDate()}`;
+        newQuotaRequestTableData["status"] = quotaRequest.status;
+
+        setQuotaRequestTableData((oldQuotaRequestData) => [
+          ...oldQuotaRequestData,
+          newQuotaRequestTableData,
+        ]);
+      });
+    },
+  });
+
+  const quotaRequestDetailQuery = useQuery({
+    queryKey: ["quotaRequestDetail"],
+    queryFn: () => useGetApi(`quota/detail/${quotaDetail}`),
+    enabled: quotaDetail !== "",
+    onSuccess: (data) => {
+      const newQuotaRequestData = {};
+
+      const date = new Date(data.data.create_at);
+      newQuotaRequestData["purpose"] = data.data.purpose;
+      newQuotaRequestData["memory"] = data.data.memory;
+      newQuotaRequestData["cpu"] = data.data.cpu;
+      newQuotaRequestData["storage"] = data.data.storage;
+      newQuotaRequestData["create_at"] = `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()}`;
+      newQuotaRequestData["status"] = data.data.status;
+
+      setQuotaRequestDetailData(newQuotaRequestData);
+    },
+  });
+
+  //쿼터 변경 요청 hook
   const changeQuataHook = useMutation({
     mutationFn: (form) => usePostApi("quota/request", form),
     onSuccess: () => {
@@ -183,6 +237,10 @@ export default function Dashboard() {
   //Table row 클릭 시 해당 row의 id를 selectedId에 저장
   const handleRowClick = (id) => {
     setSelectedId(id);
+  };
+
+  const handleQuotaRowClick = (id) => {
+    setQuotaDetail(id);
   };
 
   let totalCPU = 0;
@@ -277,6 +335,15 @@ export default function Dashboard() {
         >
           쿼터 변경
         </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          onClick={() => setQuotaRequestListModal(true)}
+          fullWidth={false}
+          marginLeft={0.3}
+        >
+          쿼터 변경 요청 리스트
+        </MainButton>
       </MainButtonDiv>
       {projectDetailHook.isLoading ? (
         <LoadingOverlayWrapper>
@@ -307,6 +374,70 @@ export default function Dashboard() {
           </BarChart>
         </ChartContainer>
       )}
+      <BottomModal
+        open={quotaRequestListModal}
+        setOpen={setQuotaRequestListModal}
+      >
+        <TitleText>Quota Request List</TitleText>
+        {quotaDetail === "" ? (
+          <Table
+            checkBox={false}
+            data={paginate(quotaRequestTableData, 3)}
+            header={["No", "Project Name", "Status"]}
+            onClick={handleQuotaRowClick}
+            page={quotaPage}
+            setPage={setQuotaPage}
+            pagination={true}
+          />
+        ) : !!quotaRequestDetailData?.purpose ? (
+          <div>
+            <MainButton
+              MainButton
+              size="small"
+              color="medium"
+              onClick={() => {
+                setQuotaDetail("");
+                setQuotaRequestDetailData({});
+              }}
+            >
+              뒤로가기
+            </MainButton>
+            <Line />
+            <TextWrapper>
+              <BoldText>Purpose</BoldText>
+              <Text>: {quotaRequestDetailData?.purpose}</Text>
+            </TextWrapper>
+            <Line />
+            <TextWrapper>
+              <BoldText>Memory</BoldText>
+              <Text>: {quotaRequestDetailData?.memory}</Text>
+            </TextWrapper>
+            <Line />
+            <TextWrapper>
+              <BoldText>vCPU</BoldText>
+              <Text>: {quotaRequestDetailData?.cpu}</Text>
+            </TextWrapper>
+            <Line />
+            <TextWrapper>
+              <BoldText>Storage</BoldText>
+              <Text>: {quotaRequestDetailData?.storage}</Text>
+            </TextWrapper>
+            <Line />
+            <TextWrapper>
+              <BoldText>Created_At</BoldText>
+              <Text>: {quotaRequestDetailData?.create_at}</Text>
+            </TextWrapper>
+            <Line />
+            <TextWrapper>
+              <BoldText>Status</BoldText>
+              <Text>: {quotaRequestDetailData?.status}</Text>
+            </TextWrapper>
+            <Line />
+          </div>
+        ) : (
+          <LoadingOverlay />
+        )}
+      </BottomModal>
       <PopUpModal
         width={35}
         height={14}
@@ -503,4 +634,26 @@ const LoadingOverlayWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const Line = styled.div`
+  margin: 1rem 0;
+  height: 1px;
+  background-color: #f0f0f0;
+  width: 100%;
+`;
+
+const TextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const BoldText = styled.div`
+  margin-left: 2rem;
+  font-weight: 600;
+  width: 8rem;
+`;
+const Text = styled.div`
+  margin-left: 2rem;
+  font-weight: 400;
 `;
