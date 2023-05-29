@@ -385,7 +385,7 @@ export default function Instance() {
                 <BoldText>SSH 접속</BoldText>
                 <Text>
                   : ssh -i {selectedInstance.keypair}.pem{" "}
-                  {selectedInstance.image === "cirros-0.5.2-x86_64-disk"
+                  {selectedInstance.image.slice(0, 6) === "cirros"
                     ? "cirros"
                     : "ubuntu"}
                   @{selectedInstance.ipPort} -p {selectedInstance.port}
