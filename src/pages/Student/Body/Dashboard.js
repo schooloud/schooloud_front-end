@@ -99,8 +99,34 @@ export default function Dashboard() {
     },
   });
 
+  // flavor list의 input 입력 시
+  const handleNumChange = (e) => {
+    //num 객체에 selectedId와 num을 추가
+    let { value, id } = e.target;
+    if (value.length >= 3) {
+      e.preventDefault();
+    }
+    //value가 10을 초과하면 처음에 누른 값만 저장되고 그 이후에는 저장되지 않음
+    if (value > 10) {
+      e.target.value = value.slice(0, 1);
+      value = value.slice(0, 1);
+    }
+    //value가 없으면, num에서 해당 id를 삭제
+    if (value === "" || value === "0") {
+      setNum((oldNum) => {
+        const newNum = { ...oldNum };
+        delete newNum[id];
+        return newNum;
+      });
+      return;
+    }
+    setNum((oldNum) => {
+      return { ...oldNum, [id]: Number(value) };
+    });
+  };
+
   // flavor list hook
-  const flavorListHook = useQuery({
+  useQuery({
     queryKey: ["flavors"],
     queryFn: () => useGetApi("flavor/list"),
     onSuccess: (data) => {
@@ -108,14 +134,36 @@ export default function Dashboard() {
       data.data.flavors.map((newFlavor, index) => {
         const newFlavorObj = {};
 
-        newFlavorObj["id"] = index + 1;
+        newFlavorObj["id"] = index;
         newFlavorObj["flalvorName"] = newFlavor.name;
         newFlavorObj["flavorRam"] = newFlavor.ram;
         newFlavorObj["flavorDisk"] = newFlavor.disk;
         newFlavorObj["cpu"] = Number(newFlavor.cpu);
 
+        const numInput = (
+          //input should be positive integer
+          //updownkey unavailable
+          <Input
+            defaultValue={0}
+            type="number"
+            id={index}
+            onKeyDown={(e) =>
+              ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+            }
+            min="0"
+            onChange={handleNumChange}
+          ></Input>
+        );
+
+        newFlavorObj["numInput"] = numInput;
+
         setFlavorList((oldFlavor) => [...oldFlavor, newFlavorObj]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 
@@ -146,6 +194,7 @@ export default function Dashboard() {
     },
   });
 
+  // quotaRequestDetail hook
   const quotaRequestDetailQuery = useQuery({
     queryKey: ["quotaRequestDetail"],
     queryFn: () => useGetApi(`quota/detail/${quotaDetail}`),
@@ -227,10 +276,11 @@ export default function Dashboard() {
 
   //쿼터 변경 확인 버튼
   const handleQuataConfirm = () => {
-    quotaChangeForm.cpu = String(totalCPU);
-    quotaChangeForm.memory = String(totalRAM);
-    quotaChangeForm.storage = String(totalStorage);
+    quotaChangeForm.cpu = totalCPU;
+    quotaChangeForm.memory = totalRAM;
+    quotaChangeForm.storage = totalStorage;
     quotaChangeForm.purpose = projectDescription;
+    console.log(quotaChangeForm);
     changeQuataHook.mutate(quotaChangeForm);
   };
 
@@ -252,55 +302,20 @@ export default function Dashboard() {
   let totalRAM = 0;
   let totalStorage = 0;
 
-  const handleNumChange = (e) => {
-    //num 객체에 selectedId와 num을 추가
-    let { value } = e.target;
-    if (value.length >= 3) {
-      e.preventDefault();
-    }
-    //value가 10을 초과하면 처음에 누른 값만 저장되고 그 이후에는 저장되지 않음
-    if (value > 10) {
-      e.target.value = value.slice(0, 1);
-      value = value.slice(0, 1);
-    }
-
-    setNum({
-      ...num,
-      [selectedId]: value,
-    });
-  };
-
+  // chart 가로, 세로 설정
   // 16 * (window.screen.width / 1440) = 1rem
   const chartWidth =
     window.screen.width - 16 * (window.screen.width / 1440) * 18;
   const chartHeight = 16 * (window.screen.width / 1440) * 25;
 
-  const numInput = (
-    //input should be positive integer
-    //updownkey unavailable
-    <InputNum
-      type="number"
-      onKeyDown={(e) =>
-        ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
-      }
-      min="0"
-      onChange={handleNumChange}
-    ></InputNum>
-  );
-
-  flavorList.map((data) => {
-    data.numInput = numInput;
-  });
-
   for (let i in num) {
-    //ram이 MB인 것은 1024로 나눠줘야함
-    if (flavorList[i - 1].flavorRam.includes("MB")) {
-      totalRAM += (parseInt(flavorList[i - 1].flavorRam) / 1024) * num[i];
+    if (flavorList[i].flavorRam.includes("MB")) {
+      totalRAM += (parseInt(flavorList[i].flavorRam) / 1024) * num[i];
     } else {
-      totalRAM += parseInt(flavorList[i - 1].flavorRam) * num[i];
+      totalRAM += parseInt(flavorList[i].flavorRam) * num[i];
     }
-    totalCPU += flavorList[i - 1].cpu * num[i];
-    totalStorage += parseInt(flavorList[i - 1].flavorDisk) * num[i];
+    totalCPU += flavorList[i].cpu * num[i];
+    totalStorage += parseInt(flavorList[i].flavorDisk) * num[i];
   }
 
   return (
@@ -609,10 +624,10 @@ const TableDiv = styled.div`
   width: 100%;
 `;
 
-const InputNum = styled.input`
+const Input = styled.input`
   width: 3rem;
   height: 1.4rem;
-  border: 0.5px solid var(--dark);
+  border: 0.7px solid var(--dark);
   border-radius: 2px;
   font-size: 1rem;
   text-align: center;

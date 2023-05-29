@@ -38,7 +38,7 @@ const Login = (props) => {
     onSuccess: () => {
       // console.log("로그인 성공");
     },
-    onError: () => {
+    onError: (error) => {
       if (error.response.status === 404) {
         alert("로그인에 실패했습니다.", error);
       }
