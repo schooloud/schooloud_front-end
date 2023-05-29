@@ -1,6 +1,6 @@
 on:
   pull_request:
-    branches: [develop]
+    branches: [main]
     types: [closed]
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /schooloud_front-end/
-            sudo git checkout develop
-            sudo git pull origin develop
+            sudo git checkout main
+            sudo git pull origin main
             sudo npm run build
             sudo systemctl restart nginx
