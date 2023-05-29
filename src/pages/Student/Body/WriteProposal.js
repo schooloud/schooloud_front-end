@@ -48,7 +48,7 @@ export default function WriteProposal() {
       navigate("/proposal");
     },
     onError: () => {
-      alert("제출에 실패");
+      alert("제출 실패");
     },
   });
 
