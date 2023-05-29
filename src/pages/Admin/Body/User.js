@@ -5,11 +5,14 @@ import Table from "../../../components/Table";
 import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import paginate from "../../../utils/paginate";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 
 export default function User() {
   const [toggle, setToggle] = useState("Student");
   const [page, setPage] = useState(0);
   const [userList, setUserList] = useState([]);
+  const navigate = useNavigate();
 
   useQuery({
     queryKey: ["users"],
@@ -29,6 +32,11 @@ export default function User() {
 
         setUserList((oldUserList) => [...oldUserList, newUserList]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

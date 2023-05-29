@@ -4,6 +4,7 @@ import styled from "styled-components";
 import FolderIcon from "@mui/icons-material/Folder";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../utils/http";
+import removeCookies from "../utils/removeCookies";
 export default function ProjectTabBar() {
   const navigate = useNavigate();
   const params = useParams();
@@ -22,6 +23,11 @@ export default function ProjectTabBar() {
         setDisabled(true);
       }
       setProjectList([...data.data.projects]);
+    },
+    onError: (error) => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

@@ -8,8 +8,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 
 export default function Proposal() {
+  const navigate = useNavigate();
   const [selectedRowId, setSelectedRowId] = useState("");
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
@@ -73,6 +76,11 @@ export default function Proposal() {
           newProposalTableData,
         ]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

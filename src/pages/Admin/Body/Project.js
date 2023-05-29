@@ -7,8 +7,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 
 export default function Project() {
+  const navigate = useNavigate();
   const [selectedRowId, setSelectedRowId] = useState("");
   const [page, setPage] = useState(0);
   const [bottomModalOpen, setBottomModalOpen] = useState(false);
@@ -32,6 +35,11 @@ export default function Project() {
         }
         setProjects((oldProjects) => [...oldProjects, newProject]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

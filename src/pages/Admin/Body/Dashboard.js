@@ -5,8 +5,11 @@ import Table from "../../../components/Table";
 import { useQuery } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [selectedRowId, setSelectedRowId] = useState("");
   const [proposalTableData, setPropoosalTableData] = useState([]);
   const [quotaRequestTableData, setQuotaRequestTableData] = useState([]);
@@ -72,6 +75,11 @@ export default function Dashboard() {
           newProposalTableData,
         ]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

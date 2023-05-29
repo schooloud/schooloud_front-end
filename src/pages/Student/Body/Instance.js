@@ -10,6 +10,7 @@ import { useGetApi, usePostApi } from "../../../utils/http";
 import PopUpModal from "../../../components/PopUpModal";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
+import removeCookies from "../../../utils/removeCookies";
 
 export default function Instance() {
   const queryClient = useQueryClient();
@@ -60,6 +61,11 @@ export default function Instance() {
 
         setInstanceList((oldinstance) => [...oldinstance, newInstanceObj]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 
@@ -150,7 +156,7 @@ export default function Instance() {
     onSuccess: (data) => {
       queryClient.removeQueries({ queryKey: ["instances"] });
       !!data?.data?.message
-        ? alert(data.data.message)
+        ? alert("이미 존재하는 도메인입니다.")
         : alert("도메인이 할당되었습니다.");
     },
   });

@@ -7,9 +7,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 
 export default function KeyPair() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [selectedRow, setSelectedRow] = useState([]);
   const [page, setPage] = useState(0);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -63,6 +66,11 @@ export default function KeyPair() {
 
         setTableData((oldTableData) => [...oldTableData, newTableData]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 

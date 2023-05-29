@@ -7,7 +7,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
+import removeCookies from "../../../utils/removeCookies";
+import { useNavigate } from "react-router-dom";
 export default function Proposal() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   //check box 선택된 행
   const [selectedRow, setSelectedRow] = useState([]);
@@ -82,6 +85,11 @@ export default function Proposal() {
       });
     },
     retry: 1,
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
+    },
   });
 
   // 제안서 삭제 hook

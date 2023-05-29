@@ -5,12 +5,15 @@ import MainButton from "../../../components/MainButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGetApi } from "../../../utils/http";
 import paginate from "../../../utils/paginate";
+import { useNavigate } from "react-router-dom";
+import removeCookies from "../../../utils/removeCookies";
 
 export default function Proxy() {
   const [toggle, setToggle] = useState("SSH");
   const [page, setPage] = useState(0);
   const [proxyList, setProxyList] = useState([]);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const proxy = useQuery({
     queryKey: ["proxy"],
@@ -29,6 +32,11 @@ export default function Proxy() {
 
         setProxyList((oldProxyList) => [...oldProxyList, newProxyList]);
       });
+    },
+    onError: () => {
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
   });
 
