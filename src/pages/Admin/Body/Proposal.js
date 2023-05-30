@@ -289,18 +289,21 @@ export default function Proposal() {
           <Div>
             <Label>total CPU</Label>
             {proposalTableData.find((row) => row.id === selectedRowId)?.cpu}
+            &nbsp;core
           </Div>
           <Line />
 
           <Div>
             <Label>total RAM</Label>
             {proposalTableData.find((row) => row.id === selectedRowId)?.memory}
+            &nbsp;GB
           </Div>
           <Line />
 
           <Div>
             <Label>total STORAGE</Label>
             {proposalTableData.find((row) => row.id === selectedRowId)?.storage}
+            &nbsp;GB
           </Div>
         </ModalBody>
       </BottomModal>

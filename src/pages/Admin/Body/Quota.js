@@ -303,19 +303,19 @@ export default function Quota() {
 
                   <Div>
                     <Label>total CPU</Label>
-                    {quotaRequestDetailData.requestCpu}
+                    {quotaRequestDetailData.requestCpu}&nbsp;core
                   </Div>
                   <Line className="modal" />
 
                   <Div>
                     <Label>total RAM</Label>
-                    {quotaRequestDetailData.requestMemory}
+                    {quotaRequestDetailData.requestMemory}&nbsp;GB
                   </Div>
                   <Line className="modal" />
 
                   <Div>
                     <Label>total STORAGE</Label>
-                    {quotaRequestDetailData.requestStorage}
+                    {quotaRequestDetailData.requestStorage}&nbsp;GB
                   </Div>
                 </RightBodyContainer>
               </RightBody>

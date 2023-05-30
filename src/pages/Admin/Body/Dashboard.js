@@ -206,7 +206,7 @@ export default function Dashboard() {
           <LoadingOverlay />
         </LoadingOverlayWrapper>
       )}
-      <TitleText2>Quata Request</TitleText2>
+      <TitleText2>Quota Request</TitleText2>
       {quotaRequest.isSuccess ? (
         <Table
           data={quotaRequestData}

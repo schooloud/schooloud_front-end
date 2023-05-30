@@ -229,17 +229,17 @@ export default function WriteProposal() {
             {/* show clicked date */}
             <p>selected Date: {date?.toLocaleDateString()}</p>
           </CalendarDiv>
-          <Div>
-            <Label>total CPU</Label>
-            {totalCPU}
+          <Div className="total">
+            <Label>total CPU : </Label>
+            &nbsp;{totalCPU}&nbsp;core
           </Div>
-          <Div>
-            <Label>total RAM</Label>
-            {totalRAM}
+          <Div className="total">
+            <Label>total RAM : </Label>
+            &nbsp;{totalRAM}&nbsp;GB
           </Div>
-          <Div>
-            <Label>total STORAGE</Label>
-            {totalStorage}
+          <Div className="total">
+            <Label>total STORAGE : </Label>
+            &nbsp;{totalStorage}&nbsp;GB
           </Div>
           <MainButton
             disabled={
@@ -252,7 +252,7 @@ export default function WriteProposal() {
             }
             color={"semi-dark"}
             fullWidth={true}
-            marginTop={3.4}
+            marginTop={-1}
             onClick={handleSubmmit}
           >
             제출
@@ -306,19 +306,24 @@ const Div = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 1.2rem;
+  &.total {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
 `;
 
 const CalendarDiv = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const Label = styled.div`
   margin-bottom: 0.5rem;
   text-align: left;
-  width: 80%;
+
   font-size: 1rem;
   font-weight: 600;
 `;
