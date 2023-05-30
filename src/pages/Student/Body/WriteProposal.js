@@ -379,5 +379,3 @@ const Input = styled.input`
     margin: 0;
   }
 `;
-
-const Mount = styled.div``;
