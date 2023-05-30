@@ -432,17 +432,17 @@ export default function Dashboard() {
             <Line />
             <TextWrapper>
               <BoldText>Memory</BoldText>
-              <Text>: {quotaRequestDetailData?.memory}</Text>
+              <Text>: {quotaRequestDetailData?.memory}&nbsp;GB</Text>
             </TextWrapper>
             <Line />
             <TextWrapper>
               <BoldText>vCPU</BoldText>
-              <Text>: {quotaRequestDetailData?.cpu}</Text>
+              <Text>: {quotaRequestDetailData?.cpu}&nbsp;core</Text>
             </TextWrapper>
             <Line />
             <TextWrapper>
               <BoldText>Storage</BoldText>
-              <Text>: {quotaRequestDetailData?.storage}</Text>
+              <Text>: {quotaRequestDetailData?.storage}&nbsp;GB</Text>
             </TextWrapper>
             <Line />
             <TextWrapper>
@@ -516,15 +516,15 @@ export default function Dashboard() {
         </Div>
         <Div>
           <Label>total CPU</Label>
-          {totalCPU}
+          {totalCPU}&nbsp;core
         </Div>
         <Div>
           <Label>total RAM</Label>
-          {totalRAM}
+          {totalRAM}&nbsp;GB
         </Div>
         <Div>
           <Label>total STORAGE</Label>
-          {totalStorage}
+          {totalStorage}&nbsp;GB
         </Div>
         <ButtonGroup>
           <MainButton
