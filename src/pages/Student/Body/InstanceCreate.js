@@ -93,6 +93,7 @@ export default function InstanceCreate({ params, navigate }) {
     },
   });
 
+  //인스턴스 생성 hook
   const InstanceCreate = useMutation({
     mutationFn: () =>
       usePostApi("instance/create", {
@@ -103,7 +104,8 @@ export default function InstanceCreate({ params, navigate }) {
           .name,
         flavor_name: selectedType,
       }),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries("instances");
       setFetchingModal(false);
       navigate(`/projectId/${params.projectId}/instance`);
