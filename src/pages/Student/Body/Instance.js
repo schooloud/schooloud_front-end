@@ -31,6 +31,7 @@ export default function Instance() {
     queryKey: ["instances"],
     queryFn: () => useGetApi(`instance/list/${params.projectId}`),
     onSuccess: (data) => {
+      console.log(data);
       setInstanceList([]);
       setTableData([]);
       data.data.instance_list.map((newInstance) => {
