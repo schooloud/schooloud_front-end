@@ -31,6 +31,7 @@ export default function Instance() {
     queryKey: ["instances"],
     queryFn: () => useGetApi(`instance/list/${params.projectId}`),
     onSuccess: (data) => {
+      //에러 디버깅용
       console.log(data);
       setInstanceList([]);
       setTableData([]);
