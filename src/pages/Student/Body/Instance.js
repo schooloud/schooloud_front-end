@@ -27,6 +27,7 @@ export default function Instance() {
   const [domainModal, setDomainModal] = useState(false);
   const [domainDeleteModal, setDomainDeleteModal] = useState(false);
 
+  //인스턴스 목록 hook
   const { isSuccess } = useQuery({
     queryKey: ["instances"],
     queryFn: () => useGetApi(`instance/list/${params.projectId}`),

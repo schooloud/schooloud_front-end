@@ -105,7 +105,7 @@ export default function InstanceCreate({ params, navigate }) {
         flavor_name: selectedType,
       }),
     onSuccess: (data) => {
-      console.log(data);
+      alert(data.data.message);
       queryClient.invalidateQueries("instances");
       setFetchingModal(false);
       navigate(`/projectId/${params.projectId}/instance`);
