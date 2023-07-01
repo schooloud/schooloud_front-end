@@ -9,6 +9,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useGetApi, usePostApi } from "../../../utils/http";
 import { useNavigate } from "react-router-dom";
 import removeCookies from "../../../utils/removeCookies";
+import PopUpModal from "../../../components/PopUpModal";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 
 /*
 name = [String] 
@@ -44,6 +46,7 @@ export default function WriteProposal() {
   const proposalSubmmit = useMutation({
     mutationFn: (proposal) => usePostApi("proposal/create", proposal),
     onSuccess: (data) => {
+      console.log(data);
       alert("제출 성공");
       navigate("/proposal");
     },
@@ -259,6 +262,15 @@ export default function WriteProposal() {
           </MainButton>
         </RightContainer>
       </WriteProposalWrapper>
+      <PopUpModal
+        width={30}
+        height={15}
+        darkBackground={true}
+        title="제출 중입니다."
+        visible={proposalSubmmit.isLoading}
+      >
+        <LoadingOverlay />
+      </PopUpModal>
     </Wrapper>
   );
 }

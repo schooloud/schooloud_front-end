@@ -33,7 +33,7 @@ function Modal({
         width={width}
         height={height}
         darkBackground={darkBackground}
-        diappear={!visible}
+        disappear={!visible}
       >
         <Title>{title}</Title>
         <div>{children}</div>
@@ -123,7 +123,7 @@ const DarkBackground = styled.div`
   animation-fill-mode: forwards;
 
   ${(props) =>
-    props.diappear &&
+    props.disappear &&
     css`
       animation-name: ${fadeOut};
     `}
@@ -162,7 +162,7 @@ const ModalBlock = styled.div`
   animation-fill-mode: forwards;
 
   ${(props) =>
-    props.diappear &&
+    props.disappear &&
     css`
       animation-name: ${slideDown};
     `}
