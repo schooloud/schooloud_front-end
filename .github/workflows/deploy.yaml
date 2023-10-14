@@ -22,7 +22,7 @@ jobs:
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
             cd /schooloud_front-end/

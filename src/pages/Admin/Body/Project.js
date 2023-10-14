@@ -3,12 +3,14 @@ import { useState } from "react";
 import Table from "../../../components/Table";
 import BottomModal from "../../../components/BottomModal";
 import Paper from "../../../components/Paper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGetApi } from "../../../utils/http";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGetApi, usePostApi } from "../../../utils/http";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import paginate from "../../../utils/paginate";
 import removeCookies from "../../../utils/removeCookies";
 import { useNavigate } from "react-router-dom";
+import MainButton from "../../../components/MainButton";
+import PopUpModal from "../../../components/PopUpModal";
 
 export default function Project() {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function Project() {
   const [member, setMember] = useState([]);
   const [projectDetail, setProjectDetail] = useState({});
   const queryClient = useQueryClient();
+  const [modalOpen, setModalOpen] = useState(false);
 
   //프로젝트 리스트 hook
   const projectList = useQuery({
@@ -51,6 +54,44 @@ export default function Project() {
       member: project.member_count,
     };
   });
+
+  // 프로젝트 삭제 hook
+  const deleteProjectMutation = useMutation({
+    mutationFn: (deleteForm) => usePostApi("project/delete", deleteForm),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      if (data) {
+        console.log(data);
+      } else {
+        alert("삭제 완료되었습니다.");
+      }
+    },
+    onError: () => {
+      alert("삭제 중 오류가 발생했습니다.");
+    },
+    isloading: true,
+  });
+
+  //삭제 popUpModal
+  const handleDeleteModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  //승인, 반려 모달의 확인, 취소 버튼
+  const handlePopUp = (popUpRequest) => {
+    //정말 ~ 하시겠습니까 모달 닫기
+    setModalOpen(false);
+
+    //삭제 API
+    if (popUpRequest) {
+      // 삭제할 프로젝트의 id
+      const deleteProjectId = projects[selectedRowId - 1]?.project_id || "";
+      console.log("삭제할 프로젝트 id는" + deleteProjectId);
+
+      deleteProjectMutation.mutate({ project_id: deleteProjectId });
+      setBottomModalOpen(false);
+    }
+  };
 
   //selectedRowId의 프로젝트id가져오기
   const projectId = projects[selectedRowId - 1]?.project_id || "";
@@ -204,6 +245,14 @@ export default function Project() {
                     header={["Name", "e-mail"]}
                     onClick={() => {}}
                   />
+                  <MainButton
+                    marginTop={1}
+                    size="medium"
+                    color="medium"
+                    onClick={() => handleDeleteModalOpen()}
+                  >
+                    프로젝트 삭제
+                  </MainButton>
                 </RightBodyContainer>
               </RightBody>
             </BodyContainer>
@@ -214,6 +263,29 @@ export default function Project() {
           )}
         </ModalBody>
       </BottomModal>
+      <PopUpModal
+        width={20}
+        darkBackground={false}
+        visible={modalOpen}
+        title={"정말 삭제 하시겠습니까?"}
+      >
+        <MainButton
+          size="small"
+          color="light"
+          marginTop="1"
+          onClick={() => handlePopUp(false)}
+        >
+          취소
+        </MainButton>
+        <MainButton
+          size="small"
+          color="medium"
+          marginLeft={0.3}
+          onClick={() => handlePopUp(true)}
+        >
+          확인
+        </MainButton>
+      </PopUpModal>
     </Container>
   );
 }
@@ -300,6 +372,7 @@ const PaperContainer = styled.div`
   display: flex;
 `;
 
+// 자식들을 column방향으로 양 끝에 배치하고싶어.
 const RightBodyContainer = styled.div`
   display: flex;
   flex-direction: column;

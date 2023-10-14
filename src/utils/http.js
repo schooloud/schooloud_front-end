@@ -9,7 +9,7 @@ const headers = {
 useGetApi("challenges", headers);
 */
 
-// const BACKEND_URL = "http://test-api.schooloud.cloud/api/v1/";
+// const BACKEND_URL = " https://stocodi.com/api/v1/~~ ";
 const BACKEND_URL = "http://api.schooloud.cloud/api/v1/";
 
 export async function useGetApi(url, headers, params) {
