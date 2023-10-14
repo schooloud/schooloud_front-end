@@ -74,6 +74,7 @@ export default function Instance() {
 
   const selectedInstance = instanceList.find((row) => row.id === selectedId);
 
+  // 인스턴스 중지 hook
   const pauseInstance = useMutation({
     mutationFn: () =>
       selectedRow.map((instanceId) =>
@@ -93,6 +94,8 @@ export default function Instance() {
       !!data?.data?.message && alert(data?.data?.message);
     },
   });
+
+  // 인스턴스 시작 hook
   const unpauseInstance = useMutation({
     mutationFn: () =>
       selectedRow.map((instanceId) =>
@@ -113,6 +116,7 @@ export default function Instance() {
     },
   });
 
+  // 인스턴스 재시작
   const rebootInstance = useMutation({
     mutationFn: () =>
       selectedRow.map((instanceId) =>
@@ -133,6 +137,7 @@ export default function Instance() {
     },
   });
 
+  // 인스턴스 삭제
   const deleteInstance = useMutation({
     mutationFn: () =>
       selectedRow.map((instanceId) =>

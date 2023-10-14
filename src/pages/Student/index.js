@@ -8,6 +8,7 @@ import ExpiredCheck from "../../pages/ExpiredCheck";
 
 export default function Student() {
   const params = useParams();
+  console.log(params);
 
   return (
     <PageWrapper>
