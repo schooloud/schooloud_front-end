@@ -66,8 +66,12 @@ export default function Project() {
         alert("삭제 완료되었습니다.");
       }
     },
-    onError: () => {
-      alert("삭제 중 오류가 발생했습니다.");
+    onError: (e) => {
+      if (e.status.code === 502) {
+        alert("프로젝트에 할당된 인스턴스를 삭제하고 다시 시도해주세요.");
+      } else {
+        alert("삭제 중 오류가 발생했습니다.");
+      }
     },
     isloading: true,
   });

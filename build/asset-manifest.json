@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3c618fdb.css",
+    "main.js": "/static/js/main.ccb27c75.js",
+    "static/media/Pretendard-ExtraBold.woff2": "/static/media/Pretendard-ExtraBold.eca8af167d0cca3a6fe3.woff2",
+    "static/media/Pretendard-Bold.woff2": "/static/media/Pretendard-Bold.4a990f8f07f67d337c99.woff2",
+    "static/media/Pretendard-SemiBold.woff2": "/static/media/Pretendard-SemiBold.00e31d1cfa4d218566fe.woff2",
+    "static/media/Pretendard-Regular.woff2": "/static/media/Pretendard-Regular.583478359834a045e7f5.woff2",
+    "static/media/Pretendard-Light.woff2": "/static/media/Pretendard-Light.9e5bfb96e26a919b0c82.woff2",
+    "static/media/Pretendard-ExtraLight.woff2": "/static/media/Pretendard-ExtraLight.f8208f9733848d010744.woff2",
+    "static/media/Pretendard-Thin.woff2": "/static/media/Pretendard-Thin.15767fb89a33a89a2f3f.woff2",
+    "static/media/Logo.png": "/static/media/Logo.e6ba219dd562a19dd58e.png",
+    "index.html": "/index.html",
+    "main.3c618fdb.css.map": "/static/css/main.3c618fdb.css.map",
+    "main.ccb27c75.js.map": "/static/js/main.ccb27c75.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3c618fdb.css",
+    "static/js/main.ccb27c75.js"
+  ]
+}
