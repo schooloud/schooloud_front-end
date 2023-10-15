@@ -27,6 +27,7 @@ export default function Dashboard() {
     queryKey: ["adminQuotaUsage"],
     queryFn: () => useGetApi("quota/usage"),
     onSuccess: (data) => {
+      console.log(data.data);
       const newQuotaUsage = {
         cpu: {
           currentCPU: data.data.cpu_usage,
