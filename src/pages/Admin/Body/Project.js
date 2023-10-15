@@ -28,7 +28,6 @@ export default function Project() {
     queryKey: ["projects"],
     queryFn: () => useGetApi("project/list"),
     onSuccess: (data) => {
-      console.log(data);
       setProjects([]);
       data.data.projects.map((project, index) => {
         const newProject = {};
@@ -61,14 +60,15 @@ export default function Project() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       if (data) {
-        console.log(data);
-      } else {
-        alert("삭제 완료되었습니다.");
+        alert(data.data.message);
       }
     },
     onError: () => {
-      alert("삭제 중 오류가 발생했습니다.");
+      alert("중복 접속이 감지되었습니다.");
+      removeCookies();
+      navigate("/");
     },
+
     isloading: true,
   });
 
@@ -108,6 +108,8 @@ export default function Project() {
     onSuccess: (data) => {
       setProjectDetail({});
       setMember([]);
+      const end_date = new Date(data.data.end_at);
+      const created_date = new Date(data.data.create_at);
 
       //멤버 정보를 member에 저장
       data.data.members.map((newMember, index) => {
@@ -121,27 +123,13 @@ export default function Project() {
       const newProjectDetail = {};
       for (let key in data.data) {
         if (key === "end_at") {
-          const result = new Date(data.data[key])
-            .toLocaleDateString()
-            .split(".");
-          newProjectDetail["end_at"] = (
-            result[0] +
-            "-" +
-            result[1] +
-            "-" +
-            result[2]
-          ).replace(/\s/g, "");
+          newProjectDetail["end_at"] = `${end_date.getFullYear()}-${
+            end_date.getMonth() + 1
+          }-${end_date.getDate()}`;
         } else if (key === "create_at") {
-          const result = new Date(data.data[key])
-            .toLocaleDateString()
-            .split(".");
-          newProjectDetail["create_at"] = (
-            result[0] +
-            "-" +
-            result[1] +
-            "-" +
-            result[2]
-          ).replace(/\s/g, "");
+          newProjectDetail["create_at"] = `${created_date.getFullYear()}-${
+            created_date.getMonth() + 1
+          }-${created_date.getDate() - 1}`;
         } else {
           newProjectDetail[key] = data.data[key];
         }
@@ -226,13 +214,13 @@ export default function Project() {
                 <Line className="modal" />
 
                 <Div>
-                  <Label>end date</Label>
+                  <Label>created at</Label>
                   <TextField>{projectDetail.create_at}</TextField>
                 </Div>
                 <Line className="modal" />
 
                 <Div>
-                  <Label>created at</Label>
+                  <Label>end date</Label>
                   <TextField>{projectDetail.end_at}</TextField>
                 </Div>
               </LeftBody>

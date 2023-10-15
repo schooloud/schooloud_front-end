@@ -215,23 +215,27 @@ export default function Quota() {
 
       <BottomModal open={bottomModalOpen} setOpen={setBottomModalOpen}>
         <TitleText>{selectedRowName}</TitleText>
-        <ModalButtonContainer>
-          <MainButton
-            size="small"
-            color="semi-light"
-            onClick={() => handleRequest("rejected")}
-          >
-            반려
-          </MainButton>
-          <MainButton
-            size="small"
-            color="medium"
-            marginLeft={0.3}
-            onClick={() => handleRequest("approved")}
-          >
-            승인
-          </MainButton>
-        </ModalButtonContainer>
+        <>
+          {toggle === "Waiting" && (
+            <ModalButtonContainer>
+              <MainButton
+                size="small"
+                color="semi-light"
+                onClick={() => handleRequest("rejected")}
+              >
+                반려
+              </MainButton>
+              <MainButton
+                size="small"
+                color="medium"
+                marginLeft={0.3}
+                onClick={() => handleRequest("approved")}
+              >
+                승인
+              </MainButton>
+            </ModalButtonContainer>
+          )}
+        </>
 
         <ModalBody>
           {quotaRequestDetail.isSuccess ? (

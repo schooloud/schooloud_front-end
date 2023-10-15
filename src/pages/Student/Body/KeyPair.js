@@ -94,6 +94,16 @@ export default function KeyPair() {
     },
   });
 
+  const handleChangeKeyPairName = (e) => {
+    // 영어만 입력 가능
+    const regex = /^[a-zA-Z]*$/;
+    if (!regex.test(e.target.value)) {
+      // 입력이 안되게
+      return;
+    }
+    setKeypairName(e.target.value);
+  };
+
   const handleKeypairSave = () => {
     const element = document.createElement("a");
     const file = new Blob([createPrivateKey], { type: "text/plain" });
@@ -167,8 +177,9 @@ export default function KeyPair() {
           <Input
             type="text"
             name="name"
+            placeholder="영어로 입력해주세요."
             value={keypairName}
-            onChange={(e) => setKeypairName(e.target.value)}
+            onChange={handleChangeKeyPairName}
           />
         </InputLine>
         <MainButton
