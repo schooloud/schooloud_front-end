@@ -37,6 +37,8 @@ export default function Proposal() {
       setPropoosalTableData([]);
       data.data.proposals.map((proposal) => {
         const newProposalTableData = {};
+        const created_date = new Date(proposal.create_at);
+        const end_date = new Date(proposal.end_at);
 
         for (let key in proposal) {
           //키값 변경
@@ -44,28 +46,20 @@ export default function Proposal() {
             newProposalTableData["id"] = proposal[key];
           } else if (key === "create_at") {
             //날짜 형식 변경
-            const result = new Date(proposal[key])
-              .toLocaleDateString()
-              .split(".");
-            newProposalTableData["create_at"] = (
-              result[0] +
+            newProposalTableData["create_at"] =
+              created_date.getFullYear() +
               "-" +
-              result[1] +
+              (created_date.getMonth() + 1) +
               "-" +
-              result[2]
-            ).replace(/\s/g, "");
+              (created_date.getDate() - 1);
           } else if (key === "end_at") {
             //날짜 형식 변경
-            const result = new Date(proposal[key])
-              .toLocaleDateString()
-              .split(".");
-            newProposalTableData["end_at"] = (
-              result[0] +
+            newProposalTableData["end_at"] =
+              end_date.getFullYear() +
               "-" +
-              result[1] +
+              (end_date.getMonth() + 1) +
               "-" +
-              result[2]
-            ).replace(/\s/g, "");
+              end_date.getDate();
           } else {
             //나머지 키값 그대로
             newProposalTableData[key] = proposal[key];
