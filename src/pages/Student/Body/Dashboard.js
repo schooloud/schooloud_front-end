@@ -179,11 +179,12 @@ export default function Dashboard() {
 
         const date = new Date(quotaRequest.create_at);
 
+        console.log("date: " + date);
         newQuotaRequestTableData["id"] = quotaRequest.quota_request_id;
         newQuotaRequestTableData["no"] = index + 1;
         newQuotaRequestTableData["create_at"] = `${date.getFullYear()}-${
           date.getMonth() + 1
-        }-${date.getDate()}`;
+        }-${date.getDate() - 1}`;
         newQuotaRequestTableData["status"] = quotaRequest.status;
 
         setQuotaRequestTableData((oldQuotaRequestData) => [
@@ -405,7 +406,7 @@ export default function Dashboard() {
           <Table
             checkBox={false}
             data={paginate(quotaRequestTableData, 3)}
-            header={["No", "Project Name", "Status"]}
+            header={["No", "Request Date", "Status"]}
             onClick={handleQuotaRowClick}
             page={quotaPage}
             setPage={setQuotaPage}
