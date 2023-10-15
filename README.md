@@ -44,36 +44,104 @@ schooloud 서비스 사용자는 크게 3가지 역할로 분류됩니다.
 > 회원가입/로그인
 
 학생은 회원가입을 통해 서비스를 이용할 수 있습니다. 회원가입 및 로그인은 [schooloud](http://www.schooloud.cloud) 홈페이지에서 가능합니다.
+<br></br>
 
 > 프로젝트 제안서
 
-좌측 바의 write proposal 버튼을 통해 프로젝트 제안서를 작성할 수 있습니다.<br>
-프로젝트 이름, 목적, 사용량(quota), 사용 기간을 입력하고 제안서를 제출합니다.<br>
-![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/453e7b2e-d7ac-4d12-89d1-120eecf4c160)
-좌측 바의 Proposal 버튼을 눌렀을 때 Waiting List를 통해 아직 검토중인 제안서 목록을 확인할 수 있고, Processed List를 통해 승인 / 반려된 제안서 목록을 확인할 수 있습니다.<br>
+좌측 바의 write proposal 버튼을 통해 프로젝트 제안서를 작성할 수 있습니다. 프로젝트 이름, 목적, 프로젝트 용량, 기간 등을 입력합니다.
+
+<img width="1500" alt="writeProposal" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/195e5544-ec0b-47dc-9525-2172888060ca">
+
+좌측 바의 Proposal 버튼을 눌렀을 때 Waiting List를 통해 아직 검토중인 제안서 목록을 확인할 수 있고, Processed List를 통해 승인 / 반려된 제안서 목록을 확인할 수 있습니다.
 제안서가 검토되기 전에 삭제할 수 있습니다.
+<br></br>
 
-> 대시보드 
-교수 또는 관리자가 제안서를 승인하면 학생은 프로젝트를 이용할 수 있습니다.<br>
-대시보드에서 생성된 프로젝트에 다른 학생(사용자)를 초대할 수 있습니다. <br>
-대시보드에서 프로젝트의 사용량(Quota usage)을 확인할 수 있습니다. 용량이 부족한 경우에는 쿼터 변경 요청을 할 수 있습니다. <br>
-쿼터 변경 요청 리스트 버튼을 통해 이전에 요청했던 쿼터 변경 요청 기록을 확인할 수 있습니다.
+> 대시보드
+
+교수 또는 관리자가 제안서를 승인하면 학생은 프로젝트를 이용할 수 있습니다.
+다른 학생(사용자)를 초대할 수 있고, 프로젝트의 쿼터를 감독하고 변경 요청을 보내고 확인할 수 있습니다.
+
 ![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/43e35a15-3ddc-4fa5-801e-c093d0bcac16)
-<br>
+<br></br>
+
+> 인스턴스
+
+인스턴스 생성, 중지, 재시작, 삭제할 수 있습니다. 
+
+<img width="1440" alt="createInstance" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/4307c80d-57e7-4ff8-b577-683ba2b6f16a">
+
+만들어진 인스턴스는 기본 정보를 조회하고 도메인 할당 후 도메인 접속 및 ssh 접속이 가능합니다.
+
+<img width="1440" alt="instanceDomain" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/1fe5c408-42df-44e5-87b8-dff1e2fe5340">
+
+<img width="1440" alt="domainSsh" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/d4549e91-51d9-4fc4-bd88-853033d8429b">
+
+<img width="1438" alt="sshEntrance" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/515022f8-e861-404c-8f5f-1f48042e6596">
+<br></br>
+
+> 키페어
+
+인스턴스 생성 시 필요한 키페어를 생성 및 삭제할 수 있습니다.
+
+### [교수]
+사전에 등록된 사용자만 교수 페이지를 이용할 수 있습니다.
+
+> 프로젝트 제안서 승인 / 반려
+
+학생이 제출한 제안서를 클릭하여 승인 또는 반려할 수 있습니다. 교수가 프로젝트 제안서를 승인하게 된 순간부터 학생은 프로젝트를 사용할 수 있고, 대시보드를 사용 가능합니다.
+
+<img width="1440" alt="proposalWaitingList" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/3b7cf049-3048-4fd7-8e61-1e2dc71bcf99">
+<br></br>
+
+### [관리자]
+사전에 등록된 사용자만 관리자 페이지를 이용할 수 있습니다.
+
+> 대시보드
+
+모든 프로젝트의 전체 용량과 사용량을 확인할 수 있고, 간략한 프로젝트 제안서 요청과 쿼터 변경 요청 리스트를 볼 수 있습니다.
+
+<img width="1440" alt="adminDashboard" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/d1225a0f-65cd-4d03-ba3d-ec8814b16e19">
+<br></br>
+
+> 쿼터
+
+대기 중인 쿼터 변경 요청을 승인 / 반려할 수 있고, 처리된 쿼터 변경 요청 리스트를 확인할 수 있습니다.
+<br></br>
+
+> 제안서
+
+대기 중인 프로젝트 제안서를 승인 / 반려할 수 있고, 처리된 프로젝트 제안서를 확인할 수 있습니다.
+<br></br>
+
+> 프로젝트
+
+각 프로젝트의 사용량, 생성 날짜, 멤버 목록 등을 확인할 수 있고 프로젝트를 삭제할 수 있습니다.
 
 
+<img width="1440" alt="adminProject" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/b02a009e-9744-4f12-92f2-362cef2d9262">
+<br></br>
+
+> 프록시
+
+SSH List에서 생성된 인스턴스 목록과 프록시 서버에 설정된 포트를 확인할 수 있습니다.
+또한, Domain List에서 현재 인스턴스에 할당된 도메인 현황을 볼 수 있습니다.
+
+<img width="1440" alt="adminProxy" src="https://github.com/schooloud/schooloud_front-end/assets/113183107/3f53c63b-da2d-4c08-8bf6-a3001d41eca7">
+<br></br>
+
+> 사용자
+
+학생 목록과 교수 목록을 확인할 수 있습니다.
+<br></br>
+
+## 3.시스템 아키텍쳐
+
+![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/4d570787-d4f4-4d5a-969d-52793e475e4d)
+
+![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/4e9d9d07-2c07-41e4-8ee9-455c47988e42)
 
 
-
-
-
-
-
-
-
-
-
-## 1. LICENSE
+## 4. LICENSE
 
 **package.json**
 ```json
