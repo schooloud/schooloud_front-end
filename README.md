@@ -14,6 +14,15 @@
 학교의 제한적인 공인 IP 에 Reverse Proxy를 사용하여 클라우드 환경을 제공함으로써 교내 학생들의 클라우드 비용 부담을 덜어주기 위한 "스클라우드" 서비스를 제안합니다.
 <br></br>
 
+## 3. GUIDES
+
+SCHOOLOUD 프론트엔드 실행을 위한 모든 사항은 아래 문서를 참고해주세요.
+
+<h4>License : <a href="LICENSE">MIT</a> / <a href="LICENSE.md">LICENSE</a> </h4>
+<h4>Execute : <a href="EXECUTE_KO.md">How to Execute</a>
+<h4>Contribute : <a href="CONTRIBUTE.md">How to Contribute</a>
+
+
 ## 3. 프로젝트 목적 및 배경
 
 ### 범사회적 클라우드 서비스의 확산과 유료화
