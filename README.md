@@ -14,17 +14,8 @@
 학교의 제한적인 공인 IP 에 Reverse Proxy를 사용하여 클라우드 환경을 제공함으로써 교내 학생들의 클라우드 비용 부담을 덜어주기 위한 "스클라우드" 서비스를 제안합니다.
 <br></br>
 
-## 3. GUIDES
 
-SCHOOLOUD 프론트엔드 실행을 위한 모든 사항은 아래 문서를 참고해주세요.
-
-<h4>License : <a href="LICENSE">MIT</a> / <a href="LICENSE.md">LICENSE</a> </h4>
-<h4>Execute : <a href="EXECUTE_KO.md">How to Execute</a>
-<h4>Contribute : <a href="CONTRIBUTE.md">How to Contribute</a>
-<br></br>
-
-
-## 4. 프로젝트 목적 및 배경
+## 3. 프로젝트 목적 및 배경
 
 ### 범사회적 클라우드 서비스의 확산과 유료화
 최근 클라우드 서비스의 확산으로 다양한 연령대 사람들의 사용뿐만 아니라 여러 시스템이 클라우드로 전환되는 등 클라우드 사용이 증가하는 추세입니다. 한 대학은 구글의 클라우드 메일을 도입하여 활용하는 사례도 있었다. [[관련 기사]](https://www.hani.co.kr/arti/society/society_general/999658.html) 하지만 100TB의 용량 제한 등의 정책으로 전환되는 등 최근에는 무료 클라우드 서비스를 특히나 찾아보기 힘듭니다. 기업체들과 달리 비교적 적은 컴퓨팅 자원과 저장공간이 필요한 학생들은 이러한 적은 사용량임에도 유료 클라우드 서비스에 비용을 지불하는 것에 부담을 느끼는 것이 실정입니다.
@@ -41,7 +32,7 @@ SCHOOLOUD 프론트엔드 실행을 위한 모든 사항은 아래 문서를 참
 또한 제한된 자원을 많은 수의 학생이 공유해야 하므로 학생들마다 생성 가능한 인스턴스의 개수를 제한해야 합니다. 학생인 클라이언트가 웹을 통해 자원할당을 요청하면 교수, 관리자가 이를 승인하고 학생들은 이를 이용하는 서비스를 제공하고자 합니다.
 <br></br>
 
-## 5. 기능
+## 4. 기능
 
 schooloud 서비스 사용자는 크게 3가지 역할로 분류됩니다.
 학생이 프로젝트의 제안서를 작성하고, 교수 혹은 관리자가 해당 제안서를 승인하면, 학생은 프로젝트 내에서 인스턴스를 만들고 ssh 접속, 도메인 할당, 쿼터 관리, 멤버 관리 등을 할 수 있고, 관리자는 전체적인 요소를 관리하고 감독할 수 있습니다.
@@ -148,7 +139,33 @@ SSH List에서 생성된 인스턴스 목록과 프록시 서버에 설정된 �
 
 ![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/4d570787-d4f4-4d5a-969d-52793e475e4d)
 
-![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/4e9d9d07-2c07-41e4-8ee9-455c47988e42)
+![image](https://github.com/schooloud/schooloud_back-end/assets/86493874/4e9d9d07-2c07-41e4-8ee9-455c47988e42)\
+
+## 6. LICENSE
+
+**package.json**
+```json
+"dependencies": {
+    "@mui/icons-material": "^5.11.16",
+    "@tanstack/react-query": "^4.29.7",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.4.0",
+    "react": "^18.2.0",
+    "react-calendar": "^4.2.1",
+    "react-dom": "^18.2.0",
+    "react-loader-spinner": "^5.3.4",
+    "react-router-dom": "^6.10.0",
+    "react-scripts": "5.0.1",
+    "recharts": "^2.5.0",
+    "styled-components": "^5.3.9",
+    "universal-cookie": "^4.0.4",
+    "web-vitals": "^2.1.4"
+  }
+```
+이 프로젝트에서 사용된 소프트웨어는 MIT 라이선스를 참조하고 있습니다. 
+라이선스의 전문은 해당 패키지의 공식문서 혹은 github에서 확인할 수 있습니다.
 
 
 
